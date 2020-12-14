@@ -20,9 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
+    <ClCompile Include="Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="RenderWindow.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
