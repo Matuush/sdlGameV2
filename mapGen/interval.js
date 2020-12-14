@@ -13,7 +13,7 @@ setInterval(() => {
         mapGen = require('./generation.js');
         output = mapGen(input);
     } catch (e) {
-        console.log("Error with input processing.");
+        console.log("Error with input processing. Error: " + e);
         return;
     }
     try {
