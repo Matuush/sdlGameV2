@@ -1,3 +1,5 @@
 module.exports = function mapGenerator(input) {
-    return !input;
+    return [
+        input, input
+    ];
 }
