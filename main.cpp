@@ -21,11 +21,6 @@ int main(int argc, char* args[]){
 	Map map1(mapSizeWidth, mapSizeHeight);
 	map1.map[6][5] = 1;
 
-	SDL_Texture* nothingTexture = window.loadTexture("textures/nothing.png");
-	SDL_Texture* waterTexture = window.loadTexture("textures/water.png");
-	SDL_Texture* dirtTexture = window.loadTexture("textures/dirt.png");
-	SDL_Texture* grassTexture = window.loadTexture("textures/grass.png");
-
 	bool gameRunning = true;
 	SDL_Event event;
 
@@ -39,7 +34,7 @@ int main(int argc, char* args[]){
 
 		//Renderování
 		for (int width = 0; width < map1.map.size(); width++) {
-			for (int height = 0; height < map1.map[width].size(); height++) map1.render(width, height, nothingTexture, waterTexture, dirtTexture, grassTexture, window);
+			for (int height = 0; height < map1.map[width].size(); height++) map1.render(width, height);
 		}
 
 		window.display();

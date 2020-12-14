@@ -14,26 +14,30 @@ std::vector<std::vector<char>> Map::create() {
 	return map;
 }
 
-inline void Map::render(int width, int height, SDL_Texture* nothingTexture, SDL_Texture* waterTexture, SDL_Texture* dirtTexture, SDL_Texture* grassTexture, RenderWindow& window) {
+void Map::setWindow(RenderWindow* p_window) {
+	window = p_window;
+}
+
+void Map::render(int width, int height) {
 	switch (this->map[width][height]) {
 	case 0: {
 		Entity nothing((float)width * 32, (float)height * 32, nothingTexture);
-		window.render(nothing);
+		window->render(nothing);
 		break;
 	}
 	case 1: {
 		Entity water((float)width * 32, (float)height * 32, waterTexture);
-		window.render(water);
+		window->render(water);
 		break;
 	}
 	case 2: {
 		Entity dirt((float)width * 32, (float)height * 32, dirtTexture);
-		window.render(dirt);
+		window->render(dirt);
 		break;
 	}
 	case 3: {
 		Entity grass((float)width * 32, (float)height * 32, grassTexture);
-		window.render(grass);
+		window->render(grass);
 		break;
 	}
 	default:
