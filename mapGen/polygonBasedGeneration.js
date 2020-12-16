@@ -16,7 +16,6 @@ module.exports = function Generate(seedString) {
         new Point (map, 4, 4),
     ]))
 
-    console.log(map.lakes[0].isInside(new Point(map, 5, 4)))
     return map.toPixels();
 }
 // 2D
@@ -180,6 +179,17 @@ class Point {
         this.parent = parentRegion;
         this.x = x;
         this.y = y;
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @param {Number} angle Angle in radians
+     * @param {Number} magnitude Magnitude of the translation
+     */
+    static polarTransalte(point, angle, magnitude) {
+        var x = Math.round(point.x + Math.cos(angle) * magnitude * 1e3)/1e3;
+        var y = Math.round(point.y - Math.sin(angle) * magnitude * 1e3)/1e3;
+        console.log(x,y)
     }
 }
 
