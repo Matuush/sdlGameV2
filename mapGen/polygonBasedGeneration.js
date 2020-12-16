@@ -9,7 +9,12 @@ const seedrandom = require('seedrandom')
  */
 module.exports = function Generate(seedString) {
     var seed = new Seed(seedString);
-    var map = new GameMap(100, 100, DIRT);
+    var map = new GameMap(15, 15, DIRT);
+    map.lakes.push(new Polygon(map,[
+        new Point(map,3,3),
+        new Point(map, 3, 4),
+        new Point (map, 4, 4),
+    ]))
 
     return map.toPixels();
 }
@@ -33,7 +38,7 @@ class Polygon extends Region {
         super(parentRegion);
         this.vertices = points;
         /**
-         * @type {Array<Segemnt>}
+         * @type {Array<Segment>}
          */
         this.edges = [];
         for (var i = 0; i < this.vertices.length; i++) {
@@ -49,12 +54,13 @@ class Polygon extends Region {
     isInside(point) {
         var collisions = 0;
         for (var edge of this.edges) {
+            if (Math.min(edge.a.x, edge.b.x) > point.x || Math.max(edge.b.x, edge.a.x) < point.x) continue;
             var x = edge.getXfromY(point.y);
             if (x === undefined || x < point.x) continue;
             collisions++;
         }
         return collisions % 2 === 1;
-    }
+    } 
 }
 class GameMap extends Region {
     /**
@@ -80,13 +86,38 @@ class GameMap extends Region {
          * @type {Array<Array<Number>>}
          */
         var rv = [];
+        // Default block
         for (var i = 0; i < this.w; i++) {
             rv[i] = [];
             for (var j = 0; j < this.h; j++) {
                 rv[i][j] = this.defaultBlock;
             }
         }
+        // Lakes
+        for (var lake of this.lakes) {
+            for (var i = 0; i < rv.length; i++) {
+                for (var j = 0; j < rv[0].length; j++) {
+                    if (
+                    (lake.isInside(new Point(this, i, j)))||
+                    (lake.isInside(new Point(this, i+1, j)))||
+                    (lake.isInside(new Point(this, i, j+1)))||
+                    (lake.isInside(new Point(this, i+1, j+1)))
+                    ) {
+                        rv[i][j] = WATER;
+                    }
+                }
+            }
+        }
         return rv;
+    }
+    /**
+     * 
+     * @param {Number} targetArea 
+     * @returns {Void}
+     */
+    addRandomLake(targetArea) {
+        var r = Math.sqrt(targetArea / Math.PI);
+
     }
 }
 // 1D
@@ -102,7 +133,7 @@ class Curve {
 class Segment extends Curve {
     constructor(parentRegion, point1, point2) {
         super(parentRegion);
-        if (!point1 || !point2) throw new Error("Segemnt must have two points.");
+        if (!point1 || !point2) throw new Error("Segment must have two points.");
         this.a = point1;
         this.b = point2;
     }
@@ -148,6 +179,17 @@ class Point {
         this.parent = parentRegion;
         this.x = x;
         this.y = y;
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @param {Number} angle Angle in radians
+     * @param {Number} magnitude Magnitude of the translation
+     */
+    static polarTransalte(point, angle, magnitude) {
+        var x = Math.round(point.x + Math.cos(angle) * magnitude * 1e3)/1e3;
+        var y = Math.round(point.y - Math.sin(angle) * magnitude * 1e3)/1e3;
+        console.log(x,y)
     }
 }
 
