@@ -2,6 +2,7 @@ const GRASS = 3;
 const WATER = 1;
 const DIRT = 2;
 const BLANK = 0;
+const LAKE_ROUNDNES = 2;
 const seedrandom = require('seedrandom')
 /**
  * @param {String} seedString
@@ -10,12 +11,12 @@ const seedrandom = require('seedrandom')
 module.exports = function Generate(seedString) {
     var seed = new Seed(seedString);
     var map = new GameMap(15, 15, DIRT);
-    map.lakes.push(new Polygon(map,[
-        new Point(map,3,3),
+    map.lakes.push(new Polygon(map, [
+        new Point(map, 3, 3),
         new Point(map, 3, 4),
-        new Point (map, 4, 4),
+        new Point(map, 4, 4),
     ]))
-
+    map.addRandomLake(10, 15, seed)
     return map.toPixels();
 }
 // 2D
@@ -60,7 +61,7 @@ class Polygon extends Region {
             collisions++;
         }
         return collisions % 2 === 1;
-    } 
+    }
 }
 class GameMap extends Region {
     /**
@@ -98,10 +99,10 @@ class GameMap extends Region {
             for (var i = 0; i < rv.length; i++) {
                 for (var j = 0; j < rv[0].length; j++) {
                     if (
-                    (lake.isInside(new Point(this, i, j)))||
-                    (lake.isInside(new Point(this, i+1, j)))||
-                    (lake.isInside(new Point(this, i, j+1)))||
-                    (lake.isInside(new Point(this, i+1, j+1)))
+                        (lake.isInside(new Point(this, i, j))) ||
+                        (lake.isInside(new Point(this, i + 1, j))) ||
+                        (lake.isInside(new Point(this, i, j + 1))) ||
+                        (lake.isInside(new Point(this, i + 1, j + 1)))
                     ) {
                         rv[i][j] = WATER;
                     }
@@ -113,11 +114,29 @@ class GameMap extends Region {
     /**
      * 
      * @param {Number} targetArea 
+     * @param {Number} vertices Number of vertices
+     * @param {Seed} seed
      * @returns {Void}
      */
-    addRandomLake(targetArea) {
+    addRandomLake(targetArea, vertices, seed) {
         var r = Math.sqrt(targetArea / Math.PI);
-
+        var p = this.randomPoint(seed);
+        /**
+         * @type {Array<Number>}
+         */
+        var magnitudes = [r];
+        for (var i = 1; i < vertices; i++) {
+            magnitudes[i] = r + Math.pow(((seed.random() - 0.5) * 2), LAKE_ROUNDNES);
+        }
+        var points = magnitudes.map((v, i) => Point.polarTransalte(p, Math.PI *2 / vertices * i, v));
+        this.lakes.push(new Polygon(this, points))
+    }
+    /**
+     * @param {Seed} seed
+     * @returns {Point}
+     */
+    randomPoint(seed) {
+        return new Point(this, this.w * seed.random(), this.h * seed.random());
     }
 }
 // 1D
@@ -185,11 +204,12 @@ class Point {
      * @param {Point} point 
      * @param {Number} angle Angle in radians
      * @param {Number} magnitude Magnitude of the translation
+     * @returns {Point} 
      */
     static polarTransalte(point, angle, magnitude) {
-        var x = Math.round(point.x + Math.cos(angle) * magnitude * 1e3)/1e3;
-        var y = Math.round(point.y - Math.sin(angle) * magnitude * 1e3)/1e3;
-        console.log(x,y)
+        var x = Math.round(point.x + Math.cos(angle) * magnitude * 1e3) / 1e3;
+        var y = Math.round(point.y - Math.sin(angle) * magnitude * 1e3) / 1e3;
+        return new Point(point.parent, x, y);
     }
 }
 
@@ -201,6 +221,9 @@ class Seed extends String {
      */
     constructor(seed) {
         super(seed);
+        /**
+         * @returns {Number}
+         */
         this.random = new seedrandom(this);
     }
 }
