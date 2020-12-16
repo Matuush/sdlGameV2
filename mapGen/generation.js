@@ -2,7 +2,8 @@ const GRASS = 3;
 const WATER = 1;
 const DIRT = 2;
 const BLANK = 0;
-const MIN_WATER = 0.2;
+const MIN_WATER = 0;
+//! STILL NOT WORKING
 module.exports = function mapGenerator(input) {
     /**
      * @type {Array<Array<Number>>}

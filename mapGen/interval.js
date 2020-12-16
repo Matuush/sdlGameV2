@@ -1,16 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 var input = require('./input.json');
-var prevMapGen = fs.readFileSync("./generation.js").toString();
+const filename = "polgonBasedGeneration";
+var prevMapGen = fs.readFileSync(`./${filename}.js`).toString();
 setInterval(() => {
-    var curr = fs.readFileSync("./generation.js").toString();
+    var curr = fs.readFileSync(`./${filename}.js`).toString();
     if (prevMapGen == curr) return;
     prevMapGen = curr;
     console.log("Reevaluating...");
     input = require('./input.json');
-    invalidateRequireCacheForFile("./generation.js");
+    invalidateRequireCacheForFile(`./${filename}.js`);
     try {
-        mapGen = require('./generation.js');
+        mapGen = require(`./${filename}.js`);
         output = mapGen(input);
     } catch (e) {
         console.log("Error with input processing. Error: " + e);
