@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 var input = require('./input.json');
-const filename = "polgonBasedGeneration";
+const filename = "polygonBasedGeneration";
 var prevMapGen = fs.readFileSync(`./${filename}.js`).toString();
 setInterval(() => {
     var curr = fs.readFileSync(`./${filename}.js`).toString();
