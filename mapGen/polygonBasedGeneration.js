@@ -16,7 +16,7 @@ module.exports = function Generate(seedString) {
         new Point(map, 3, 4),
         new Point(map, 4, 4),
     ]))
-    map.addRandomLake(10, 15, seed)
+    map.addRandomLake(100, 15, seed)
     return map.toPixels();
 }
 // 2D
