@@ -5,17 +5,39 @@
     <title>Document</title>
 </head>
 <style>
-    tr {
-        margin: 0;
-    }
-    tc {
-        margin: 0;
+    * {
+        margin: 0
     }
 </style>
 <body>
-    <table id="main">
+    <canvas id="myCanvas" width="1920" height="1080"></canvas>
 
-    </table>
 </body>
-    
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const socket = new WebSocket("ws://localhost:5050","echo-protocol");
+        socket.addEventListener("open", () => {
+            console.log("Websocket open!");
+        })
+        socket.addEventListener("message", (ws) => {
+            console.log("Message!");
+            handleNewMapGenOutput(JSON.parse(ws.data));
+        });
+        function handleNewMapGenOutput(input) {
+            canvas.width = input.map.length * input.fieldSize;
+            canvas.height = input.map[0].length * input.fieldSize;
+            drawMap(input.map, input.fieldSize);
+        }
+        function drawMap(map, rectSize) {
+            for (var i = 0; i < map.length; i++) {
+                for (var j = 0; j < map[i].length; j++) {
+                    ctx.beginPath();
+                    ctx.rect(i * rectSize, j * rectSize, rectSize, rectSize);
+                    ctx.fillStyle = ["gray", "blue", "brown", "green"][map[i][j]];
+                    ctx.fill();
+                }
+            }
+        }
+    </script>
 </html>
