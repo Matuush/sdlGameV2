@@ -50,10 +50,13 @@ class Polygon extends Region {
      */
     isInside(point) {
         var collisions = 0;
+        const { x, y } = point;
         for (var edge of this.edges) {
-            if (Math.min(edge.a.x, edge.b.x) > point.x || Math.max(edge.b.x, edge.a.x) < point.x) continue;
-            var x = edge.getXfromY(point.y);
-            if (x === undefined || x < point.x) continue;
+            var yMin = Math.min(edge.a.y, edge.b.y);
+            var yMax = Math.max(edge.a.y, edge.b.y);
+            var xInt = edge.getXfromY(y);
+            if (x < xInt) continue;
+            if (y < yMin || y > yMax) continue;
             collisions++;
         }
         return collisions % 2 === 1;
@@ -95,10 +98,7 @@ class GameMap extends Region {
             for (var i = 0; i < rv.length; i++) {
                 for (var j = 0; j < rv[0].length; j++) {
                     if (
-                        (lake.isInside(new Point(this, i, j))) ||
-                        (lake.isInside(new Point(this, i + 1, j))) ||
-                        (lake.isInside(new Point(this, i, j + 1))) ||
-                        (lake.isInside(new Point(this, i + 1, j + 1)))
+                        (lake.isInside(new Point(this, i + 0.5, j + 0.5)))
                     ) {
                         rv[i][j] = WATER;
                     }
@@ -122,7 +122,7 @@ class GameMap extends Region {
          */
         var magnitudes = [r];
         for (var i = 1; i < vertices; i++) {
-            magnitudes[i] = magnitudes[i - 1] + r*Math.pow(((seed.random() - 0.5) * 2), LAKE_ROUNDNES);
+            magnitudes[i] = magnitudes[i - 1] + r * Math.pow(((seed.random() - 0.5) * 2), LAKE_ROUNDNES);
         }
         var points = magnitudes.map((v, i) => Point.polarTransalte(p, Math.PI * 2 / vertices * i, v));
         this.lakes.push(new Polygon(this, points))
