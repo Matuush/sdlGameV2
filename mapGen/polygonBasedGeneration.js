@@ -47,12 +47,13 @@ class Rectangle extends Region {
         this.c = point3;
         this.d = new Point(this.parent, this.a.x + this.c.x - this.b.x, this.a.y + this.b.y - this.c.y);
         this.vertices = [this.a, this.b, this.c, this.d];
-        this.edges = this.vertices.map(v, i => {
+        this.edges = this.vertices.map((v, i) => {
             if (i == 0) {
                 i = this.vertices.length;
             }
             return new Segment(this.parent, v, this.vertices[i - 1]);
-        })
+        });
+        this.middle = new Line(this.parent, a, c).getIntersect(new Line(this.parent, d, b));
     }
     /**
      * 
@@ -60,7 +61,10 @@ class Rectangle extends Region {
      * @returns {Boolean} 
      */
     isInside(point) {
-
+        for (var edge of this.edges) {
+            if (edge.intersects(new Segment(this.parent, this.middle, point))) return false;
+        }
+        return true;
     }
 }
 class Polygon extends Region {
