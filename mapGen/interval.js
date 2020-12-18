@@ -7,6 +7,8 @@ var input = require('./input.json');
 const filename = "polygonBasedGeneration";
 var prevMapGen;
 var prevInput;
+var output;
+var map;
 setInterval(() => {
     var curr = fs.readFileSync(`./${filename}.js`).toString();
     invalidateRequireCacheForFile(`./input.json`);
@@ -18,7 +20,8 @@ setInterval(() => {
     invalidateRequireCacheForFile(`./${filename}.js`);
     try {
         mapGen = require(`./${filename}.js`);
-        output = mapGen(input);
+        map = mapGen(input);
+        output = map.toPixels();
     } catch (e) {
         console.log("Error with input processing. Error: " + e);
         return;
@@ -33,7 +36,8 @@ setInterval(() => {
         console.log("Sending output...")
         c.sendUTF(JSON.stringify({
             fieldSize: 50,
-            map: output
+            map: output,
+            insts: map.getInsts()
         }))
     }
     console.log("Reevaluated.");
