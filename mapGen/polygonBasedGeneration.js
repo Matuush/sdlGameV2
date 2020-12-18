@@ -3,7 +3,9 @@ const WATER = 1;
 const DIRT = 2;
 const BLANK = 0;
 const LAKE_ROUNDNES = 2;
-const LAKE_DIVIATION = 1 / 2
+const LAKE_DIVIATION = 1 / 2;
+const MAX_RIVER_SEGMENT_LENGTH = 1;
+const RIVER_MAX_DEVIATION = 1.3;
 const seedrandom = require('seedrandom');
 const md5 = require('md5');
 /**
@@ -17,7 +19,7 @@ module.exports = function Generate(seedString) {
     if (type < 0.5) {
         map.addRandomLake(10, 6, seed);
     } else {
-        map.addRandomRiver();
+        map.addRandomRiver(1, seed);
     }
 
     return map;
@@ -38,14 +40,15 @@ class Rectangle extends Region {
      * @param {Point} point1 
      * @param {Point} point2 
      * @param {Point} point3 
+     * @param {Point | null} point4
      */
-    constructor(point1, point2, point3) {
+    constructor(point1, point2, point3, point4 = null) {
         if (!(point1.parent === point2.parent && point1.parent === point3.parent)) throw new Error("Rectangle points must have the same parent.");
         super(point1.parent);
         this.a = point1;
         this.b = point2;
         this.c = point3;
-        this.d = new Point(this.parent, this.a.x + this.c.x - this.b.x, this.a.y + this.b.y - this.c.y);
+        this.d = point4 ? point4 : new Point(this.parent, this.a.x + this.c.x - this.b.x, this.a.y + this.b.y - this.c.y);
         this.vertices = [this.a, this.b, this.c, this.d];
         this.edges = this.vertices.map((v, i) => {
             if (i == 0) {
@@ -53,7 +56,7 @@ class Rectangle extends Region {
             }
             return new Segment(this.parent, v, this.vertices[i - 1]);
         });
-        this.middle = new Line(this.parent, a, c).getIntersect(new Line(this.parent, d, b));
+        this.middle = new Line(this.parent, this.a, this.c).getIntersect(new Line(this.parent, this.d, this.b));
     }
     /**
      * 
@@ -120,9 +123,10 @@ class GameMap extends Region {
          */
         this.lakes = [];
         /**
-         * @type {Array<Path>}
+         * @type {Array<River>}
          */
         this.rivers = [];
+        this.middle = new Point(this, this.w / 2, this.h / 2);
     }
     /**
      * @returns {Array<Array<Number>>}
@@ -151,6 +155,18 @@ class GameMap extends Region {
                 }
             }
         }
+        // Rivers 
+        for (var river of this.rivers) {
+            for (var i = 0; i < rv.length; i++) {
+                for (var j = 0; j < rv[0].length; j++) {
+                    if (
+                        (river.isInside(new Point(this, i + 0.5, j + 0.5)))
+                    ) {
+                        rv[i][j] = WATER;
+                    }
+                }
+            }
+        }
         return rv;
     }
     /**
@@ -171,14 +187,42 @@ class GameMap extends Region {
             magnitudes[i] = magnitudes[i - 1] + LAKE_DIVIATION * r * Math.pow(((seed.random() - 0.5) * 2), LAKE_ROUNDNES);
         }
         var points = magnitudes.map((v, i) => Point.polarTransalte(p, Math.PI * 2 / vertices * i, v));
-        this.lakes.push(new Polygon(this, points))
+        this.lakes.push(new Polygon(this, points));
     }
     /**
      * 
      * @param {Number} width 
+     * @param {Seed} seed
      */
-    addRandomRiver(width) {
-
+    addRandomRiver(width, seed) {
+        if (seed.random() < 0.5) {
+            var x = seed.random() * this.w;
+            if (seed.random() < 0.5) {
+                var y = 0;
+            } else {
+                var y = this.h
+            }
+        } else {
+            var y = seed.random() * this.h;
+            if (seed.random() < 0.5) {
+                var x = 0;
+            } else {
+                var x = this.w
+            }
+        }
+        var points = [new Point(this, x, y)];
+        while (Point.distance(points[points.length - 1], this.middle) > MAX_RIVER_SEGMENT_LENGTH) {
+            var a = points[points.length - 1];
+            var b = this.middle;
+            var s = new Segment(this, a, b);
+            var nextX = a.x + Math.sign(b.x - a.x) * (MAX_RIVER_SEGMENT_LENGTH * Math.SQRT1_2);
+            var nextY = s.getYfromX(nextX);
+            nextX += RIVER_MAX_DEVIATION * 2 * (seed.random() - 0.5);
+            nextY += RIVER_MAX_DEVIATION * 2 * (seed.random() - 0.5);
+            points.push(new Point(this, nextX, nextY));
+        }
+        points.push(this.middle)
+        this.rivers.push(new River(new Path(this, points), width));
     }
     /**
      * @param {Seed} seed
@@ -188,7 +232,7 @@ class GameMap extends Region {
         return new Point(this, this.w * seed.random(), this.h * seed.random());
     }
     /**
-     * @returns {Array<DrawInstruction>} 
+     * @returns {Array<DrawInstruction>}
      */
     getInsts() {
         /**
@@ -201,6 +245,18 @@ class GameMap extends Region {
             }
             for (var vertex of lake.vertices) {
                 rv.push(new PointInstruction(vertex));
+            }
+        }
+        for (var river of this.rivers) {
+            for (var segment of river.path.segments) {
+                rv.push(new LineInstruction(segment.a, segment.b));
+                if (!segment.lastHitbox) {
+                    console.log("No last hitbox.");
+                    continue;
+                }
+                for (var edge of segment.lastHitbox.edges) {
+                    rv.push(new LineInstruction(edge.a, edge.b));
+                }
             }
         }
         return rv;
@@ -275,9 +331,42 @@ class Path extends Curve {
         super(parentRegion);
         this.points = points;
         /**
-         * @type {Array<Curve>}
+         * @type {Array<Segment>}
          */
         this.segments = [];
+        for (var i = 1; i < points.length; i++) {
+            this.segments.push(new Segment(this.parent, points[i - 1], points[i]));
+        }
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @param {Number} radius 
+     */
+    isWithin(point, radius) {
+        for (var s of this.segments) {
+            if (s.isWithin(point, radius)) return true;
+        }
+        return false;
+    }
+}
+class River {
+    /**
+     * 
+     * @param {Path} path 
+     * @param {Number} width 
+     */
+    constructor(path, width) {
+        this.path = path;
+        this.width = width;
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @returns {Boolean}
+     */
+    isInside(point) {
+        return this.path.isWithin(point, this.width);
     }
 }
 class Segment extends Curve {
@@ -290,9 +379,10 @@ class Segment extends Curve {
     constructor(parentRegion, point1, point2) {
         super(parentRegion);
         if (!point1 || !point2) throw new Error("Segment must have two points.");
-        this.a = point1;
-        this.b = point2;
+        this.a = [point1, point2].find(v => v.x == Math.min(point1.x, point2.x));
+        this.b = [point1, point2].find(v => v.x == Math.max(point1.x, point2.x));
         this.length = Math.pow(Math.pow(this.a.x - this.b.x, 2) + Math.pow(this.a.y - this.b.y, 2), 1 / 2);
+        this.angle = Math.acos(Math.abs(this.a.x - this.b.x) / this.length);
     }
     /**
      * @param {Number} y
@@ -327,7 +417,21 @@ class Segment extends Curve {
      * @returns {Boolean}
      */
     isWithin(point, radius) {
-
+        if (this.a.distance(point) < radius || this.b.distance(point) < radius) return true;
+        var deltaX = Math.round(Math.sin(Math.PI / 2 - Math.atan((this.b.x - this.a.x) / (this.a.y - this.b.y))) * radius * 1e3) / 1e3
+        var deltaY = Math.round(Math.cos(Math.PI / 2 - Math.atan((this.b.x - this.a.x) / (this.a.y - this.b.y))) * radius * 1e3) / 1e3;
+        var a = new Point(this.parent, this.a.x + deltaX, this.a.y + deltaY);
+        var b = new Point(this.parent, this.a.x - deltaX, this.a.y - deltaY);
+        var c = new Point(this.parent, this.b.x - deltaX, this.b.y - deltaY);
+        var d = new Point(this.parent, this.b.x + deltaX, this.b.y + deltaY);
+        if (new Line(this.parent, a, b).isOn(c)) {
+            a = new Point(this.parent, this.a.x + deltaX, this.a.y - deltaY);
+            b = new Point(this.parent, this.a.x - deltaX, this.a.y + deltaY);
+            c = new Point(this.parent, this.b.x - deltaX, this.b.y + deltaY);
+            d = new Point(this.parent, this.b.x + deltaX, this.b.y - deltaY);
+        }
+        this.lastHitbox = new Rectangle(a, b, c, d);
+        return this.lastHitbox.isInside(point);
     }
     /**
      * 
@@ -422,7 +526,7 @@ class Line extends Curve {
         var slope2 = (line.b.y - line.a.y) / (line.b.x - line.a.x);
         var slopeDiff = slope1 - slope2
         var diff = p1.y - line.a.y;
-        var xDiff = diff/slopeDiff;
+        var xDiff = diff / slopeDiff;
         var x = line.a.x - xDiff;
         var y = line.getYfromX(x);
         return new Point(this.parent, x, y);
@@ -435,6 +539,7 @@ class Line extends Curve {
     isOn(point) {
         return this.getYfromX(point.x) === point.y;
     }
+
 }
 // POINT
 class Point {
@@ -463,6 +568,33 @@ class Point {
         var x = Math.round((point.x + Math.cos(angle) * magnitude) * 1e3) / 1e3;
         var y = Math.round((point.y - Math.sin(angle) * magnitude) * 1e3) / 1e3;
         return new Point(point.parent, x, y);
+    }
+    /**
+     * 
+     * @param {Point} point1 
+     * @param {Point} point2 
+     * @returns {Number}
+     */
+    static distance(point1, point2) {
+        return Math.pow(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2), 1 / 2);
+    }
+    /**
+     * 
+     * @param {Point} point
+     * @returns {Number}
+     */
+    distance(point) {
+        return Math.pow(Math.pow(point.x - this.x, 2) + Math.pow(point.y - this.y, 2), 1 / 2);
+    }
+    /**
+     *  
+     * @param {Point} point 
+     * @returns {Point}
+     */
+    reflectAbout(point) {
+        var x = 2 * point.x - this.x;
+        var y = 2 * point.y - this.y;
+        return new Point(this.parent, x, y);
     }
 }
 
