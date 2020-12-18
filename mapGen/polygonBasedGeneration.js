@@ -2,7 +2,8 @@ const GRASS = 3;
 const WATER = 1;
 const DIRT = 2;
 const BLANK = 0;
-const LAKE_ROUNDNES = 3;
+const LAKE_ROUNDNES = 2;
+const LAKE_DIVIATION = 1 / 2
 const seedrandom = require('seedrandom');
 const md5 = require('md5');
 /**
@@ -12,7 +13,13 @@ const md5 = require('md5');
 module.exports = function Generate(seedString) {
     var seed = new Seed(md5(seedString));
     var map = new GameMap(15, 15, DIRT);
-    map.addRandomLake(10, 15, seed);
+    var type = seed.random();
+    if (type < 0.5) {
+        map.addRandomLake(10, 6, seed);
+    } else {
+        map.addRandomRiver();
+    }
+
     return map;
 }
 // 2D
@@ -25,10 +32,41 @@ class Region {
         this.parent = parentRegion;
     }
 }
+class Rectangle extends Region {
+    /**
+     * 
+     * @param {Point} point1 
+     * @param {Point} point2 
+     * @param {Point} point3 
+     */
+    constructor(point1, point2, point3) {
+        if (!(point1.parent === point2.parent && point1.parent === point3.parent)) throw new Error("Rectangle points must have the same parent.");
+        super(point1.parent);
+        this.a = point1;
+        this.b = point2;
+        this.c = point3;
+        this.d = new Point(this.parent, this.a.x + this.c.x - this.b.x, this.a.y + this.b.y - this.c.y);
+        this.vertices = [this.a, this.b, this.c, this.d];
+        this.edges = this.vertices.map(v, i => {
+            if (i == 0) {
+                i = this.vertices.length;
+            }
+            return new Segment(this.parent, v, this.vertices[i - 1]);
+        })
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @returns {Boolean} 
+     */
+    isInside(point) {
+
+    }
+}
 class Polygon extends Region {
     /**
      * 
-     * @param {Regio | null} parentRegion 
+     * @param {Region | null} parentRegion 
      * @param {Array<Point>} points
      */
     constructor(parentRegion, points) {
@@ -77,6 +115,10 @@ class GameMap extends Region {
          * @type {Array<Polygon>}
          */
         this.lakes = [];
+        /**
+         * @type {Array<Path>}
+         */
+        this.rivers = [];
     }
     /**
      * @returns {Array<Array<Number>>}
@@ -122,10 +164,17 @@ class GameMap extends Region {
          */
         var magnitudes = [r];
         for (var i = 1; i < vertices; i++) {
-            magnitudes[i] = magnitudes[i - 1] + r * Math.pow(((seed.random() - 0.5) * 2), LAKE_ROUNDNES);
+            magnitudes[i] = magnitudes[i - 1] + LAKE_DIVIATION * r * Math.pow(((seed.random() - 0.5) * 2), LAKE_ROUNDNES);
         }
         var points = magnitudes.map((v, i) => Point.polarTransalte(p, Math.PI * 2 / vertices * i, v));
         this.lakes.push(new Polygon(this, points))
+    }
+    /**
+     * 
+     * @param {Number} width 
+     */
+    addRandomRiver(width) {
+
     }
     /**
      * @param {Seed} seed
@@ -153,6 +202,7 @@ class GameMap extends Region {
         return rv;
     }
 }
+// DRAW INSTRUCTIONS
 class DrawInstruction {
     /**
      * 
@@ -200,13 +250,44 @@ class Curve {
     constructor(parentRegion) {
         if (!parentRegion) throw new Error("Curve must have a parent region.");
     }
+    /**
+     * 
+     * @param {Point} point 
+     * @param {Number} radius 
+     * @returns {Boolean}
+     */
+    isWithin(point, radius) {
+        throw new Error("Can not call isWithin on unspecified curve.");
+    }
+}
+class Path extends Curve {
+    /**
+     * 
+     * @param {Region} parentRegion 
+     * @param {Array<Point>} points 
+     */
+    constructor(parentRegion, points) {
+        super(parentRegion);
+        this.points = points;
+        /**
+         * @type {Array<Curve>}
+         */
+        this.segments = [];
+    }
 }
 class Segment extends Curve {
+    /**
+     * 
+     * @param {Region} parentRegion 
+     * @param {Point} point1 
+     * @param {Point} point2 
+     */
     constructor(parentRegion, point1, point2) {
         super(parentRegion);
         if (!point1 || !point2) throw new Error("Segment must have two points.");
         this.a = point1;
         this.b = point2;
+        this.length = Math.pow(Math.pow(this.a.x - this.b.x, 2) + Math.pow(this.a.y - this.b.y, 2), 1 / 2);
     }
     /**
      * @param {Number} y
@@ -233,6 +314,74 @@ class Segment extends Curve {
         if (x < xMin || x > xMax) return;
         var r = (x - xMin) / (xMax - xMin);
         return yMin + (yMax - yMin) * r;
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @param {Number} radius 
+     * @returns {Boolean}
+     */
+    isWithin(point, radius) {
+
+    }
+    /**
+     * 
+     * @param {Segment} segment 
+     * @returns {Boolean}
+     */
+    intersects(segment) {
+        var l1 = new Line(this.parent, this.a, this.b);
+        var l2 = new Line(segment.parent, segment.a, segment.b);
+        if (!l1.intersects(l2)) return false;
+        //TODO
+    }
+
+}
+class Line extends Curve {
+    /**
+     *  
+     * @param {Region} parentRegion
+     * @param {Point} point1 
+     * @param {Point} point2 
+     */
+    constructor(parentRegion, point1, point2) {
+        super(parentRegion);
+        if (!point1 || !point2) throw new Error("Line must have two points.");
+        this.a = point1;
+        this.b = point2;
+    }
+    /**
+     * 
+     * @param {Number} x 
+     * @returns {Number} y
+     */
+    getYfromX(x) {
+        var yMax = Math.max(this.a.y, this.b.y);
+        var yMin = Math.min(this.a.y, this.b.y);
+        var xMax = Math.max(this.a.x, this.b.x);
+        var xMin = Math.min(this.a.x, this.b.x);
+        var r = (x - xMin) / (xMax - xMin);
+        return yMin + (yMax - yMin) * r;
+    }
+    /**
+     * @param {Number} y
+     * @returns {Number} x
+     */
+    getXfromY(y) {
+        var yMax = Math.max(this.a.y, this.b.y);
+        var yMin = Math.min(this.a.y, this.b.y);
+        var xMax = Math.max(this.a.x, this.b.x);
+        var xMin = Math.min(this.a.x, this.b.x);
+        var r = (y - yMin) / (yMax - yMin);
+        return xMin + (xMax - xMin) * r;
+    }
+    /**
+     * 
+     * @param {Line} line 
+     * @returns {Boolean}
+     */
+    intersects(line) {
+        return Math.round(Math.abs(this.a.x - this.b.x) / Math.abs(this.a.y - this.b.y) * 1e3) / 1e3 == Math.round(Math.abs(line.a.x - line.b.x) / Math.abs(line.a.y - line.b.y) * 1e3) / 1e3;
     }
 }
 // POINT

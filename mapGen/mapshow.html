@@ -33,7 +33,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawMap(input.map, input.fieldSize);
         drawInst(input.insts, input.fieldSize);
-        drawGrid(input.map, input.fieldSize)
+        // drawGrid(input.map, input.fieldSize)
         console.log(input.insts);
     }
 
@@ -52,6 +52,7 @@
         for (var i of insts) {
             switch (i.type) {
                 case "line": {
+                    console.log("l");
                     ctx.moveTo(i.a.x * rectSize, i.a.y * rectSize);
                     ctx.lineTo(i.b.x * rectSize, i.b.y * rectSize);
                     ctx.stroke();
