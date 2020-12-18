@@ -249,6 +249,7 @@ class Curve {
      */
     constructor(parentRegion) {
         if (!parentRegion) throw new Error("Curve must have a parent region.");
+        this.parent = parentRegion;
     }
     /**
      * 
@@ -333,7 +334,17 @@ class Segment extends Curve {
         var l1 = new Line(this.parent, this.a, this.b);
         var l2 = new Line(segment.parent, segment.a, segment.b);
         if (!l1.intersects(l2)) return false;
-        //TODO
+        if (l1.matches(l2)) return l1.isOn(l2.a) || l1.isOn(l2.b) || l2.isOn(l1.a) || l2.isOn(l1.b);
+        var intersect = l1.getIntersect(l2);
+        return l1.isOn(intersect) && l2.isOn(intersect);
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @return {Boolean}
+     */
+    isOn(point) {
+        return this.getYfromX(point.x) === point.y;
     }
 
 }
@@ -347,8 +358,8 @@ class Line extends Curve {
     constructor(parentRegion, point1, point2) {
         super(parentRegion);
         if (!point1 || !point2) throw new Error("Line must have two points.");
-        this.a = point1;
-        this.b = point2;
+        this.a = [point1, point2].find(v => v.x == Math.min(point1.x, point2.x));
+        this.b = [point1, point2].find(v => v.x == Math.max(point1.x, point2.x));
     }
     /**
      * 
@@ -381,7 +392,44 @@ class Line extends Curve {
      * @returns {Boolean}
      */
     intersects(line) {
-        return Math.round(Math.abs(this.a.x - this.b.x) / Math.abs(this.a.y - this.b.y) * 1e3) / 1e3 == Math.round(Math.abs(line.a.x - line.b.x) / Math.abs(line.a.y - line.b.y) * 1e3) / 1e3;
+        if (this.isOn(line.a)) return true;
+        return Math.round(Math.abs(this.a.x - this.b.x) / Math.abs(this.a.y - this.b.y) * 1e3) / 1e3 != Math.round(Math.abs(line.a.x - line.b.x) / Math.abs(line.a.y - line.b.y) * 1e3) / 1e3;
+    }
+    /**
+     * 
+     * @param {Line} line 
+     * @returns {Boolean}
+     */
+    matches(line) {
+        return Math.round(Math.abs(this.a.x - this.b.x) / Math.abs(this.a.y - this.b.y) * 1e3) / 1e3 == Math.round(Math.abs(line.a.x - line.b.x) / Math.abs(line.a.y - line.b.y) * 1e3) / 1e3 && this.isOn(line.a);
+    }
+    /**
+     * 
+     * @param {Line} line
+     * @returns {Point}
+     */
+    getIntersect(line) {
+        /**
+         * @type {Point} 
+         * @description Point directly above point a of line on this
+         */
+        var p1 = new Point(this.parent, line.a.x, this.getYfromX(line.a.x));
+        var slope1 = (this.b.y - this.a.y) / (this.b.x - this.a.x);
+        var slope2 = (line.b.y - line.a.y) / (line.b.x - line.a.x);
+        var slopeDiff = slope1 - slope2
+        var diff = p1.y - line.a.y;
+        var xDiff = diff/slopeDiff;
+        var x = line.a.x - xDiff;
+        var y = line.getYfromX(x);
+        return new Point(this.parent, x, y);
+    }
+    /**
+     * 
+     * @param {Point} point 
+     * @return {Boolean}
+     */
+    isOn(point) {
+        return this.getYfromX(point.x) === point.y;
     }
 }
 // POINT
