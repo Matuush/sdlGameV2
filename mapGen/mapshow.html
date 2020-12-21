@@ -1,21 +1,92 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <style>
-    tr {
-        margin: 0;
-    }
-    tc {
-        margin: 0;
+    * {
+        margin: 0
     }
 </style>
-<body>
-    <table id="main">
 
-    </table>
+<body>
+    <canvas id="myCanvas" width="1920" height="1080"></canvas>
+
 </body>
-    
+<script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    const socket = new WebSocket("ws://localhost:5050", "echo-protocol");
+    socket.addEventListener("open", () => {
+        console.log("Websocket open!");
+    })
+    socket.addEventListener("message", (ws) => {
+        console.log("Message!");
+        handleNewMapGenOutput(JSON.parse(ws.data));
+    });
+
+    function handleNewMapGenOutput(input) {
+        canvas.width = input.map.length * input.fieldSize;
+        canvas.height = input.map[0].length * input.fieldSize;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawMap(input.map, input.fieldSize);
+        drawInst(input.insts, input.fieldSize);
+        // drawGrid(input.map, input.fieldSize)
+        console.log(input.insts);
+    }
+
+    function drawMap(map, rectSize) {
+        for (var i = 0; i < map.length; i++) {
+            for (var j = 0; j < map[i].length; j++) {
+                ctx.beginPath();
+                ctx.rect(i * rectSize, j * rectSize, rectSize, rectSize);
+                ctx.fillStyle = ["gray", "blue", "brown", "green"][map[i][j]];
+                ctx.fill();
+            }
+        }
+    }
+
+    function drawInst(insts, rectSize) {
+        for (var i of insts) {
+            switch (i.type) {
+                case "line": {
+                    console.log("l");
+                    ctx.moveTo(i.a.x * rectSize, i.a.y * rectSize);
+                    ctx.lineTo(i.b.x * rectSize, i.b.y * rectSize);
+                    ctx.stroke();
+                    break;
+                }
+                case "point": {
+                    ctx.beginPath();
+                    ctx.arc(i.x * rectSize, i.y * rectSize, 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = "red";
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(i.x * rectSize, i.y * rectSize, 4, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    break;
+                }
+            }
+        }
+    }
+
+    function drawGrid(map, rectSize) {
+        for (var i = 1; i < map.length; i++) {
+            ctx.moveTo(i * rectSize, 0);
+            ctx.lineTo(i * rectSize, ctx.canvas.height);
+        }
+        for (var i = 1; i < map[0].length; i++) {
+            ctx.moveTo(0, i * rectSize);
+            ctx.lineTo(ctx.canvas.height, i * rectSize);
+        }
+        var prv = ctx.globalAlpha;
+        ctx.globalAlpha = 0.3;
+        ctx.stroke();
+        ctx.globalAlpha = prv;
+
+    }
+</script>
+
 </html>
