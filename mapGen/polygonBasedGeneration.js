@@ -3,6 +3,7 @@ const WATER = 1;
 const DIRT = 2;
 const BLANK = 0;
 const LAKE_ROUNDNES = 2;
+const jiriSmrdi = true;
 const seedrandom = require('seedrandom')
 /**
  * @param {String} seedString
@@ -16,7 +17,7 @@ module.exports = function Generate(seedString) {
         new Point(map, 3, 4),
         new Point(map, 4, 4),
     ]))
-    map.addRandomLake(100, 15, seed)
+    map.addRandomLake(690, 1925, seed)
     return map.toPixels();
 }
 // 2D
