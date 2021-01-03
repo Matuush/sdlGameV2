@@ -1,12 +1,21 @@
 #pragma once
 #include <string>
 
+const bool jiriSmrdi = 1;
+const bool jiriSeUmyl = 0;
+
 const std::string seed = "B";
 
+const char NOTHING = '0';
 const char nothingTexture[] = "textures/nothing.png";
+const char WATER = '1';
 const char waterTexture[] = "textures/water.png";
+const char DIRT = '2';
 const char dirtTexture[] = "textures/dirt.png";
+const char GRASS = '3';
 const char grassTexture[] = "textures/grass.png";
+
+const char playerTexture[] = "textures/player.png";
 
 const int FPS = 60;
 const int frameDelay = 1000 / FPS;

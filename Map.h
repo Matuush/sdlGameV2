@@ -1,20 +1,22 @@
 #pragma once
 #include <vector>
+#include <cmath>
+
 #include <SDL.h>
 
+#include "Entity.h"
 #include "RenderWindow.h"
-#include "Camera.h"
-#include "Tile.h"
+
 #include "Constants.h"
 
 class Map {
-private:
-	RenderWindow* window;
 public:
-	std::vector<std::vector<Tile>> tileMap;
+	RenderWindow* window;
+	std::vector<std::vector<Entity>> tileMap;
 
-	Map(RenderWindow* p_window);
+	Map() = default;
+	Map(RenderWindow* window);
 
-	void generateMap(std::string seed);
+	inline void generateMap();
 
 };

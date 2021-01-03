@@ -1,7 +1,6 @@
 #include "Entity.h"
-#include <SDL.h>
 
-Entity::Entity(float p_x, float p_y, SDL_Texture* p_tex) : x(p_x), y(p_y), tex(p_tex) {
+Entity::Entity(float p_x, float p_y, char p_id) : x(p_x), y(p_y), id(p_id) {
 	currentFrame.x = 0;
 	currentFrame.y = 0;
 	currentFrame.w = 32;
@@ -12,10 +11,17 @@ Entity::Entity(float p_x, float p_y, SDL_Texture* p_tex) : x(p_x), y(p_y), tex(p
 	collider.h = currentFrame.h;
 }
 
+void Entity::changeTextureID(char p_id) { id = p_id; }
+
 float Entity::getX() { return x; }
 
 float Entity::getY() { return y; }
 
-SDL_Texture* Entity::getTexture() { return tex; }
+void Entity::setPos(float p_x, float p_y) {
+	x = p_x;
+	y = p_y;
+}
+
+char Entity::getTextureID() { return id; }
 
 SDL_Rect* Entity::getCurrentFrame() { return &currentFrame; }
