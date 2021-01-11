@@ -69,7 +69,7 @@ void RenderWindow::render(std::vector<std::vector<Entity>>* map) {
 }
 
 void RenderWindow::freeRender(Button* p_entity) {
-	SDL_Rect dst{ (int)(p_entity->collider.x), (int)(p_entity->collider.y), p_entity->collider.w * SCALE, p_entity->collider.h * SCALE };
+	SDL_Rect dst{ (int)(p_entity->collider.x), (int)(p_entity->collider.y), p_entity->collider.w, p_entity->collider.h };
 	SDL_RenderCopy(renderer, textures[p_entity->getTextureID()], p_entity->getCurrentFrame(), &dst);
 
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, p_entity->text, color);

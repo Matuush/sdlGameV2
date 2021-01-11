@@ -1,30 +1,25 @@
 #include "UdpCom.h"
 
-UdpCom::UdpCom(char *ipT, int portT)
-{
-    ip = ipT;
-    port = portT;
+UdpCom::UdpCom(const char* ipT, int portT) : ip(ipT), port(portT){
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
+    inet_pton(AF_INET, ip, &server.sin_addr);
     out = socket(AF_INET, SOCK_DGRAM, 0);
 }
-UdpCom::close()
-{
-    closesocket(out);
+
+void UdpCom::send(const char* buf) {
+    std::string s(buf);
+    int temp = sendto(out, s.c_str(), s.size(), 0, (sockaddr*)&server, sizeof(server));
+    if(temp == SOCKET_ERROR) std::cout << "COCKET error\n";
 }
-UdpCom::start()
-{
+
+void UdpCom::start() {
     WORD version = MAKEWORD(2, 2);
     WSADATA data;
-    WSAStartup(version, &data);
+    int temp = WSAStartup(version, &data);
+    if (temp != 0) std::cout << "wincock error\n";
 }
-UdpCom::stop()
-{
-    WSACleanup();
-}
-UdpCom::send(char *buf)
-{
-    std::string s(buf);
-    sendto(out, s.c_str(), s.size() + 1, 0, (sockaddr*)&server, sizeof(server));
-}
+
+void UdpCom::stop() { WSACleanup(); }
+
+void UdpCom::close() { closesocket(out); }

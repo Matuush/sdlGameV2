@@ -5,10 +5,14 @@
 
 #include "Constants.h"
 
-struct Button : public Entity{
+struct Button : public Entity {
 	const char* text;
-	Button();
-	Button(int x, int y, const char* p_text);
+	bool clicked = 0;
+	char change;
 
-	void onClick();
+	Button() = default;
+	Button(int p_x, int p_y, const char* p_text, const char p_change);
+
+	void checkClick(SDL_Event* event);
+	void onClick(char* subject);
 };

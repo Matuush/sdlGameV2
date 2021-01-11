@@ -1,13 +1,31 @@
 #include "GameManager.h"
 
 Game::Game() {
+	UdpCom::start(); // Server
+	UdpCom com(ip, 80);
+
+	com.send("{ \"id\":\"da big chungus\" }");
+
 	loopType = MENU;
 
 	Map tempMap(window); // Map
 	map = tempMap;
 
+	// Players
 	Player player(10.0f, 10.0f, &map.tileMap);
-	players.push_back(player); // Player
+	players.push_back(player);
+
+	// Pause buttons
+	Button playButton(screenWidth / 4 - 200, screenHeight / 2 - 100, "play", LEVEL);
+	pauseButtons.push_back(playButton);
+	Button escapeButton(3 * screenWidth / 4 - 200, screenHeight / 2 - 100, "exit", ESCAPE);
+	pauseButtons.push_back(escapeButton);
+
+	// Menu buttons
+	Button playButton2(screenWidth / 4 - 200, screenHeight / 2 - 100, "play", LEVEL);
+	menuButtons.push_back(playButton2);
+	Button escapeButton2(3 * screenWidth / 4 - 200, screenHeight / 2 - 100, "exit", ESCAPE);
+	menuButtons.push_back(escapeButton2);
 }
 
 void Game::theLoop() {
@@ -22,17 +40,18 @@ void Game::theLoop() {
 }
 
 inline void Game::menu() {
-	SDL_Event menuEvent;
-	Button escapeButton(100, 100, "exit");
+	SDL_Event event;
 	while (loopType == MENU) {
-		while (SDL_PollEvent(&menuEvent)) {
-			if (menuEvent.type == SDL_QUIT || menuEvent.key.keysym.sym == SDLK_l) loopType = ESCAPE;
-			if (menuEvent.key.keysym.sym == SDLK_SPACE) loopType = LEVEL;
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT || (event.key.keysym.sym == SDLK_l && event.type == SDL_KEYDOWN)) { loopType = ESCAPE; std::cout << "based"; }
+			if (event.key.keysym.sym == SDLK_SPACE && event.type == SDL_KEYDOWN) loopType = LEVEL;
+			for (auto&& b : menuButtons) b.checkClick(&event);
 		}
+		for (auto&& b : menuButtons) b.onClick(&loopType);
 
 		window->clear(); // Clearing the screen
 
-		window->freeRender(&escapeButton);
+		for (auto&& b : menuButtons) window->freeRender(&b);
 
 		window->display(); // Display rendered stuff
 	}
@@ -41,21 +60,21 @@ inline void Game::menu() {
 inline void Game::level() {
 	// Level Generation
 
-	SDL_Event gameEvent;
+	SDL_Event event;
 	while (loopType == LEVEL) {
 		// Framerate handling
 		int frameStart = SDL_GetTicks();
 
 		// User input
-		while (SDL_PollEvent(&gameEvent)) {
-			if (gameEvent.type == SDL_QUIT) loopType = ESCAPE;
-			if (gameEvent.key.keysym.sym == SDLK_ESCAPE) {
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT) loopType = ESCAPE;
+			if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
 				for (auto&& p : players) p.stopMomentum();
 				loopType = PAUSE;
 				menu(); 
 			}
-			for (auto&& p : players) p.move(&gameEvent);
-			window->handleWindow(&gameEvent);
+			for (auto&& p : players) p.move(&event);
+			window->handleWindow(&event);
 		}
 
 		// Handle User input
@@ -89,17 +108,20 @@ inline void Game::level() {
 }
 
 void Game::pause() {
-	SDL_Event pauseEvent;
-	Button escapeButton(100, 100, "bottom text");
+	SDL_Event event;
 	while (loopType == PAUSE) {
-		while (SDL_PollEvent(&pauseEvent)) {
-			if (pauseEvent.type == SDL_QUIT || pauseEvent.key.keysym.sym == SDLK_l) loopType = ESCAPE;
-			if (pauseEvent.key.keysym.sym == SDLK_SPACE) loopType = LEVEL;
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT || (event.key.keysym.sym == SDLK_l && event.type == SDL_KEYDOWN)) loopType = ESCAPE;
+			if (event.key.keysym.sym == SDLK_SPACE && event.type == SDL_KEYDOWN) loopType = LEVEL;
+			for (auto&& b : pauseButtons) b.checkClick(&event);
 		}
+		for (auto&& b : pauseButtons) b.onClick(&loopType);
 
 		window->clear(); // Clearing the screen
 
-		window->freeRender(&escapeButton);
+		window->render(&map.tileMap);
+		for (auto&& p : players) window->render(&p);
+		for (auto&& b : pauseButtons) window->freeRender(&b);
 
 		window->display(); // Display rendered stuff
 	}
