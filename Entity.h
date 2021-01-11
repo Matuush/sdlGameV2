@@ -5,23 +5,21 @@
 
 class Entity {
 public:
-	SDL_Rect collider;
-
-	Entity() = default;
+	bool lastRight = 1;
+	Entity();
 	Entity(float p_x, float p_y, char p_id);
 
 	void changeTextureID(char p_id);
+	void setPos(float p_x, float p_y);
 
 	float getX();
 	float getY();
-
-	void setPos(float p_x, float p_y);
-
 	char getTextureID();
 	SDL_Rect* getCurrentFrame();
 
+	SDL_Rect collider;
 protected:
 	float x, y;
 	SDL_Rect currentFrame;
-	char id;
+	int textureID;
 };

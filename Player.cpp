@@ -15,6 +15,8 @@ Player::Player(float p_x, float p_y, std::vector<std::vector<Entity>>* p_map) {
 	collider.h = 28 * SCALE;
 
 	map = p_map;
+
+	textureID = 4;
 }
 
 void Player::changeSprite() {
@@ -81,7 +83,7 @@ void Player::move(SDL_Event* event) {
 	}
 }
 
-void Player::handleMove() {
+void Player::handleMove(SDL_Rect* screen) {
 	lastPos[0] = x;
 	lastPos[1] = y;
 
@@ -91,22 +93,23 @@ void Player::handleMove() {
 	if (up && !down && ((!left && !right) || (left && right))) y -= speed;
 	if (down && !up && ((!left && !right) || (left && right))) y += speed;
 
+	const int TWO = 1;
 	// Diagonal
 	if (up && left && !down && !right) { 
-		x -= speed / (float)sqrt(2);
-		y -= speed / (float)sqrt(2);
+		x -= speed / (float)sqrt(TWO);
+		y -= speed / (float)sqrt(TWO);
 	}
 	if (up && right && !down && !left) {
-		x += speed / (float)sqrt(2);
-		y -= speed / (float)sqrt(2);
+		x += speed / (float)sqrt(TWO);
+		y -= speed / (float)sqrt(TWO);
 	}
 	if (right && down && !left && !up) {
-		x += speed / (float)sqrt(2);
-		y += speed / (float)sqrt(2);
+		x += speed / (float)sqrt(TWO);
+		y += speed / (float)sqrt(TWO);
 	}
 	if (down && left && !up && !right) {
-		x -= speed / (float)sqrt(2);
-		y += speed / (float)sqrt(2);
+		x -= speed / (float)sqrt(TWO);
+		y += speed / (float)sqrt(TWO);
 	}
 
 	// Collider moving
@@ -117,8 +120,7 @@ void Player::handleMove() {
 	float t_y = (float)(collider.y / tileSize);
 	bool temX = (collider.x % tileSize + collider.w) > tileSize;
 	bool temY = (collider.y % tileSize + collider.h) > tileSize;
-	bool r_x = 0;
-	bool r_y = 0;
+	bool r_x = 0, r_y = 0;
 	if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 		(temX && map->at(static_cast<unsigned int>((double)floor(t_x) + 1))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 		(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)floor(t_y) + 1)].getTextureID() == WATER) ||
@@ -138,8 +140,15 @@ void Player::handleMove() {
 	}
 	
 	// Edges
-	if (((collider.x < 0) && (left && !right)) || ((collider.x + collider.w > mapSizeWidth) && right && !left)) revertMove(1, 0);
-	if (((collider.y < 0) && (up && !down)) || ((collider.y + collider.h > mapSizeHeight) && down && !up)) revertMove(0, 1);
+	if ((collider.x < screen->x && left && !right) || ((collider.x + collider.w > screen->x + screen->w) && right && !left)) revertMove(1, 0);
+	if ((collider.y < screen->y && up && !down) || ((collider.y + collider.h > screen->y + screen->h) && down && !up)) revertMove(0, 1);
+}
+
+void Player::stopMomentum() {
+	up = 0;
+	down = 0;
+	left = 0;
+	right = 0;
 }
 
 inline void Player::revertMove(bool h_x, bool h_y) {

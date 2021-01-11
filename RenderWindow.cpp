@@ -9,33 +9,23 @@ RenderWindow::RenderWindow(Camera* p_cam) :window(NULL), renderer(NULL), cam(p_c
 
 	if(bordered == 0) SDL_SetWindowBordered(window, SDL_FALSE);
 
-	nothing = loadTexture(nothingTexture);
-	water = loadTexture(waterTexture);
-	dirt = loadTexture(dirtTexture);
-	grass = loadTexture(grassTexture);
-	playerTex = loadTexture(playerTexture);
+	textures.push_back(loadTexture(nothingTexture)); // 0
+	textures.push_back(loadTexture(waterTexture)); // 1
+	textures.push_back(loadTexture(dirtTexture)); // 2
+	textures.push_back(loadTexture(grassTexture)); // 3
+	textures.push_back(loadTexture(playerTexture)); // 4
+
+	TTF_Init();
+
+	sans = TTF_OpenFont("textures/Sans.ttf", 24);
+	color = { 0, 0, 0 };
 }
 
-SDL_Texture* RenderWindow::loadTexture(const char* path) {
+inline SDL_Texture* RenderWindow::loadTexture(const char* path) {
 	SDL_Texture* texture = NULL;
 	texture = IMG_LoadTexture(renderer, path);
 	if (texture == NULL) std::cout << "Failed to load texture. Error: " << SDL_GetError() << std::endl;
 	return texture;
-}
-
-inline SDL_Texture* RenderWindow::getTexture(char id) {
-	switch (id) {
-	case NOTHING:
-		return nothing;
-	case WATER:
-		return water;
-	case DIRT:
-		return dirt;
-	case GRASS:
-		return grass;
-	default:
-		return nothing;
-	}
 }
 
 void RenderWindow::handleWindow(SDL_Event* event) {
@@ -67,18 +57,25 @@ void RenderWindow::display() { SDL_RenderPresent(renderer); }
 void RenderWindow::destroy() { SDL_DestroyWindow(window); }
 
 void RenderWindow::render(Entity* p_entity) {
-	SDL_Rect dst{ (int)(p_entity->getX() - cam->x), (int)(p_entity->getY() - cam->y), p_entity->getCurrentFrame()->w * SCALE, p_entity->getCurrentFrame()->h * 4};
-		SDL_RenderCopy(renderer, getTexture(p_entity->getTextureID()), p_entity->getCurrentFrame(), &dst);
-}
+	SDL_Rect dst{ (int)(p_entity->getX() - cam->x), (int)(p_entity->getY() - cam->y), p_entity->getCurrentFrame()->w * SCALE, p_entity->getCurrentFrame()->h * SCALE };
 
-void RenderWindow::render(Player* p_entity, bool lastRight) {
-	SDL_Rect dst{ (int)(p_entity->getX() - cam->x), (int)(p_entity->getY() - cam->y), p_entity->getCurrentFrame()->w * SCALE, p_entity->getCurrentFrame()->h * 4 };
-
-	if(!lastRight) SDL_RenderCopyEx(renderer, playerTex, p_entity->getCurrentFrame(), &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
-	else if(lastRight) SDL_RenderCopy(renderer, playerTex, p_entity->getCurrentFrame(), &dst);
+	if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, textures[p_entity->getTextureID()], p_entity->getCurrentFrame(), &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+	else if (p_entity->lastRight) SDL_RenderCopy(renderer, textures[p_entity->getTextureID()], p_entity->getCurrentFrame(), &dst);
 }
 
 void RenderWindow::render(std::vector<std::vector<Entity>>* map) {
 	for(std::vector<Entity> row : *map)
 		for (Entity tile : row) render(&tile);
+}
+
+void RenderWindow::freeRender(Button* p_entity) {
+	SDL_Rect dst{ (int)(p_entity->collider.x), (int)(p_entity->collider.y), p_entity->collider.w * SCALE, p_entity->collider.h * SCALE };
+	SDL_RenderCopy(renderer, textures[p_entity->getTextureID()], p_entity->getCurrentFrame(), &dst);
+
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, p_entity->text, color);
+	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+	SDL_FreeSurface(surfaceMessage);
+
+	SDL_RenderCopy(renderer, message, NULL, &dst);
+	SDL_DestroyTexture(message);
 }

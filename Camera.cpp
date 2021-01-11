@@ -8,29 +8,31 @@ Camera::Camera(){
 }
 
 void Camera::move(Player* player) {
-	const float walkBorderRight = (float)0.875;
-	const float walkBorderDown = (float)0.75;
-	const float walkBorderLeft = (float)0.045;
-	const float walkBorderUp = (float)0.2;
+	const float walkBorderPlus = (float)0.75;
+	const float walkBorderMinus = (float)0.25;
 
-	if ((float)(x + screenWidth * walkBorderRight) < player->getX() + player->collider.w) {
-		if ((player->getX() + (float)(player->collider.w - screenWidth * walkBorderRight)) <= screenWidth * (screenMapRatio - 1)) {
-			x = (float)(player->getX() + player->collider.w - screenWidth * walkBorderRight);
+	// Right
+	if ((float)(x + screenWidth * walkBorderPlus) < player->getX()) {
+		if ((player->getX() - (float)(screenWidth * walkBorderPlus)) <= screenWidth * (screenMapRatio - 1)) {
+			x = (float)(player->getX() - screenWidth * walkBorderPlus);
 		}
 	}
-	if ((float)(y + screenHeight * walkBorderDown) < player->getY() + player->collider.h) {
-		if ((player->getY() + (float)(player->collider.h - screenHeight * walkBorderDown)) <= screenHeight * (screenMapRatio - 1)) {
-			y = (float)(player->getY() + player->collider.h - screenHeight * walkBorderDown);
+	// Down
+	if ((float)(y + screenHeight * walkBorderPlus) < player->getY() + (float)(1.5 * player->collider.h)) {
+		if ((player->getY() + (float)((float)(1.5 * player->collider.h) - screenHeight * walkBorderPlus)) <= screenHeight * (screenMapRatio - 1)) {
+			y = (float)(player->getY() + (float)(1.5 * player->collider.h) - screenHeight * walkBorderPlus);
 		}
 	}
-	if ((float)(x + screenWidth * walkBorderLeft) > player->getX() + player->collider.w) {
-		if ((player->getX() + (float)(player->collider.w - screenWidth * walkBorderLeft)) >= 0) {
-			x = (float)(player->getX() + player->collider.w - screenWidth * walkBorderLeft);
+	//Left
+	if ((float)(x + screenWidth * walkBorderMinus) > player->getX() + 4 * player->collider.w) {
+		if ((player->getX() + (float)(4 * player->collider.w - screenWidth * walkBorderMinus)) >= 0) {
+			x = (float)(player->getX() + 4 * player->collider.w - screenWidth * walkBorderMinus);
 		}
 	}
-	if ((float)(y + screenHeight * walkBorderUp) > player->getY() + player->collider.h) {
-		if ((player->getY() + (float)(player->collider.h - screenHeight * walkBorderUp)) >= 0) {
-			y = (float)(player->getY() + player->collider.h - screenHeight * walkBorderUp);
+	// Up
+	if ((float)(y + screenHeight * walkBorderMinus) > player->getY() + player->collider.h) {
+		if ((player->getY() + (float)(player->collider.h - screenHeight * walkBorderMinus)) >= 0) {
+			y = (float)(player->getY() + player->collider.h - screenHeight * walkBorderMinus);
 		}
 	}
 

@@ -11,7 +11,7 @@
 
 class Map {
 public:
-	RenderWindow* window;
+	RenderWindow* window = NULL;
 	std::vector<std::vector<Entity>> tileMap;
 
 	Map() = default;
