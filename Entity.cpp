@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(float p_x, float p_y, char p_id) : x(p_x), y(p_y), textureID(p_id) {
+Entity::Entity(float p_x, float p_y, const int p_id) : x(p_x), y(p_y), textureID(p_id) {
 	currentFrame.x = 0;
 	currentFrame.y = 0;
 	currentFrame.w = 32;
@@ -11,7 +11,18 @@ Entity::Entity(float p_x, float p_y, char p_id) : x(p_x), y(p_y), textureID(p_id
 	collider.h = currentFrame.h;
 }
 
-Entity::Entity() : x(100), y(100), textureID(0) {
+Entity::Entity(float p_x, float p_y, const int p_id, int p_w, int p_h) : x(p_x), y(p_y), textureID(p_id) {
+	currentFrame.x = 0;
+	currentFrame.y = 0;
+	currentFrame.w = p_w;
+	currentFrame.h = p_h;
+	collider.x = (int)x;
+	collider.y = (int)y;
+	collider.w = p_w;
+	collider.h = p_h;
+}
+
+Entity::Entity() : x(100), y(100), textureID(NOTHING) {
 	currentFrame.x = 0;
 	currentFrame.y = 0;
 	currentFrame.w = 32;
@@ -22,7 +33,7 @@ Entity::Entity() : x(100), y(100), textureID(0) {
 	collider.h = currentFrame.h;
 }
 
-void Entity::changeTextureID(char p_id) { textureID = p_id; }
+void Entity::changeTextureID(const int p_id) { textureID = p_id; }
 
 float Entity::getX() { return x; }
 

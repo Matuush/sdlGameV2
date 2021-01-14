@@ -25,7 +25,7 @@ void Player::changeSprite() {
 		currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * 64;
 	}
 	else {
-		int tick = (SDL_GetTicks() / (500 / (int)speed)) % 6;
+		int tick = (int)(SDL_GetTicks() / (500 / speed)) % 6;
 		if (tick != 5) {
 			currentFrame.y = 0;
 			currentFrame.x = tick * 64;
@@ -83,6 +83,14 @@ void Player::move(SDL_Event* event) {
 	}
 }
 
+unsigned int ceiling(double num) {
+	double f = floor(num);
+	if (num == f) {
+			return f;
+	}
+	return f + 1;
+}
+
 void Player::handleMove(SDL_Rect* screen) {
 	lastPos[0] = x;
 	lastPos[1] = y;
@@ -116,28 +124,30 @@ void Player::handleMove(SDL_Rect* screen) {
 	moveCollider();
 
 	// AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH DNT
-	float t_x = (float)(collider.x / tileSize);
-	float t_y = (float)(collider.y / tileSize);
-	bool temX = (collider.x % tileSize + collider.w) > tileSize;
-	bool temY = (collider.y % tileSize + collider.h) > tileSize;
-	bool r_x = 0, r_y = 0;
-	if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
-		(temX && map->at(static_cast<unsigned int>((double)floor(t_x) + 1))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
-		(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)floor(t_y) + 1)].getTextureID() == WATER) ||
-		(temX && temY && map->at(static_cast<unsigned int>((double)floor(t_x) + 1))[static_cast<unsigned int>((double)floor(t_y) + 1)].getTextureID() == WATER)) {
-		t_x = (float)(lastPos[0] + 24 * SCALE) / tileSize;
+	//if ((collider.x >= 0) && (collider.x + collider.w >= mapSizeWidth) && (collider.y >= 0 && collider.y) && (collider.h >= mapSizeHeight)) {
+		double t_x = (double)((double)collider.x / (double)tileSize);
+		double t_y = (double)((double)collider.y / (double)tileSize);
+		bool temX = (collider.x % tileSize + collider.w) >= tileSize;
+		bool temY = (collider.y % tileSize + collider.h) >= tileSize;
+		bool r_x = 0, r_y = 0;
 		if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
-			(temX && map->at(static_cast<unsigned int>((double)floor(t_x) + 1))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
-			(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)floor(t_y) + 1)].getTextureID() == WATER) ||
-			(temX && temY && map->at(static_cast<unsigned int>((double)floor(t_x) + 1))[static_cast<unsigned int>((double)floor(t_y) + 1)].getTextureID() == WATER)) r_y = 1;
-		t_x = (float)(collider.x / tileSize);
-		t_y = (float)(lastPos[1] + 22 * SCALE) / tileSize;
-		if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
-			(temX && map->at(static_cast<unsigned int>((double)floor(t_x) + 1))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
-			(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)floor(t_y) + 1)].getTextureID() == WATER) ||
-			(temX && temY && map->at(static_cast<unsigned int>((double)floor(t_x) + 1))[static_cast<unsigned int>((double)floor(t_y) + 1)].getTextureID() == WATER)) r_x = 1;
-		return revertMove(r_x, r_y);
-	}
+			(temX && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
+			(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER) ||
+			(temX && temY && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER)) {
+			t_x = (double)((double)((double)lastPos[0] + (double)24 * (double)SCALE) / (double)tileSize);
+			if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
+				(temX && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
+				(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER) ||
+				(temX && temY && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER)) r_y = 1;
+			t_x = (double)((double)collider.x / (double)tileSize);
+			t_y = (double)((double)((double)lastPos[1] + (double)22 * (double)SCALE) / (double)tileSize);
+			if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
+				(temX && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
+				(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER) ||
+				(temX && temY && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER)) r_x = 1;
+			return revertMove(r_x, r_y);
+		}
+	//}
 	
 	// Edges
 	if ((collider.x < screen->x && left && !right) || ((collider.x + collider.w > screen->x + screen->w) && right && !left)) revertMove(1, 0);

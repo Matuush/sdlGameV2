@@ -11,6 +11,10 @@ const char MENU = 1;
 const char LEVEL = 2;
 const char PAUSE = 3;
 
+// Bordered
+const char BORDERLESS = 0;
+const char BORDERED = 1;
+
 // Seeds
 const std::string seed = "B";
 
@@ -25,6 +29,14 @@ const int GRASS = 3;
 const char grassTexture[] = "textures/grass.png";
 const int PLAYER = 4;
 const char playerTexture[] = "textures/player.png";
+const int BUTTON = 5;
+const char buttonTexture[] = "textures/button.png";
+
+// Background
+const int BACKGROUND = 6;
+const char backgroundTexture[] = "textures/background.png";
+// const int BACKGROUND_WIDTH = 476;
+// const int BACKGROUND_HEIGHT = 414;
 
 // FPS Handling
 const int FPS = 60;
@@ -46,4 +58,4 @@ const int mapSizeWidth = mapTileCountWidth * tileSize;
 const int mapSizeHeight = mapTileCountHeight * tileSize;
 
 // Player attributes
-const float speed = 5;
+const float speed = 1.5 * SCALE;

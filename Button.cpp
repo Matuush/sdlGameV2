@@ -2,32 +2,39 @@
 
 #include <iostream>
 
-Button::Button(int p_x, int p_y, const char* p_text, const char p_change) : text(p_text), change(p_change){
+Button::Button(int p_x, int p_y, const char* p_text, std::function<void()> p_efect) : text(p_text), efect(p_efect){
+	font = TTF_OpenFont("textures/Sans.ttf", 24);
+	color = {0, 0, 0};
+
 	collider.x = p_x;
 	collider.y = p_y;
-	collider.w = 400;
-	collider.h = 200;
+	collider.w = tileSize * 4;
+	collider.h = tileSize * 2;
 
-	currentFrame.x = 1;
-	currentFrame.y = 1;
-	currentFrame.w = 2;
-	currentFrame.h = 1;
+	currentFrame.x = 0;
+	currentFrame.y = 0;
+	currentFrame.w = 64;
+	currentFrame.h = 32;
 
+	textureID = 5;
 }
 
 void Button::checkClick(SDL_Event* event) {
 	if ((event->button.x > collider.x) && (event->button.x < collider.x + collider.w) &&
-		(event->button.y > collider.y) && (event->button.y < collider.y + collider.h) &&
-		(event->type == SDL_MOUSEBUTTONUP)) {
-		if(event->button.button == SDL_BUTTON_LEFT) clicked = 1;
+		(event->button.y > collider.y) && (event->button.y < collider.y + collider.h)) {
+		color = { 50, 50, 50 };
+		currentFrame.y = 32;
+		if (event->button.button == SDL_BUTTON_LEFT && event->type == SDL_MOUSEBUTTONDOWN) { clicked = 1; }
+	}
+	else {
+		color = { 0, 0, 0 };
+		currentFrame.y = 0;
 	}
 }
 
-void Button::onClick(char *subject) {
+void Button::onClick() {
 	if (clicked) {
-		std::cout << "h\n";
-		*subject = change;
-
+		efect();
 		clicked = 0;
 	}
 }

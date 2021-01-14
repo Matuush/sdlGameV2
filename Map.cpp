@@ -19,6 +19,10 @@ inline void Map::generateMap() {
 	}
 	tileMap[5][5].changeTextureID(WATER);
 	tileMap[4][4].changeTextureID(WATER);
+	tileMap[9][9].changeTextureID(GRASS);
+	tileMap[9][10].changeTextureID(GRASS);
+	tileMap[10][9].changeTextureID(GRASS);
+	tileMap[10][10].changeTextureID(GRASS);
 
 	const int waterVolume = (mapTileCountWidth * mapTileCountHeight) / 10; // How much water
 

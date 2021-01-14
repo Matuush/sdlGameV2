@@ -7,9 +7,10 @@ class Entity {
 public:
 	bool lastRight = 1;
 	Entity();
-	Entity(float p_x, float p_y, char p_id);
+	Entity(float p_x, float p_y, const int p_id);
+	Entity(float p_x, float p_y, const int p_id, int p_w, int p_h);
 
-	void changeTextureID(char p_id);
+	void changeTextureID(const int p_id);
 	void setPos(float p_x, float p_y);
 
 	float getX();

@@ -23,12 +23,13 @@ private:
 
 	std::vector<Button> menuButtons;
 	std::vector<Button> pauseButtons;
+	Entity* background = new Entity(0, 0, BACKGROUND);
 
 	std::vector<Player> players;
-	
-	char loopType;
 
 public:
+	static char loopType;
+
 	Game();
 
 	void theLoop();
