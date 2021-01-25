@@ -5,17 +5,21 @@
 const bool jiriSmrdi = 1;
 const bool jiriSeUmyl = 0;
 
-// Loop Types
+// Loop types
 const char ESCAPE = 0;
 const char MENU = 1;
 const char LEVEL = 2;
 const char PAUSE = 3;
 
-// Bordered
+// Window types
 const char BORDERLESS = 0;
 const char BORDERED = 1;
+const char FULLSCREEN = 2;
 
-// Seeds
+// GUI
+const char TITLE[] = "SDL Moment";
+
+// Seed
 const std::string seed = "B";
 
 // Textures
@@ -31,12 +35,8 @@ const int PLAYER = 4;
 const char playerTexture[] = "textures/player.png";
 const int BUTTON = 5;
 const char buttonTexture[] = "textures/button.png";
-
-// Background
 const int BACKGROUND = 6;
 const char backgroundTexture[] = "textures/background.png";
-// const int BACKGROUND_WIDTH = 476;
-// const int BACKGROUND_HEIGHT = 414;
 
 // FPS Handling
 const int FPS = 60;
@@ -56,6 +56,12 @@ const int screenWidth = screenTileCountWidth * tileSize;
 const int screenHeight = screenTileCountHeight * tileSize;
 const int mapSizeWidth = mapTileCountWidth * tileSize;
 const int mapSizeHeight = mapTileCountHeight * tileSize;
+const int buttonHeight = tileSize * 2;
+const int buttonWidth = buttonHeight * 2;
 
 // Player attributes
-const float speed = 1.5 * SCALE;
+const float SPEED = 1.5 * SCALE;
+const int playerHitboxDistanceX = 24;
+const int playerHitboxDistanceY = 22;
+const int playerHitboxWidth = 16;
+const int playerHitboxHeight = 28;

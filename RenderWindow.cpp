@@ -1,15 +1,14 @@
 #include "RenderWindow.h"
 
 bool RenderWindow::paused = 0;
-bool RenderWindow::bordered = 0;
+bool RenderWindow::windowType = 1;
 RenderWindow::RenderWindow(Camera* p_cam) :window(NULL), renderer(NULL), cam(p_cam){
-	window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 
 	if (window == NULL) std::cout << "Window failed to init. Error: " << SDL_GetError() << std::endl;
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-	if(bordered == 0) SDL_SetWindowBordered(window, SDL_FALSE);
+	SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 
 	textures.push_back(loadTexture(nothingTexture)); // 0
 	textures.push_back(loadTexture(waterTexture)); // 1
@@ -20,8 +19,6 @@ RenderWindow::RenderWindow(Camera* p_cam) :window(NULL), renderer(NULL), cam(p_c
 	textures.push_back(loadTexture(backgroundTexture)); // 6
 
 	TTF_Init();
-
-	SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 }
 
 inline SDL_Texture* RenderWindow::loadTexture(const char* path) {
@@ -32,22 +29,10 @@ inline SDL_Texture* RenderWindow::loadTexture(const char* path) {
 }
 
 void RenderWindow::handleWindow() {
-		if (bordered == BORDERLESS) SDL_SetWindowBordered(window, SDL_FALSE);
-		else if(bordered == BORDERED)SDL_SetWindowBordered(window, SDL_TRUE);
-
-	/* if (event->key.keysym.sym == SDLK_o && event->type == SDL_KEYDOWN) {
-		if (fullScreen) {
-			SDL_SetWindowFullscreen(window, SDL_FALSE);
-		}
-		else {
-			if (bordered) {
-				SDL_SetWindowBordered(window, SDL_FALSE);
-				bordered = !bordered;
-			}
-			SDL_SetWindowFullscreen(window, SDL_TRUE);
-		}
-		fullScreen = !fullScreen;
-	} */
+	if (windowType == FULLSCREEN) SDL_SetWindowFullscreen(window, SDL_TRUE);
+	else SDL_SetWindowFullscreen(window, SDL_FALSE);
+	if (windowType == BORDERLESS) SDL_SetWindowBordered(window, SDL_FALSE);
+	else if (windowType == BORDERED) SDL_SetWindowBordered(window, SDL_TRUE);
 }
 
 void RenderWindow::clear() { SDL_RenderClear(renderer); }
@@ -74,7 +59,7 @@ void RenderWindow::render(std::vector<std::vector<Entity>>* map) {
 
 void RenderWindow::freeRender(Button* p_entity) {
 	SDL_Rect dst{ (int)(p_entity->collider.x), (int)(p_entity->collider.y), p_entity->collider.w, p_entity->collider.h };
-	SDL_RenderCopy(renderer, textures[p_entity->getTextureID()], p_entity->getCurrentFrame(), &dst);
+	SDL_RenderCopy(renderer, textures[p_entity->getTextureID()], /*p_entity->getCurrentFrame()*/ NULL, &dst);
 
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(p_entity->font, p_entity->text, p_entity->color);
 	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);

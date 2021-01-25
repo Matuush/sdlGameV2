@@ -8,8 +8,8 @@ Button::Button(int p_x, int p_y, const char* p_text, std::function<void()> p_efe
 
 	collider.x = p_x;
 	collider.y = p_y;
-	collider.w = tileSize * 4;
-	collider.h = tileSize * 2;
+	collider.w = buttonWidth;
+	collider.h = buttonHeight;
 
 	currentFrame.x = 0;
 	currentFrame.y = 0;
@@ -33,7 +33,7 @@ void Button::checkClick(SDL_Event* event) {
 }
 
 void Button::onClick() {
-	if (clicked) {
+	if (clicked) { // Fortnite
 		efect();
 		clicked = 0;
 	}

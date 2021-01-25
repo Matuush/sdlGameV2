@@ -13,9 +13,7 @@
 #include "Constants.h"
 
 struct RenderWindow {
-	const char* title = "SDL Moment";
-	/*bool  fullScreen = 0,*/ 
-	static bool paused, bordered;
+	static bool paused, windowType;
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;

@@ -9,8 +9,7 @@
 
 #include "Constants.h"
 
-class Map {
-public:
+struct Map {
 	RenderWindow* window = NULL;
 	std::vector<std::vector<Entity>> tileMap;
 

@@ -1,14 +1,7 @@
 #include "GameManager.h"
+#include <windows.h>
 
 char Game::loopType = MENU;
-
-void temp1() { Game::loopType = LEVEL; }
-
-void temp2() { Game::loopType = ESCAPE; }
-
-void temp3() { Game::loopType = MENU; }
-
-void temp4() { RenderWindow::bordered = !RenderWindow::bordered; };
 
 Game::Game() {
 	UdpCom::start(); // Server
@@ -21,8 +14,8 @@ Game::Game() {
 
 	// Players
 	Player player(10.0f, 10.0f, &map.tileMap);
-	players.push_back(player);/*
-	Player player2(50.0f, 50.0f, &map.tileMap);
+	players.push_back(player);
+	/*Player player2(50.0f, 50.0f, &map.tileMap);
 	players.push_back(player2);
 	Player player3(90.0f, 90.0f, &map.tileMap);
 	players.push_back(player3);
@@ -34,19 +27,25 @@ Game::Game() {
 	players.push_back(player6);*/
 
 	// Buttons
-	Button playButton(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "play", temp1);
+	Button playButton(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "play", [&]() { Game::loopType = LEVEL; });
 	menuButtons.push_back(playButton);
-	Button escapeButton(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "exit", temp2);
+	Button escapeButton(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "exit", [&]() { Game::loopType = ESCAPE; });
 	menuButtons.push_back(escapeButton);
-	Button borderedButton(screenWidth - 700, 50, "fortnite", temp4);
-	menuButtons.push_back(borderedButton);
+	Button fortniteButton(screenWidth - 700, 50, "fortnite", [&]() { Game::loopType = LEVEL; });
+	menuButtons.push_back(fortniteButton);
 
-	Button resumeButton(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "resume", temp1);
+	Button resumeButton(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "resume", [&]() { Game::loopType = LEVEL; });
 	pauseButtons.push_back(resumeButton);
-	Button menuButton(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "menu", temp3);
+	Button menuButton(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "menu", [&]() { Game::loopType = MENU; });
 	pauseButtons.push_back(menuButton);
-	Button borderedButtonp(screenWidth - 700, 50, "fortnite", temp4);
+	Button fortniteButtonp(screenWidth - 700, 50, "fortnite", [&]() { system("\"D:/Program Files/Games/Epic Games/Fortnite/FortniteGame/Binaries/Win64/FortniteClient-Win64-Shipping\""); });
+	pauseButtons.push_back(fortniteButtonp);
+	Button borderedButtonp(screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50, "bordered", [&]() { RenderWindow::windowType = BORDERED; });
 	pauseButtons.push_back(borderedButtonp);
+	Button borderlessButtonp(screenWidth / 2 - buttonWidth, screenHeight - buttonHeight - 50, "borderless", [&]() { RenderWindow::windowType = BORDERLESS; });
+	pauseButtons.push_back(borderlessButtonp);
+	Button fullscreenButtonp(3 * screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50, "fullscreen", [&]() { RenderWindow::windowType = FULLSCREEN; });
+	pauseButtons.push_back(fullscreenButtonp);
 
 }
 

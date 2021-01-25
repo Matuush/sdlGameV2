@@ -11,8 +11,8 @@ Player::Player(float p_x, float p_y, std::vector<std::vector<Entity>>* p_map) {
 	currentFrame.h = 64;
 
 	moveCollider();
-	collider.w = 16 * SCALE;
-	collider.h = 28 * SCALE;
+	collider.w = playerHitboxWidth * SCALE;
+	collider.h = playerHitboxHeight * SCALE;
 
 	map = p_map;
 
@@ -25,7 +25,7 @@ void Player::changeSprite() {
 		currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * 64;
 	}
 	else {
-		int tick = (int)(SDL_GetTicks() / (500 / speed)) % 6;
+		int tick = (int)(SDL_GetTicks() / (500 / SPEED)) % 6;
 		if (tick != 5) {
 			currentFrame.y = 0;
 			currentFrame.x = tick * 64;
@@ -38,8 +38,8 @@ void Player::changeSprite() {
 }
 
 inline void Player::moveCollider() {
-	collider.x = (int)x + 24 * SCALE;
-	collider.y = (int)y + 22 * SCALE;
+	collider.x = (int)x + playerHitboxDistanceX * SCALE;
+	collider.y = (int)y + playerHitboxDistanceY * SCALE;
 }
 
 void Player::move(SDL_Event* event) {
@@ -85,10 +85,8 @@ void Player::move(SDL_Event* event) {
 
 unsigned int ceiling(double num) {
 	double f = floor(num);
-	if (num == f) {
-			return f;
-	}
-	return f + 1;
+	if (num == f) return static_cast<unsigned int>(f);
+	return static_cast<unsigned int>(f + 1);
 }
 
 void Player::handleMove(SDL_Rect* screen) {
@@ -96,58 +94,59 @@ void Player::handleMove(SDL_Rect* screen) {
 	lastPos[1] = y;
 
 	// Straight
-	if (left && !right && ((!up && !down) || (up && down))) x -= speed;
-	if (right && !left && ((!up && !down) || (up && down))) x += speed;
-	if (up && !down && ((!left && !right) || (left && right))) y -= speed;
-	if (down && !up && ((!left && !right) || (left && right))) y += speed;
+	if (left && !right && ((!up && !down) || (up && down))) x -= SPEED;
+	if (right && !left && ((!up && !down) || (up && down))) x += SPEED;
+	if (up && !down && ((!left && !right) || (left && right))) y -= SPEED;
+	if (down && !up && ((!left && !right) || (left && right))) y += SPEED;
 
 	const int TWO = 1;
 	// Diagonal
 	if (up && left && !down && !right) { 
-		x -= speed / (float)sqrt(TWO);
-		y -= speed / (float)sqrt(TWO);
+		x -= SPEED / (float)sqrt(TWO);
+		y -= SPEED / (float)sqrt(TWO);
 	}
 	if (up && right && !down && !left) {
-		x += speed / (float)sqrt(TWO);
-		y -= speed / (float)sqrt(TWO);
+		x += SPEED / (float)sqrt(TWO);
+		y -= SPEED / (float)sqrt(TWO);
 	}
 	if (right && down && !left && !up) {
-		x += speed / (float)sqrt(TWO);
-		y += speed / (float)sqrt(TWO);
+		x += SPEED / (float)sqrt(TWO);
+		y += SPEED / (float)sqrt(TWO);
 	}
 	if (down && left && !up && !right) {
-		x -= speed / (float)sqrt(TWO);
-		y += speed / (float)sqrt(TWO);
+		x -= SPEED / (float)sqrt(TWO);
+		y += SPEED / (float)sqrt(TWO);
 	}
 
 	// Collider moving
 	moveCollider();
 
 	// AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH DNT
-	//if ((collider.x >= 0) && (collider.x + collider.w >= mapSizeWidth) && (collider.y >= 0 && collider.y) && (collider.h >= mapSizeHeight)) {
 		double t_x = (double)((double)collider.x / (double)tileSize);
 		double t_y = (double)((double)collider.y / (double)tileSize);
 		bool temX = (collider.x % tileSize + collider.w) >= tileSize;
 		bool temY = (collider.y % tileSize + collider.h) >= tileSize;
 		bool r_x = 0, r_y = 0;
+		if ((floor(t_x) <= (double)(mapTileCountWidth - 1)) && (floor(t_x) >= 0) && (ceiling(t_x) <= mapTileCountWidth - 1) && (ceiling(t_x) >= 0) && 
+			(floor(t_y) <= (double)(mapTileCountHeight - 1)) && (floor(t_y) >= 0) && (ceiling(t_y) <= mapTileCountHeight - 1) && (ceiling(t_y) >= 0)) {
 		if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 			(temX && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 			(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER) ||
 			(temX && temY && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER)) {
-			t_x = (double)((double)((double)lastPos[0] + (double)24 * (double)SCALE) / (double)tileSize);
+			t_x = (double)((double)((double)lastPos[0] + (double)playerHitboxDistanceY * (double)SCALE) / (double)tileSize);
 			if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 				(temX && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 				(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER) ||
 				(temX && temY && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER)) r_y = 1;
 			t_x = (double)((double)collider.x / (double)tileSize);
-			t_y = (double)((double)((double)lastPos[1] + (double)22 * (double)SCALE) / (double)tileSize);
+			t_y = (double)((double)((double)lastPos[1] + (double)playerHitboxDistanceX * (double)SCALE) / (double)tileSize);
 			if ((map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 				(temX && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>(floor(t_y))].getTextureID() == WATER) ||
 				(temY && map->at(static_cast<unsigned int>(floor(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER) ||
 				(temX && temY && map->at(static_cast<unsigned int>((double)ceiling(t_x)))[static_cast<unsigned int>((double)ceiling(t_y))].getTextureID() == WATER)) r_x = 1;
 			return revertMove(r_x, r_y);
 		}
-	//}
+	}
 	
 	// Edges
 	if ((collider.x < screen->x && left && !right) || ((collider.x + collider.w > screen->x + screen->w) && right && !left)) revertMove(1, 0);

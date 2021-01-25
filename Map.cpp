@@ -14,9 +14,11 @@ Map::Map(RenderWindow* window) : window(window){
 }
 
 inline void Map::generateMap() {
-	for (int width = 0; width < mapTileCountWidth; width++) {
-		for (int height = 0; height < mapTileCountHeight; height++) tileMap[width][height].changeTextureID(DIRT);
-	}
+	for (int width = 0; width < mapTileCountWidth; width++)
+		for (int height = 0; height < mapTileCountHeight; height++) 
+			tileMap[width][height].changeTextureID(DIRT);
+
+	// Manually changed tiles
 	tileMap[5][5].changeTextureID(WATER);
 	tileMap[4][4].changeTextureID(WATER);
 	tileMap[9][9].changeTextureID(GRASS);
@@ -40,7 +42,7 @@ inline void Map::generateMap() {
 	// Decide Lake / River / 2 Rivers
 	switch (unicodeSum % 3) {
 	case 0: // Lake
-	break;
+		break;
 
 	case 1: // River
 		break;

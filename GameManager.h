@@ -1,14 +1,13 @@
 #pragma once
 #include <SDL.h>
 #include <SDL_image.h>
+#include "UdpCom.h"
 
 #include "RenderWindow.h"
 #include "Map.h"
 #include "Player.h"
 #include "Camera.h"
 #include "Button.h"
-
-#include "UdpCom.h"
 
 #include "Constants.h"
 
