@@ -13,7 +13,7 @@ Game::Game() {
 	map = tempMap;
 
 	// Players
-	Player player(10.0f, 10.0f, &map.tileMap);
+	Player player(Vector2D(10, 10), &map.tileMap);
 	players.push_back(player);
 	/*Player player2(50.0f, 50.0f, &map.tileMap);
 	players.push_back(player2);
@@ -27,26 +27,30 @@ Game::Game() {
 	players.push_back(player6);*/
 
 	// Buttons
-	Button playButton(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "play", [&]() { Game::loopType = LEVEL; });
+	Button playButton(Vector2D(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "play", [&]() { Game::loopType = LEVEL; });
 	menuButtons.push_back(playButton);
-	Button escapeButton(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "exit", [&]() { Game::loopType = ESCAPE; });
+	Button escapeButton(Vector2D(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "exit", [&]() { Game::loopType = ESCAPE; });
 	menuButtons.push_back(escapeButton);
-	Button fortniteButton(screenWidth - 700, 50, "fortnite", [&]() { Game::loopType = LEVEL; });
+	Button fortniteButton(Vector2D(screenWidth - 700, 50), "fortnite", [&]() { Game::loopType = LEVEL; });
 	menuButtons.push_back(fortniteButton);
 
-	Button resumeButton(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "resume", [&]() { Game::loopType = LEVEL; });
+	Button resumeButton(Vector2D(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "resume", [&]() { Game::loopType = LEVEL; });
 	pauseButtons.push_back(resumeButton);
-	Button menuButton(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize, "menu", [&]() { Game::loopType = MENU; });
+	Button menuButton(Vector2D(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "menu", [&]() { Game::loopType = MENU; });
 	pauseButtons.push_back(menuButton);
-	Button fortniteButtonp(screenWidth - 700, 50, "fortnite", [&]() { system("\"D:/Program Files/Games/Epic Games/Fortnite/FortniteGame/Binaries/Win64/FortniteClient-Win64-Shipping\""); });
+	Button fortniteButtonp(Vector2D(screenWidth - 700, 50), "fortnite", [&]() { system("\"D:/Program Files/Games/Epic Games/Fortnite/FortniteGame/Binaries/Win64/FortniteClient-Win64-Shipping\""); });
 	pauseButtons.push_back(fortniteButtonp);
-	Button borderedButtonp(screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50, "bordered", [&]() { RenderWindow::windowType = BORDERED; });
+	Button borderedButtonp(Vector2D(screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50), "bordered", [&]() { RenderWindow::windowType = BORDERED; });
 	pauseButtons.push_back(borderedButtonp);
-	Button borderlessButtonp(screenWidth / 2 - buttonWidth, screenHeight - buttonHeight - 50, "borderless", [&]() { RenderWindow::windowType = BORDERLESS; });
+	Button borderlessButtonp(Vector2D(screenWidth / 2 - buttonWidth, screenHeight - buttonHeight - 50), "borderless", [&]() { RenderWindow::windowType = BORDERLESS; });
 	pauseButtons.push_back(borderlessButtonp);
-	Button fullscreenButtonp(3 * screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50, "fullscreen", [&]() { RenderWindow::windowType = FULLSCREEN; });
+	Button fullscreenButtonp(Vector2D(3 * screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50), "fullscreen", [&]() { RenderWindow::windowType = FULLSCREEN; });
 	pauseButtons.push_back(fullscreenButtonp);
 
+	Entity prdel;
+	std::vector<Entity> entities;
+	entities.push_back(players[0]);
+	entities.push_back(prdel);
 }
 
 void Game::theLoop() {
@@ -60,7 +64,7 @@ void Game::theLoop() {
 	}
 }
 
-inline void Game::menu() {
+void Game::menu() {
 	SDL_Event event;
 	while (loopType == MENU) {
 		while (SDL_PollEvent(&event)) {
@@ -73,7 +77,7 @@ inline void Game::menu() {
 
 		window->clear(); // Clearing the screen
 
-		window->renderBackground(background);
+		window->renderBackground();
 
 		for (auto&& b : menuButtons) window->freeRender(&b);
 
@@ -81,7 +85,7 @@ inline void Game::menu() {
 	}
 }
 
-inline void Game::level() {
+void Game::level() {
 
 	SDL_Event event;
 	while (loopType == LEVEL) {
@@ -101,10 +105,10 @@ inline void Game::level() {
 		window->handleWindow();
 
 		// Handle User input
-		for(auto&& p : players) p.handleMove(&cam.camera);
+		for(auto&& p : players) p.handleMove();
 
 		// ###############################################################################################
-		for (auto&& p : players) window->cam->move(&p);
+		for (auto&& p : players) cam.move(&p);
 
 		// Spriting
 		for (auto&& p : players) p.changeSprite();
@@ -112,14 +116,18 @@ inline void Game::level() {
 		//Rendering
 		window->clear(); // Clearing the screen
 
-		window->render(&map.tileMap);
+		for (std::vector<Entity> row : map.tileMap)
+			for (Entity tile : row) window->render(&tile);
+
 		for (auto&& p : players) window->render(&p);
 
 		for (auto&& p : players) {
-			SDL_Rect colsrc = p.collider; // Collider
-			colsrc.x -= (int)window->cam->x;
-			colsrc.y -= (int)window->cam->y;
-			SDL_RenderDrawRect(window->renderer, &colsrc);
+			for (auto&& c : p.colliders) {
+				SDL_Rect colsrc = { c.x, c.y, c.w, c.h }; // Collider
+				colsrc.x -= (int)window->cam->x;
+				colsrc.y -= (int)window->cam->y;
+				SDL_RenderDrawRect(window->renderer, &colsrc);
+			}
 		}
 		
 		window->display(); // Display rendered stuff
@@ -144,10 +152,11 @@ void Game::pause() {
 
 		window->clear(); // Clearing the screen
 
-		window->render(&map.tileMap);
+		for (std::vector<Entity> row : map.tileMap)
+			for (Entity tile : row) window->render(&tile);
 		for (auto&& p : players) window->render(&p);
 
-		window->renderBackground(background);
+		window->renderBackground();
 
 		for (auto&& b : pauseButtons) window->freeRender(&b);
 

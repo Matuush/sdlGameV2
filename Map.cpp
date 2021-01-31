@@ -5,7 +5,7 @@ Map::Map(RenderWindow* window) : window(window){
 		std::vector<Entity> line;
 		tileMap.push_back(line);
 		for (int j = 0; j < mapTileCountHeight; j++) {
-			Entity tile((float)(i * tileSize), (float)(j * tileSize), NOTHING);
+			Entity tile(Vector2D(i * tileSize, j * tileSize), nothingTexture);
 			tileMap[i].push_back(tile);
 		}
 	}
@@ -16,15 +16,15 @@ Map::Map(RenderWindow* window) : window(window){
 inline void Map::generateMap() {
 	for (int width = 0; width < mapTileCountWidth; width++)
 		for (int height = 0; height < mapTileCountHeight; height++) 
-			tileMap[width][height].changeTextureID(DIRT);
+			tileMap[width][height].textureID = dirtTexture.id;
 
 	// Manually changed tiles
-	tileMap[5][5].changeTextureID(WATER);
-	tileMap[4][4].changeTextureID(WATER);
-	tileMap[9][9].changeTextureID(GRASS);
-	tileMap[9][10].changeTextureID(GRASS);
-	tileMap[10][9].changeTextureID(GRASS);
-	tileMap[10][10].changeTextureID(GRASS);
+	tileMap[5][5].textureID = waterTexture.id;
+	tileMap[4][4].textureID = waterTexture.id;
+	tileMap[9][9].textureID = grassTexture.id;
+	tileMap[9][10].textureID = grassTexture.id;
+	tileMap[10][9].textureID = grassTexture.id;
+	tileMap[10][10].textureID = grassTexture.id;
 
 	const int waterVolume = (mapTileCountWidth * mapTileCountHeight) / 10; // How much water
 

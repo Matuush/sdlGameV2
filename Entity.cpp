@@ -1,49 +1,45 @@
 #include "Entity.h"
 
-Entity::Entity(float p_x, float p_y, const int p_id) : x(p_x), y(p_y), textureID(p_id) {
+std::vector<Entity*>Entity::entities;
+Entity::Entity() : position(Vector2D(100, 100)), textureID(nothingTexture.id) {
 	currentFrame.x = 0;
 	currentFrame.y = 0;
-	currentFrame.w = 32;
-	currentFrame.h = 32;
-	collider.x = (int)x;
-	collider.y = (int)y;
-	collider.w = currentFrame.w;
-	collider.h = currentFrame.h;
+	currentFrame.w = rawTile;
+	currentFrame.h = rawTile;
+	colliders.push_back(RectangleCollider(position.x, position.y, tileSize, tileSize));
+	Entity::entities.push_back(this);
 }
 
-Entity::Entity(float p_x, float p_y, const int p_id, int p_w, int p_h) : x(p_x), y(p_y), textureID(p_id) {
+Entity::Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 	currentFrame.x = 0;
 	currentFrame.y = 0;
-	currentFrame.w = p_w;
-	currentFrame.h = p_h;
-	collider.x = (int)x;
-	collider.y = (int)y;
-	collider.w = p_w;
-	collider.h = p_h;
+	currentFrame.w = p_texture.width;
+	currentFrame.h = p_texture.height;
+	colliders.push_back(RectangleCollider(position.x, position.y, tileSize, tileSize));
+	Entity::entities.push_back(this);
 }
 
-Entity::Entity() : x(100), y(100), textureID(NOTHING) {
+Entity::Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 	currentFrame.x = 0;
 	currentFrame.y = 0;
-	currentFrame.w = 32;
-	currentFrame.h = 32;
-	collider.x = (int)x;
-	collider.y = (int)y;
-	collider.w = currentFrame.w;
-	collider.h = currentFrame.h;
+	currentFrame.w = p_texture.width;
+	currentFrame.h = p_texture.height;
+	colliders.push_back(RectangleCollider(position.x, position.y, tileSize, tileSize));
+	Entity::entities.push_back(this);
 }
 
-void Entity::changeTextureID(const int p_id) { textureID = p_id; }
+void Entity::update() {
 
-float Entity::getX() { return x; }
-
-float Entity::getY() { return y; }
-
-void Entity::setPos(float p_x, float p_y) {
-	x = p_x;
-	y = p_y;
 }
 
-char Entity::getTextureID() { return textureID; }
+void Entity::updateAll() {
+	for (Entity* e : Entity::entities)
+		e->update();
+}
 
-SDL_Rect* Entity::getCurrentFrame() { return &currentFrame; }
+bool Entity::collides(Entity* second) {
+	for (RectangleCollider c : colliders)
+		for (RectangleCollider cc : second->colliders)
+			if (c.collides(&cc)) return true;
+	return false;
+}

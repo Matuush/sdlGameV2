@@ -1,26 +1,27 @@
 #pragma once
+#include <vector>
 #include <SDL.h>
+
+#include "Vector2D.h"
+#include "RectangleCollider.h"
 
 #include "Constants.h"
 
-class Entity {
-public:
-	bool lastRight = 1;
-	Entity();
-	Entity(float p_x, float p_y, const int p_id);
-	Entity(float p_x, float p_y, const int p_id, int p_w, int p_h);
+struct Entity {
+	static std::vector<Entity*> entities;
 
-	void changeTextureID(const int p_id);
-	void setPos(float p_x, float p_y);
-
-	float getX();
-	float getY();
-	char getTextureID();
-	SDL_Rect* getCurrentFrame();
-
-	SDL_Rect collider;
-protected:
-	float x, y;
 	SDL_Rect currentFrame;
 	int textureID;
+	Vector2D position, velocity, acceleration;
+	std::vector<RectangleCollider> colliders;
+	bool lastRight = 1;
+
+	Entity();
+	Entity(Vector2D p_position, Texture p_texture);
+	Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture);
+
+	void update();
+	static void updateAll();
+
+	bool collides(Entity* second);
 };

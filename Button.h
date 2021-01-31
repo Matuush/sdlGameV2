@@ -9,6 +9,7 @@
 #include "Constants.h"
 
 struct Button : public Entity {
+	double w, h;
 	TTF_Font* font;
 	SDL_Color color;
 	const char* text;
@@ -16,7 +17,7 @@ struct Button : public Entity {
 	std::function<void()> efect;
 
 	Button() = default;
-	Button(int p_x, int p_y, const char* p_text, std::function<void()> p_efect);
+	Button(Vector2D p_position, const char* p_text, std::function<void()> p_efect);
 
 	void checkClick(SDL_Event* event);
 	void onClick();

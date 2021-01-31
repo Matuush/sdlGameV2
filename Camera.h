@@ -6,8 +6,7 @@
 #include "Constants.h"
 
 struct Camera {
-	float x = 0, y = 0;
-	SDL_Rect camera;
+	double x = 0, y = 0, w = screenWidth, h = screenHeight;
 
 	Camera();
 	void move(Player* player);

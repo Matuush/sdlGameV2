@@ -25,6 +25,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RectangleCollider.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="UdpCom.cpp" />
@@ -37,8 +38,11 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="RectangleCollider.h" />
     <ClInclude Include="RenderWindow.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="UdpCom.h" />
+    <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

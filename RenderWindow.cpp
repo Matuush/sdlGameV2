@@ -10,22 +10,15 @@ RenderWindow::RenderWindow(Camera* p_cam) :window(NULL), renderer(NULL), cam(p_c
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 
-	textures.push_back(loadTexture(nothingTexture)); // 0
-	textures.push_back(loadTexture(waterTexture)); // 1
-	textures.push_back(loadTexture(dirtTexture)); // 2
-	textures.push_back(loadTexture(grassTexture)); // 3
-	textures.push_back(loadTexture(playerTexture)); // 4
-	textures.push_back(loadTexture(buttonTexture)); // 5
-	textures.push_back(loadTexture(backgroundTexture)); // 6
+	textures.push_back(IMG_LoadTexture(renderer, nothingTexture.path)); // 0
+	textures.push_back(IMG_LoadTexture(renderer, waterTexture.path)); // 1
+	textures.push_back(IMG_LoadTexture(renderer, dirtTexture.path)); // 2
+	textures.push_back(IMG_LoadTexture(renderer, grassTexture.path)); // 3
+	textures.push_back(IMG_LoadTexture(renderer, playerTexture.path)); // 4
+	textures.push_back(IMG_LoadTexture(renderer, buttonTexture.path)); // 5
+	textures.push_back(IMG_LoadTexture(renderer, backgroundTexture.path)); // 6
 
-	TTF_Init();
-}
-
-inline SDL_Texture* RenderWindow::loadTexture(const char* path) {
-	SDL_Texture* texture = NULL;
-	texture = IMG_LoadTexture(renderer, path);
-	if (texture == NULL) std::cout << "Failed to load texture. Error: " << SDL_GetError() << std::endl;
-	return texture;
+	TTF_Init(); // Text
 }
 
 void RenderWindow::handleWindow() {
@@ -42,42 +35,35 @@ void RenderWindow::display() { SDL_RenderPresent(renderer); }
 void RenderWindow::destroy() { SDL_DestroyWindow(window); }
 
 void RenderWindow::render(Entity* p_entity) {
-	SDL_Rect dst{ (int)(p_entity->getX() - cam->x), (int)(p_entity->getY() - cam->y), p_entity->getCurrentFrame()->w * SCALE, p_entity->getCurrentFrame()->h * SCALE};
+	SDL_Rect dst{ (int)(p_entity->position.x - cam->x), (int)(p_entity->position.y - cam->y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE};
 
-	SDL_Texture* tempTex = textures[p_entity->getTextureID()];
+	SDL_Texture* tempTex = textures[p_entity->textureID];
 	if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
 	else SDL_SetTextureColorMod(tempTex, 255, 255, 255);
 
-	if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, p_entity->getCurrentFrame(), &dst); 
-	else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, p_entity->getCurrentFrame(), &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
-}
-
-void RenderWindow::render(std::vector<std::vector<Entity>>* map) {
-	for(std::vector<Entity> row : *map)
-		for (Entity tile : row) render(&tile);
+	if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst); 
+	else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
 }
 
 void RenderWindow::freeRender(Button* p_entity) {
-	SDL_Rect dst{ (int)(p_entity->collider.x), (int)(p_entity->collider.y), p_entity->collider.w, p_entity->collider.h };
-	SDL_RenderCopy(renderer, textures[p_entity->getTextureID()], /*p_entity->getCurrentFrame()*/ NULL, &dst);
+	SDL_Rect dst{ (int)(p_entity->position.x), (int)(p_entity->position.y), p_entity->w, p_entity->h };
+	SDL_RenderCopy(renderer, textures[p_entity->textureID], /*p_entity->getCurrentFrame()*/ NULL, &dst);
 
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(p_entity->font, p_entity->text, p_entity->color);
 	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 	SDL_FreeSurface(surfaceMessage);
 
-	dst = { (int)(p_entity->collider.x + 1 * SCALE), (int)(p_entity->collider.y + 1 * SCALE), (int)(p_entity->collider.w - 2 * SCALE), (int)(p_entity->collider.h - 2 * SCALE)};
+	dst = { (int)(p_entity->position.x + SCALE), (int)(p_entity->position.y + SCALE), (int)(p_entity->w - 2 * SCALE), (int)(p_entity->h - 2 * SCALE)};
 	SDL_RenderCopy(renderer, message, NULL, &dst);
 	SDL_DestroyTexture(message);
 }
 
-void RenderWindow::renderBackground(Entity* p_entity) {
-	SDL_Rect dst{ (int)(p_entity->getX()), (int)(p_entity->getY()), screenWidth, screenHeight };
-
-	SDL_Texture* tempTex = textures[p_entity->getTextureID()];
+void RenderWindow::renderBackground() {
+	SDL_Texture* tempTex = textures[backgroundTexture.id];
 	SDL_SetTextureColorMod(tempTex, 255, 0, 255);
 	if(paused)SDL_SetTextureAlphaMod(tempTex, 100);
 	else SDL_SetTextureAlphaMod(tempTex, 255);
 
-	if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, NULL, &dst);
-	else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, NULL, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+	SDL_Rect dst{ 0, 0, screenWidth, screenHeight };
+	SDL_RenderCopy(renderer, tempTex, NULL, &dst);
 }
