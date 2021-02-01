@@ -1,6 +1,8 @@
 #include "Player.h"
 
-Player::Player(Vector2D p_position, std::vector<std::vector<Entity>>* p_map) {
+std::vector<Player*> Player::players;
+
+Player::Player(Vector2D p_position, std::vector<std::vector<Entity*>>* p_map) : Entity() {
 	position = p_position;
 	lastPos = position;
 
@@ -9,15 +11,16 @@ Player::Player(Vector2D p_position, std::vector<std::vector<Entity>>* p_map) {
 	currentFrame.w = playerTexture.width;
 	currentFrame.h = playerTexture.height;
 
-	colliders.push_back(RectangleCollider(position.x + playerHitboxDistanceX * SCALE,
-		position.y + playerHitboxDistanceY * SCALE,
-		playerHitboxWidth * SCALE,
-		playerHitboxHeight * SCALE));
+	colliders.push_back(RectangleCollider(position.x + (double)playerHitboxDistanceX * SCALE,
+		position.y + (double)playerHitboxDistanceY * SCALE,
+		(double)playerHitboxWidth * SCALE,
+		(double)playerHitboxHeight * SCALE));
 
 	map = p_map;
 
 	textureID = playerTexture.id;
 
+	Player::players.push_back(this);
 	Entity::entities.push_back(this);
 }
 

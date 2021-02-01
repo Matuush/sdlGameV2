@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <SDL.h>
+#include <iostream>
 
 #include "Vector2D.h"
 #include "RectangleCollider.h"
@@ -16,7 +17,7 @@ struct Entity {
 	std::vector<RectangleCollider> colliders;
 	bool lastRight = 1;
 
-	Entity();
+	Entity() = default;
 	Entity(Vector2D p_position, Texture p_texture);
 	Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture);
 
@@ -24,4 +25,6 @@ struct Entity {
 	static void updateAll();
 
 	bool collides(Entity* second);
+protected:
+	inline void init();
 };

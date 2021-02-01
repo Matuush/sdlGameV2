@@ -12,7 +12,7 @@
 
 struct Map {
 	RenderWindow* window = NULL;
-	std::vector<std::vector<Entity>> tileMap;
+	std::vector<std::vector<Entity*>> tileMap;
 
 	Map() = default;
 	Map(RenderWindow* window);

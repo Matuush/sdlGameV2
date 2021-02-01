@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Button.h"
+#include "Entity.h"
 
 #include "Constants.h"
 
@@ -22,8 +23,6 @@ private:
 
 	std::vector<Button> menuButtons;
 	std::vector<Button> pauseButtons;
-
-	std::vector<Player> players;
 
 public:
 	static char loopType;

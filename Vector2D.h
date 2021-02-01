@@ -7,6 +7,7 @@ struct Vector2D {
 	double x, y;
 	Vector2D() = default;
 	Vector2D(double p_x, double p_y) : x(p_x), y(p_y) {}
+	Vector2D(int p_x, int p_y) : x((double)p_x), y((double)p_y) {}
 
 	Vector2D operator+(Vector2D second) { return Vector2D(x + second.x, y + second.y); }
 	Vector2D operator-(Vector2D second) { return Vector2D(x - second.x, y - second.y); }

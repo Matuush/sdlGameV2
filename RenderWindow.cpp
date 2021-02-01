@@ -53,7 +53,7 @@ void RenderWindow::freeRender(Button* p_entity) {
 	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 	SDL_FreeSurface(surfaceMessage);
 
-	dst = { (int)(p_entity->position.x + SCALE), (int)(p_entity->position.y + SCALE), (int)(p_entity->w - 2 * SCALE), (int)(p_entity->h - 2 * SCALE)};
+	dst = { (int)(p_entity->position.x + SCALE), (int)(p_entity->position.y + (double)SCALE), (int)(p_entity->w - 2 * (double)SCALE), (int)(p_entity->h - 2 * (double)SCALE)};
 	SDL_RenderCopy(renderer, message, NULL, &dst);
 	SDL_DestroyTexture(message);
 }

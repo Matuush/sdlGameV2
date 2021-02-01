@@ -3,6 +3,13 @@
 
 char Game::loopType = MENU;
 
+struct Rizek {
+	Rizek() = default;
+	void eat() {
+
+	}
+};
+
 Game::Game() {
 	UdpCom::start(); // Server
 	UdpCom com(ip, 80);
@@ -13,8 +20,7 @@ Game::Game() {
 	map = tempMap;
 
 	// Players
-	Player player(Vector2D(10, 10), &map.tileMap);
-	players.push_back(player);
+	Player* player = new Player(Vector2D(10, 10), &map.tileMap);
 	/*Player player2(50.0f, 50.0f, &map.tileMap);
 	players.push_back(player2);
 	Player player3(90.0f, 90.0f, &map.tileMap);
@@ -46,11 +52,6 @@ Game::Game() {
 	pauseButtons.push_back(borderlessButtonp);
 	Button fullscreenButtonp(Vector2D(3 * screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50), "fullscreen", [&]() { RenderWindow::windowType = FULLSCREEN; });
 	pauseButtons.push_back(fullscreenButtonp);
-
-	Entity prdel;
-	std::vector<Entity> entities;
-	entities.push_back(players[0]);
-	entities.push_back(prdel);
 }
 
 void Game::theLoop() {
@@ -86,46 +87,42 @@ void Game::menu() {
 }
 
 void Game::level() {
-
 	SDL_Event event;
 	while (loopType == LEVEL) {
 		// Framerate handling
 		int frameStart = SDL_GetTicks();
-
 		// User input
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) loopType = ESCAPE;
 			if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
-				for (auto&& p : players) p.stopMomentum();
+				for (auto&& p : Player::players) p->stopMomentum();
 				loopType = PAUSE;
 				menu(); 
 			}
-			for (auto&& p : players) p.move(&event);
+			for (auto&& p : Player::players) p->move(&event);
 		}
 		window->handleWindow();
 
 		// Handle User input
-		for(auto&& p : players) p.handleMove();
+		for(auto&& p : Player::players) p->handleMove();
 
 		// ###############################################################################################
-		for (auto&& p : players) cam.move(&p);
+		for (auto&& p : Player::players) cam.move(p);
 
 		// Spriting
-		for (auto&& p : players) p.changeSprite();
+		for (auto&& p : Player::players) p->changeSprite();
 
 		//Rendering
 		window->clear(); // Clearing the screen
 
-		for (std::vector<Entity> row : map.tileMap)
-			for (Entity tile : row) window->render(&tile);
+		for (std::vector<Entity*> row : map.tileMap)
+			for (Entity* tile : row) window->render(tile);
 
-		for (auto&& p : players) window->render(&p);
+		for (auto&& p : Player::players) window->render(p);
 
-		for (auto&& p : players) {
-			for (auto&& c : p.colliders) {
-				SDL_Rect colsrc = { c.x, c.y, c.w, c.h }; // Collider
-				colsrc.x -= (int)window->cam->x;
-				colsrc.y -= (int)window->cam->y;
+		for (const Entity* e : Entity::entities) {
+			for (const RectangleCollider c : e->colliders) {
+				SDL_Rect colsrc = { c.x, c.y, c.w, c.h }; // Colliders
 				SDL_RenderDrawRect(window->renderer, &colsrc);
 			}
 		}
@@ -152,9 +149,9 @@ void Game::pause() {
 
 		window->clear(); // Clearing the screen
 
-		for (std::vector<Entity> row : map.tileMap)
-			for (Entity tile : row) window->render(&tile);
-		for (auto&& p : players) window->render(&p);
+		for (std::vector<Entity*> row : map.tileMap)
+			for (Entity* tile : row) window->render(tile);
+		for (auto&& p : Player::players) window->render(p);
 
 		window->renderBackground();
 
