@@ -22,6 +22,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -36,6 +37,8 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="KeyState.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="RectangleCollider.h" />

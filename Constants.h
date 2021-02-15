@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Texture.h"
+#include <SDL.h>
 
 // Very usefull
 const bool jiriSmrdi = 1;
@@ -23,26 +24,33 @@ const char TITLE[] = "SDL Moment";
 // Seed
 const std::string seed = "B";
 
-const int SCALE = 4; // Scale
+// Scale
+const int SCALE = 4;
 
 // Texture sizes
 const int rawTile = 32;
 const int rawPlayer = 64;
 
 // Position constants
-const double screenRatio = 2;
 const int tileSize = rawTile * SCALE;
+const double screenRatio = 2;
 const int screenMapRatio = 3;
 const int screenTileCountHeight = 7;
 const int screenTileCountWidth = (int)(screenTileCountHeight * screenRatio);
-const int mapTileCountWidth = screenTileCountWidth * screenMapRatio;
-const int mapTileCountHeight = screenTileCountHeight * screenMapRatio;
 const int screenWidth = screenTileCountWidth * tileSize;
 const int screenHeight = screenTileCountHeight * tileSize;
+
+// Map 
+const int mapTileCountWidth = screenTileCountWidth * screenMapRatio;
+const int mapTileCountHeight = screenTileCountHeight * screenMapRatio;
 const int mapSizeWidth = mapTileCountWidth * tileSize;
 const int mapSizeHeight = mapTileCountHeight * tileSize;
+
+// Buttons
 const int buttonHeight = tileSize * 2;
 const int buttonWidth = buttonHeight * 2;
+const SDL_Color defaultButtonTextColor = { 0, 0, 0 };
+const SDL_Color activeButtonTextColor = { 50, 50, 50 };
 
 // Textures
 const Texture nothingTexture(0, "textures/nothing.png", rawTile);
@@ -58,11 +66,18 @@ const int FPS = 60;
 const int frameDelay = 1000 / FPS;
 
 // Player attributes
-const double SPEED = 1.5 * SCALE;
+const double SPEED = 2 * (double)SCALE;
 const int playerHitboxDistanceX = 24;
 const int playerHitboxDistanceY = 22;
 const int playerHitboxWidth = 16;
 const int playerHitboxHeight = 28;
+const double playerTerminalVelocity = 500;
+
+// Text
+const SDL_Color defaultTextColor = { 255, 255, 255 };
+
+
 
 // Constants
 const int floatPrecision = 8;
+const double defaultTerminalVelocity = 10;

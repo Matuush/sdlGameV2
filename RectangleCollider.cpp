@@ -6,7 +6,11 @@ bool RectangleCollider::collides(RectangleCollider* second) {
 	return(collides(second->x, second->y) || 
 		collides(second->x + second->w, second->y) ||
 		collides(second->x, second->y + second->h) ||
-		collides(second->x + second->w, second->y + second->h));
+		collides(second->x + second->w, second->y + second->h)) ||
+		(second->collides(x, y) ||
+			second->collides(x + w, y) ||
+			second->collides(x, y + h) ||
+			second->collides(x + w, y + h));
 }
 
 bool RectangleCollider::collides(double p_x, double p_y) { return(p_x > x && p_y > y && p_x < x + w && p_y < y + h); }

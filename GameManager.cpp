@@ -3,59 +3,27 @@
 
 char Game::loopType = MENU;
 
-struct Rizek {
-	Rizek() = default;
-	void eat() {
-
-	}
-};
-
 Game::Game() {
-	UdpCom::start(); // Server
+	// Server
+	UdpCom::start();
 	UdpCom com(ip, 80);
-
 	com.send("{ \"id\":\"da big chungus\" }");
 
-	Map tempMap(window); // Map
-	map = tempMap;
+	// Menu buttons
+	menuButtons.push_back(Button(Vector2D(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "play", [&]() { Game::loopType = LEVEL; }));
+	menuButtons.push_back(Button(Vector2D(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "exit", [&]() { Game::loopType = ESCAPE; }));
+	menuButtons.push_back(Button(Vector2D(screenWidth - 700, 50), "fortnite", [&]() { Game::loopType = LEVEL; }));
 
-	// Players
-	Player* player = new Player(Vector2D(10, 10), &map.tileMap);
-	/*Player player2(50.0f, 50.0f, &map.tileMap);
-	players.push_back(player2);
-	Player player3(90.0f, 90.0f, &map.tileMap);
-	players.push_back(player3);
-	Player player4(130.0f, 130.0f, &map.tileMap);
-	players.push_back(player4);
-	Player player5(170.0f, 170.0f, &map.tileMap);
-	players.push_back(player5);
-	Player player6(210.0f, 210.0f, &map.tileMap);
-	players.push_back(player6);*/
-
-	// Buttons
-	Button playButton(Vector2D(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "play", [&]() { Game::loopType = LEVEL; });
-	menuButtons.push_back(playButton);
-	Button escapeButton(Vector2D(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "exit", [&]() { Game::loopType = ESCAPE; });
-	menuButtons.push_back(escapeButton);
-	Button fortniteButton(Vector2D(screenWidth - 700, 50), "fortnite", [&]() { Game::loopType = LEVEL; });
-	menuButtons.push_back(fortniteButton);
-
-	Button resumeButton(Vector2D(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "resume", [&]() { Game::loopType = LEVEL; });
-	pauseButtons.push_back(resumeButton);
-	Button menuButton(Vector2D(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "menu", [&]() { Game::loopType = MENU; });
-	pauseButtons.push_back(menuButton);
-	Button fortniteButtonp(Vector2D(screenWidth - 700, 50), "fortnite", [&]() { system("\"D:/Program Files/Games/Epic Games/Fortnite/FortniteGame/Binaries/Win64/FortniteClient-Win64-Shipping\""); });
-	pauseButtons.push_back(fortniteButtonp);
-	Button borderedButtonp(Vector2D(screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50), "bordered", [&]() { RenderWindow::windowType = BORDERED; });
-	pauseButtons.push_back(borderedButtonp);
-	Button borderlessButtonp(Vector2D(screenWidth / 2 - buttonWidth, screenHeight - buttonHeight - 50), "borderless", [&]() { RenderWindow::windowType = BORDERLESS; });
-	pauseButtons.push_back(borderlessButtonp);
-	Button fullscreenButtonp(Vector2D(3 * screenWidth / 4 - buttonWidth, screenHeight - buttonHeight - 50), "fullscreen", [&]() { RenderWindow::windowType = FULLSCREEN; });
-	pauseButtons.push_back(fullscreenButtonp);
+	// Pause buttons
+	pauseButtons.push_back(Button(Vector2D(screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "resume", [&]() { Game::loopType = LEVEL; }));
+	pauseButtons.push_back(Button(Vector2D(3 * screenWidth / 4 - tileSize * 2, screenHeight / 2 - tileSize), "menu", [&]() { Game::loopType = MENU; }));
+	pauseButtons.push_back(Button(Vector2D(screenWidth - 700, 50), "fortnite", [&]() { system("\"D:/Program Files/Games/Epic Games/Fortnite/FortniteGame/Binaries/Win64/FortniteClient-Win64-Shipping\""); }));
+	pauseButtons.push_back(Button(Vector2D(screenWidth / 4 - buttonWidth * 3 / 4, screenHeight - buttonHeight - 50), "bordered", [&]() { RenderWindow::windowType = BORDERED; }));
+	pauseButtons.push_back(Button(Vector2D(screenWidth / 2 - buttonWidth / 2, screenHeight - buttonHeight - 50), "borderless", [&]() { RenderWindow::windowType = BORDERLESS; }));
+	pauseButtons.push_back(Button(Vector2D(3 * screenWidth / 4 - buttonWidth / 4, screenHeight - buttonHeight - 50), "fullscreen", [&]() { RenderWindow::windowType = FULLSCREEN; }));
 }
 
 void Game::theLoop() {
-	// The Loop
 	while (loopType != ESCAPE) {
 		switch (loopType) {
 		case MENU: menu(); break;
@@ -68,68 +36,60 @@ void Game::theLoop() {
 void Game::menu() {
 	SDL_Event event;
 	while (loopType == MENU) {
+		int frameStart = SDL_GetTicks();
+
+		// User input
 		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) { loopType = ESCAPE; std::cout << "based"; }
-			if (event.key.keysym.sym == SDLK_SPACE && event.type == SDL_KEYDOWN) loopType = LEVEL;
+			if (event.type == SDL_QUIT) { loopType = ESCAPE; }
+			else if (event.key.keysym.sym == SDLK_SPACE && event.type == SDL_KEYDOWN) loopType = LEVEL;
 			for (auto&& b : menuButtons) b.checkClick(&event);
 		}
+
+		//Updates
 		window->handleWindow();
 		for (auto&& b : menuButtons) b.onClick();
 
-		window->clear(); // Clearing the screen
+		// Rendering
+		window->clear();
+			window->renderBackground();
+			for (auto&& b : menuButtons) window->freeRender(&b);
+		window->display();
 
-		window->renderBackground();
-
-		for (auto&& b : menuButtons) window->freeRender(&b);
-
-		window->display(); // Display rendered stuff
+		int frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < frameDelay) SDL_Delay(frameDelay - frameTime);
 	}
 }
 
 void Game::level() {
+	Entity::entities.push_back(&cam);
+	Level level;
 	SDL_Event event;
 	while (loopType == LEVEL) {
-		// Framerate handling
 		int frameStart = SDL_GetTicks();
+
 		// User input
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) loopType = ESCAPE;
-			if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
-				for (auto&& p : Player::players) p->stopMomentum();
+			else if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
+				for (auto&& p : Player::players) p->keyState.zeroify();
 				loopType = PAUSE;
-				menu(); 
+				pause();
+				if (loopType != LEVEL)
+					return;
 			}
-			for (auto&& p : Player::players) p->move(&event);
+			Entity::inputAll(&event);
 		}
+
+		// Updates
 		window->handleWindow();
-
-		// Handle User input
-		for(auto&& p : Player::players) p->handleMove();
-
-		// ###############################################################################################
-		for (auto&& p : Player::players) cam.move(p);
-
-		// Spriting
-		for (auto&& p : Player::players) p->changeSprite();
+		Entity::updateAll();
 
 		//Rendering
-		window->clear(); // Clearing the screen
+		window->clear();
+			for (Entity* e : Entity::entities) window->render(e);
+			window->displayStats(Player::players[0]);
+		window->display();
 
-		for (std::vector<Entity*> row : map.tileMap)
-			for (Entity* tile : row) window->render(tile);
-
-		for (auto&& p : Player::players) window->render(p);
-
-		for (const Entity* e : Entity::entities) {
-			for (const RectangleCollider c : e->colliders) {
-				SDL_Rect colsrc = { c.x, c.y, c.w, c.h }; // Colliders
-				SDL_RenderDrawRect(window->renderer, &colsrc);
-			}
-		}
-		
-		window->display(); // Display rendered stuff
-
-		// More framerate handling
 		int frameTime = SDL_GetTicks() - frameStart;
 		if (frameTime < frameDelay) SDL_Delay(frameDelay - frameTime);
 	}
@@ -139,27 +99,29 @@ void Game::pause() {
 	window->paused = 1;
 	SDL_Event event;
 	while (loopType == PAUSE) {
+		int frameStart = SDL_GetTicks();
+
+		// User input
 		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT || (event.key.keysym.sym == SDLK_l && event.type == SDL_KEYDOWN)) loopType = ESCAPE;
-			if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) loopType = LEVEL;
+			if (event.type == SDL_QUIT) loopType = ESCAPE;
+			else if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) loopType = LEVEL;
 			for (auto&& b : pauseButtons) b.checkClick(&event);
 		}
+
+		//Updates
 		window->handleWindow();
 		for (auto&& b : pauseButtons) b.onClick();
 
-		window->clear(); // Clearing the screen
+		// Rendering
+		window->clear();
+			for (Entity* e : Entity::entities) window->render(e);
+			window->renderBackground();
+			for (auto&& b : pauseButtons) window->freeRender(&b);
+		window->display();
 
-		for (std::vector<Entity*> row : map.tileMap)
-			for (Entity* tile : row) window->render(tile);
-		for (auto&& p : Player::players) window->render(p);
-
-		window->renderBackground();
-
-		for (auto&& b : pauseButtons) window->freeRender(&b);
-
-		window->display(); // Display rendered stuff
+		int frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < frameDelay) SDL_Delay(frameDelay - frameTime);
 	}
-
 	window->paused = 0;
 }
 

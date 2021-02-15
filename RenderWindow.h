@@ -13,11 +13,13 @@
 #include "Constants.h"
 
 struct RenderWindow {
-	static bool paused, windowType;
-
+	static bool paused, renderColliders;
+	static char windowType;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	Camera* cam;
+
+	TTF_Font* defaultFont;
 
 	std::vector<SDL_Texture*> textures;
 
@@ -30,6 +32,9 @@ struct RenderWindow {
 	void destroy();
 
 	void render(Entity* p_entity);
+	inline void renderCollider(Entity* p_entity);
 	void freeRender(Button* p_entity);
 	void renderBackground();
+
+	void displayStats(Player* p_entity);
 };

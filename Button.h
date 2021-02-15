@@ -1,6 +1,6 @@
 #pragma once
-#include <iostream>
 #include <functional>
+
 #include <SDL.h>
 #include <SDL_ttf.h>
 
@@ -10,7 +10,6 @@
 
 struct Button : public Entity {
 	double w, h;
-	TTF_Font* font;
 	SDL_Color color;
 	const char* text;
 	bool clicked = 0;

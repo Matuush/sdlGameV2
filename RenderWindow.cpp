@@ -1,14 +1,12 @@
 #include "RenderWindow.h"
 
 bool RenderWindow::paused = 0;
-bool RenderWindow::windowType = 1;
+char RenderWindow::windowType = 1;
+bool RenderWindow::renderColliders = 1;
+
 RenderWindow::RenderWindow(Camera* p_cam) :window(NULL), renderer(NULL), cam(p_cam){
 	window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
-
-	if (window == NULL) std::cout << "Window failed to init. Error: " << SDL_GetError() << std::endl;
-
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 
 	textures.push_back(IMG_LoadTexture(renderer, nothingTexture.path)); // 0
 	textures.push_back(IMG_LoadTexture(renderer, waterTexture.path)); // 1
@@ -19,6 +17,7 @@ RenderWindow::RenderWindow(Camera* p_cam) :window(NULL), renderer(NULL), cam(p_c
 	textures.push_back(IMG_LoadTexture(renderer, backgroundTexture.path)); // 6
 
 	TTF_Init(); // Text
+	defaultFont = TTF_OpenFont("textures/Sans.ttf", 24);
 }
 
 void RenderWindow::handleWindow() {
@@ -43,13 +42,24 @@ void RenderWindow::render(Entity* p_entity) {
 
 	if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst); 
 	else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+
+	if (renderColliders) renderCollider(p_entity);
+}
+
+void RenderWindow::renderCollider(Entity* p_entity) {
+	if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+	for (const auto& c : p_entity->colliders) {
+		SDL_Rect colsrc = { (int)(c.x - cam->x), (int)(c.y - cam->y), c.w, c.h };
+		SDL_RenderDrawRect(renderer, &colsrc);
+	}
+	if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
 void RenderWindow::freeRender(Button* p_entity) {
-	SDL_Rect dst{ (int)(p_entity->position.x), (int)(p_entity->position.y), p_entity->w, p_entity->h };
-	SDL_RenderCopy(renderer, textures[p_entity->textureID], /*p_entity->getCurrentFrame()*/ NULL, &dst);
+	SDL_Rect dst{ (int)(p_entity->position.x), (int)(p_entity->position.y), (int)p_entity->w, (int)p_entity->h };
+	SDL_RenderCopy(renderer, textures[p_entity->textureID], &p_entity->currentFrame, &dst);
 
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(p_entity->font, p_entity->text, p_entity->color);
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, p_entity->text, p_entity->color);
 	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 	SDL_FreeSurface(surfaceMessage);
 
@@ -66,4 +76,15 @@ void RenderWindow::renderBackground() {
 
 	SDL_Rect dst{ 0, 0, screenWidth, screenHeight };
 	SDL_RenderCopy(renderer, tempTex, NULL, &dst);
+}
+
+void RenderWindow::displayStats(Player* p_entity) {
+	const std::string textPos = "x: " + std::to_string((int)p_entity->position.x) + "y: " + std::to_string((int)p_entity->position.y);
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, textPos.c_str(), defaultTextColor);
+	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+	SDL_FreeSurface(surfaceMessage);
+
+	SDL_Rect dst = { screenWidth - tileSize * 2, 0, tileSize * 2, tileSize };
+	SDL_RenderCopy(renderer, message, NULL, &dst);
+	SDL_DestroyTexture(message);
 }

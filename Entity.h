@@ -13,18 +13,27 @@ struct Entity {
 
 	SDL_Rect currentFrame;
 	int textureID;
+
 	Vector2D position, velocity, acceleration;
-	std::vector<RectangleCollider> colliders;
+	double terminalVelocity = defaultTerminalVelocity;
 	bool lastRight = 1;
+
+	std::vector<RectangleCollider> colliders;
+	bool solid = 0;
 
 	Entity() = default;
 	Entity(Vector2D p_position, Texture p_texture);
 	Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture);
+	Entity(Vector2D p_position);
 
-	void update();
+	virtual void update();
 	static void updateAll();
+
+	virtual void input(SDL_Event* event);
+	static void inputAll(SDL_Event* event);
 
 	bool collides(Entity* second);
 protected:
 	inline void init();
+	inline void updatePosition();
 };

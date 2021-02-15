@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Entity.h"
+#include "Level.h"
 
 #include "Constants.h"
 
@@ -17,8 +18,7 @@ private:
 	const char* ip = "10.49.0.6";
 	int port = 80;
 
-	Map map;
-	Camera cam;
+	Camera cam = Camera();
 	RenderWindow* window = new RenderWindow(&cam);
 
 	std::vector<Button> menuButtons;
