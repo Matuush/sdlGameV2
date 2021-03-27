@@ -1,7 +1,7 @@
 #pragma once
 #include <math.h>
 
-#include "Constants.h"
+const int floatPrecision = 8;
 
 struct Vector2D {
 	double x, y;
@@ -16,47 +16,51 @@ struct Vector2D {
 		x = x / getMagnitude() * limit;
 		y = y / getMagnitude() * limit;
 	}
-	Vector2D normalize() {
+	Vector2D normalize() const {
 		return Vector2D(x / getMagnitude(), y / getMagnitude());
 	}
 
-	Vector2D operator+(Vector2D second) { return Vector2D(x + second.x, y + second.y); }
-	Vector2D operator-(Vector2D second) { return Vector2D(x - second.x, y - second.y); }
-	Vector2D operator*(Vector2D second) { return Vector2D(x * second.x, y * second.y); }
-	Vector2D operator/(Vector2D second) { return Vector2D(x / second.x, y / second.y); }
-	bool operator==(Vector2D second) { 
+	Vector2D operator+(Vector2D second) const { return Vector2D(x + second.x, y + second.y); }
+	Vector2D operator+(int second) const { return Vector2D(x + second, y + second); }
+	Vector2D operator-(Vector2D second) const { return Vector2D(x - second.x, y - second.y); }
+	Vector2D operator-(int second) const { return Vector2D(x - second, y - second); }
+	Vector2D operator*(Vector2D second) const { return Vector2D(x * second.x, y * second.y); }
+	Vector2D operator*(int second) const { return Vector2D(x * second, y * second); }
+	Vector2D operator/(Vector2D second) const { return Vector2D(x / second.x, y / second.y); }
+	Vector2D operator/(int second) const { return Vector2D(x / second, y / second); }
+	bool operator==(Vector2D second) const {
 		return round(x * pow(10, floatPrecision)) == round(second.x * pow(10, floatPrecision)) && 
 			round(y * pow(10, floatPrecision)) == round(second.y * pow(10, floatPrecision));
 	}
-	bool operator>=(Vector2D second) {
+	bool operator>=(Vector2D second) const {
 		return getMagnitude() >= second.getMagnitude();
 	}
-	bool operator>(Vector2D second) {
+	bool operator>(Vector2D second) const {
 		return getMagnitude() > second.getMagnitude();
 	}
-	bool operator<=(Vector2D second) {
+	bool operator<=(Vector2D second) const {
 		return getMagnitude() <= second.getMagnitude();
 	}
-	bool operator<(Vector2D second) {
+	bool operator<(Vector2D second) const {
 		return getMagnitude() < second.getMagnitude();
 	}
 
-	Vector2D operator*(double second) { return Vector2D(x * second, y * second); }
-	Vector2D operator/(double second) { return Vector2D(x / second, y / second); }
-	bool operator>=(double second) {
+	Vector2D operator*(double second) const { return Vector2D(x * second, y * second); }
+	Vector2D operator/(double second) const { return Vector2D(x / second, y / second); }
+	bool operator>=(double second) const {
 		return getMagnitude() >= second;
 	}
-	bool operator>(double second) {
+	bool operator>(double second) const {
 		return getMagnitude() > second;
 	}
-	bool operator<=(double second) {
+	bool operator<=(double second) const {
 		return getMagnitude() <= second;
 	}
-	bool operator<(double second) {
+	bool operator<(double second) const {
 		return getMagnitude() < second;
 	}
 
-	double getMagnitude() { return sqrt(x * x + y * y); }
-	double getAngle() { return sqrt(atan(y/x)); }
+	double getMagnitude() const { return sqrt(x * x + y * y); }
+	double getAngle() const { return sqrt(atan(y/x)); }
 	static Vector2D fromPolar(double magnitude, double angle) { return Vector2D(cos(angle) * magnitude, sin(angle) * magnitude); }
 };

@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
+#include "Vector2D.h"
 #include "Texture.h"
-#include <SDL.h>
 
 // Very usefull
-const bool jiriSmrdi = 1;
-const bool jiriSeUmyl = 0;
+const bool JIRI_SMRDI = 1;
+const bool JIRI_SE_UMYL = 0;
 
 // Loop types
 const char ESCAPE = 0;
@@ -19,65 +19,61 @@ const char BORDERED = 1;
 const char FULLSCREEN = 2;
 
 // GUI
-const char TITLE[] = "SDL Moment";
-
-// Seed
-const std::string seed = "B";
-
-// Scale
-const int SCALE = 4;
+const char TITLE[] = "SDL Mement";
+const std::string SEED = "B";
+const int FPS = 60;
+const int FRAME_DELAY = 1000 / FPS;
+const SDL_Color DEFAULT_TEXT_COLOR = { 255, 255, 255 };
+const SDL_Color BACKGROUND_COLOR = { 0, 255, 0 };
 
 // Texture sizes
-const int rawTile = 32;
-const int rawPlayer = 64;
-
-// Position constants
-const int tileSize = rawTile * SCALE;
-const double screenRatio = 2;
-const int screenMapRatio = 3;
-const int screenTileCountHeight = 7;
-const int screenTileCountWidth = (int)(screenTileCountHeight * screenRatio);
-const int screenWidth = screenTileCountWidth * tileSize;
-const int screenHeight = screenTileCountHeight * tileSize;
-
-// Map 
-const int mapTileCountWidth = screenTileCountWidth * screenMapRatio;
-const int mapTileCountHeight = screenTileCountHeight * screenMapRatio;
-const int mapSizeWidth = mapTileCountWidth * tileSize;
-const int mapSizeHeight = mapTileCountHeight * tileSize;
-
-// Buttons
-const int buttonHeight = tileSize * 2;
-const int buttonWidth = buttonHeight * 2;
-const SDL_Color defaultButtonTextColor = { 0, 0, 0 };
-const SDL_Color activeButtonTextColor = { 50, 50, 50 };
+const int SCALE = 4;
+const int RAW_TILE = 32;
+const int RAW_PLAYER = 64;
+const int RAW_ENEMY = 64;
 
 // Textures
-const Texture nothingTexture(0, "textures/nothing.png", rawTile);
-const Texture waterTexture(1, "textures/water.png", rawTile);
-const Texture dirtTexture(2, "textures/dirt.png", rawTile);
-const Texture grassTexture(3, "textures/grass.png", rawTile);
-const Texture playerTexture(4, "textures/player.png", rawPlayer);
-const Texture buttonTexture(5, "textures/button.png", rawTile * 2, rawTile);
-const Texture backgroundTexture(6, "textures/background.png");
+const Texture NOTHING_TEXTURE(0, "textures/nothing.png", RAW_TILE);
+const Texture WATER_TEXTURE(1, "textures/water.png", RAW_TILE);
+const Texture DIRT_TEXTURE(2, "textures/dirt.png", RAW_TILE);
+const Texture GRASS_TEXTURE(3, "textures/grass.png", RAW_TILE);
+const Texture PLAYER_TEXTURE(4, "textures/kapusta.png", RAW_PLAYER);
+const Texture BUTTON_TEXTURE(5, "textures/button.png", RAW_TILE * 2, RAW_TILE);
+const Texture BACKGROUND_TEXTURE(6, "textures/background.png");
+const Texture ENEMY_TEXTURE = PLAYER_TEXTURE;
 
-// FPS Handling
-const int FPS = 60;
-const int frameDelay = 1000 / FPS;
+// Map constants
+const int TILE_SIZE = RAW_TILE * SCALE;
+const int SCREEN_RATIO = 2;
+const int SCREEN_MAP_RATIO = 3;
+const int SCREEN_TILE_COUNT_Y = 7;
+const Vector2D SCREEN_TILE_COUNT = Vector2D(SCREEN_TILE_COUNT_Y * SCREEN_RATIO, SCREEN_TILE_COUNT_Y);
+const Vector2D SCREEN_SIZE = SCREEN_TILE_COUNT * TILE_SIZE;
+const Vector2D MAP_TILE_COUNT = SCREEN_TILE_COUNT * SCREEN_MAP_RATIO;
+const Vector2D MAP_SIZE = MAP_TILE_COUNT * TILE_SIZE;
+const int BORDER_THICKNESS = 100;
+
+// Button constants
+const Vector2D BUTTON_SIZE = Vector2D(TILE_SIZE * 4, TILE_SIZE * 2);
+const SDL_Color PASSIVE_BUTTON_TEXT_COLOR = { 0, 0, 0 };
+const SDL_Color ACTIVE_BUTTON_TEXT_COLOR = { 50, 50, 50 };
+
+// Entity constants
+const double DEFAULT_TERMINAL_VELOCITY = 2 * (double)SCALE;
 
 // Player attributes
-const double SPEED = 2 * (double)SCALE;
-const int playerHitboxDistanceX = 24;
-const int playerHitboxDistanceY = 22;
-const int playerHitboxWidth = 16;
-const int playerHitboxHeight = 28;
-const double playerTerminalVelocity = 500;
+const double PLAYER_VELOCITY = DEFAULT_TERMINAL_VELOCITY;
+const double PLAYER_TERMINAL_VELOCITY = 500 * SCALE;
+const double DEFAULT_PLAYER_HEALTH = 50;
+const double DEFAULT_PLAYER_DAMAGE = 5;
+// Temporary player hitbox
+const Vector2D PLAYER_HITBOX_DISTANCE = Vector2D(24 * SCALE, 22 * SCALE);
+const Vector2D PLAYER_HITBOX_SIZE = Vector2D(16 * SCALE, 28 * SCALE);
 
-// Text
-const SDL_Color defaultTextColor = { 255, 255, 255 };
-
-
-
-// Constants
-const int floatPrecision = 8;
-const double defaultTerminalVelocity = 10;
+// Enemy attributes
+const double defaultEnemyHealth = 50;
+const double defaultEnemyDamage = 5;
+const double defaultEnemyTerminalVelocity = DEFAULT_TERMINAL_VELOCITY / 2;
+// Temporary enemy hitbox
+const Vector2D enemyHitboxDistance = PLAYER_HITBOX_DISTANCE;
+const Vector2D enemyHitboxSize = PLAYER_HITBOX_SIZE;

@@ -1,0 +1,10 @@
+Properties -> Linker:
+	-> General -> Additional Library Directories : 
+		lib64 / lib86
+	-> Input -> Additional Dependencies : 
+		SDL2.lib
+		SDL2main.lib
+		SDL2_image.lib
+		SDL2_ttf.lib
+
+paste the pasteInCode64 / pasteInCode86 folder in source code folder

@@ -1,19 +1,16 @@
 #pragma once
-#include "SDL.h"
-#include <vector>
-
-#include "Entity.h"
 #include "Map.h"
-#include "Player.h"
-
-#include"Constants.h"
+#include "Enemy.h"
 
 struct Level {
 	Map map = Map();
-	Entity borderWall = Entity(Vector2D(mapSizeWidth, mapSizeHeight));
-	Player player1 = Player(Vector2D(10, 10), &map.tileMap);
-	Player player2 = Player(Vector2D(10, 200), &map.tileMap);
+	Player player1 = Player(Vector2D(0, 0));
+	Player player2 = Player(Vector2D(0, 128));
+	Enemy enemy1 = Enemy(Vector2D(900, 900));
 
-	Level();
-	~Level();
+	Level() {}
+	~Level() {
+		Entity::entities.clear();
+		Player::players.clear();
+	}
 };
