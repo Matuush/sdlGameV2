@@ -47,7 +47,7 @@ private:
 	Button menuButtons[3] = {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "play", []() { Game::loopType = LEVEL; }),
 		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "exit", []() { Game::loopType = ESCAPE; }),
-		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE - TILE_SIZE / 4 - BUTTON_SIZE.y), "levels", [&]() { Game::loopType = LEVEL_SELECTOR;  levelSelector(); })
+		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE - TILE_SIZE / 4 - BUTTON_SIZE.y), "levels", [&]() { Game::loopType = LEVEL_SELECTOR;  menu(levelButtons); })
 	};
 	Button pauseButtons[5] = {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "resume", []() { Game::loopType = LEVEL; }),
@@ -65,17 +65,17 @@ private:
 			// User input
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) loopType = ESCAPE;
-				for (auto b : arr) b.checkClick(&event);
+				for (int i = 0; i < sizeof(arr); i++) arr[i].checkClick(&event);
 			}
 
 			// Updates
 			window->handleWindow();
-			for (auto&& b : arr) b.onClick();
+			for (int i = 0; i < sizeof(arr); i++) arr[i].onClick();
 
 			// Rendering
 			window->clear();
 			window->renderBackground();
-			for (auto&& b : arr) window->freeRender(&b);
+			for (int i = 0; i < sizeof(arr); i++) window->freeRender(&arr[i]);
 			window->display();
 
 			{ int frameTime = SDL_GetTicks() - frameStart;
