@@ -6,13 +6,12 @@
 class RenderWindow {
 public:
 	static bool paused, renderColliders;
-	static char windowType;
+	static WINDOW_TYPE windowType;
 
 	Camera* cam = new Camera();
 
 	RenderWindow() :window(NULL), renderer(NULL) {
-		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_SIZE.x,
-			SCREEN_SIZE.y, SDL_WINDOW_SHOWN);
+		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)SCREEN_SIZE.x, (int)SCREEN_SIZE.y, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 		textures[0] = IMG_LoadTexture(renderer, NOTHING_TEXTURE.path);
@@ -67,7 +66,7 @@ public:
 		if (paused)SDL_SetTextureAlphaMod(tempTex, 100);
 		else SDL_SetTextureAlphaMod(tempTex, 255);
 
-		SDL_Rect dst{ 0, 0, SCREEN_SIZE.x, SCREEN_SIZE.y };
+		SDL_Rect dst{ 0, 0, (int)SCREEN_SIZE.x, (int)SCREEN_SIZE.y };
 		SDL_RenderCopy(renderer, tempTex, NULL, &dst);
 	}
 
@@ -78,7 +77,7 @@ public:
 			SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 			SDL_FreeSurface(surfaceMessage);
 
-			SDL_Rect dst = { SCREEN_SIZE.x - TILE_SIZE * 2, i * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE };
+			SDL_Rect dst = { (int)(SCREEN_SIZE.x - TILE_SIZE * 2), i * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE };
 			SDL_RenderCopy(renderer, message, NULL, &dst);
 			SDL_DestroyTexture(message);
 		}

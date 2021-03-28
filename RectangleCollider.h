@@ -1,11 +1,13 @@
 #pragma once
-#include "Constants.h"
 
 struct RectangleCollider {
 	double x, y, w, h;
 	RectangleCollider() = default;
 	RectangleCollider(double p_x, double p_y, double p_w, double p_h) : x(p_x), y(p_y), w(p_w), h(p_h) {}
 	RectangleCollider(Vector2D position, Vector2D size) : x(position.x), y(position.y), w(size.x), h(size.y) {}
+	RectangleCollider operator*(const int value) {
+		return RectangleCollider(x * value, y * value, w * value, h * value);
+	}
 
 	bool collides(RectangleCollider* second) {
 		return(collides(second->x, second->y) ||

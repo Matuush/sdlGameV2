@@ -12,7 +12,6 @@ public:
 	Button() = default;
 	Button(Vector2D p_position, const char* p_text, std::function<void()> p_efect) : text(p_text), efect(p_efect) {
 		position = p_position;
-
 		currentFrame = { 0, 0, RAW_TILE * 2, RAW_TILE };
 		textureID = BUTTON_TEXTURE.id;
 	}

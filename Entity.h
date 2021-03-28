@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "SDL/SDL.h"
-#include "RectangleCollider.h"
+#include "Constants.h"
 
 class Entity {
 public:
@@ -15,7 +15,7 @@ public:
 	std::vector<RectangleCollider> colliders;
 	bool solid = 0;
 
-	Entity() = default;
+	Entity() { init(); }
 	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
@@ -90,10 +90,8 @@ protected:
 		else position = position + velocity;
 
 		Vector2D dif = position - pp;
-		for (RectangleCollider& c : colliders) {
-			c.x += dif.x;
-			c.y += dif.y;
-		}
+		for (RectangleCollider& c : colliders)
+			c.x += dif.x, c.y += dif.y;
 	}
 	
 	virtual void update() {
@@ -103,7 +101,5 @@ protected:
 		updatePosition();
 	}
 
-	virtual void input(SDL_Event* event) {
-
-	}
+	virtual void input(SDL_Event* event) { }
 };

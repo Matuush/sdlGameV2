@@ -2,24 +2,17 @@
 #include <string>
 #include "Vector2D.h"
 #include "Texture.h"
+#include "RectangleCollider.h"
 
 // Very usefull
 const bool JIRI_SMRDI = 1;
 const bool JIRI_SE_UMYL = 0;
 
-// Loop types
-const char ESCAPE = 0;
-const char MENU = 1;
-const char LEVEL = 2;
-const char PAUSE = 3;
-
-// Window types
-const char BORDERLESS = 0;
-const char BORDERED = 1;
-const char FULLSCREEN = 2;
+enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR };
+enum WINDOW_TYPE : unsigned char { BORDERLESS, BORDERED, FULLSCREEN };
 
 // GUI
-const char TITLE[] = "SDL Mement";
+const char TITLE[] = "SDL Moment";
 const std::string SEED = "B";
 const int FPS = 60;
 const int FRAME_DELAY = 1000 / FPS;
@@ -66,14 +59,27 @@ const double PLAYER_VELOCITY = DEFAULT_TERMINAL_VELOCITY;
 const double PLAYER_TERMINAL_VELOCITY = 500 * SCALE;
 const double DEFAULT_PLAYER_HEALTH = 50;
 const double DEFAULT_PLAYER_DAMAGE = 5;
-// Temporary player hitbox
-const Vector2D PLAYER_HITBOX_DISTANCE = Vector2D(24 * SCALE, 22 * SCALE);
-const Vector2D PLAYER_HITBOX_SIZE = Vector2D(16 * SCALE, 28 * SCALE);
+RectangleCollider kapustaColliders[17] = {
+	RectangleCollider(12, 13, 32, 32) * SCALE,
+	RectangleCollider(11, 13, 1, 24) * SCALE,
+	RectangleCollider(19, 45, 24, 5) * SCALE,
+	RectangleCollider(44, 19, 8, 25) * SCALE,
+	RectangleCollider(31, 10, 11, 3) * SCALE,
+	RectangleCollider(32, 7, 5, 3) * SCALE,
+	RectangleCollider(52, 24, 2, 17) * SCALE,
+	RectangleCollider(54, 28, 2, 8) * SCALE,
+	RectangleCollider(44, 44, 6, 2) * SCALE,
+	RectangleCollider(43, 46, 4, 2) * SCALE,
+	RectangleCollider(44, 17, 6, 2) * SCALE,
+	RectangleCollider(44, 15, 3, 2) * SCALE,
+	RectangleCollider(16, 45, 3, 3) * SCALE,
+	RectangleCollider(14, 11, 7, 2) * SCALE,
+	RectangleCollider(17, 9, 4, 2) * SCALE,
+	RectangleCollider(10, 19, 1, 13) * SCALE,
+	RectangleCollider(36, 50, 6, 1) * SCALE
+};
 
 // Enemy attributes
-const double defaultEnemyHealth = 50;
-const double defaultEnemyDamage = 5;
-const double defaultEnemyTerminalVelocity = DEFAULT_TERMINAL_VELOCITY / 2;
-// Temporary enemy hitbox
-const Vector2D enemyHitboxDistance = PLAYER_HITBOX_DISTANCE;
-const Vector2D enemyHitboxSize = PLAYER_HITBOX_SIZE;
+const double DEFAULT_ENEMY_HEALTH = 50;
+const double DEFAULT_ENEMY_DAMAGE = 5;
+const double DEFAULT_ENEMY_TERMINAL_VELOCITY = DEFAULT_TERMINAL_VELOCITY / 2;

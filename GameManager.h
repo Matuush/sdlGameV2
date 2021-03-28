@@ -9,7 +9,7 @@ bool com = 0;
 
 class Game {
 public:
-	static char loopType;
+	static LOOP_TYPE loopType;
 
 	Game() {
 #if com
@@ -22,7 +22,7 @@ public:
 	void theLoop() {
 		while (loopType != ESCAPE) {
 			switch (loopType) {
-			case MENU: menu(); break;
+			case MENU: menu(menuButtons); break;
 			case LEVEL: level(); break;
 			case PAUSE: pause(); break;
 			}
@@ -41,21 +41,23 @@ private:
 
 	RenderWindow* window = new RenderWindow();
 
+	Button levelButtons[5] = {
+
+	};
 	Button menuButtons[3] = {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "play", []() { Game::loopType = LEVEL; }),
 		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "exit", []() { Game::loopType = ESCAPE; }),
-		Button(Vector2D(SCREEN_SIZE.x - 700.0, 50.0), "fortnite", []() { Game::loopType = LEVEL; })
+		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE - TILE_SIZE / 4 - BUTTON_SIZE.y), "levels", [&]() { Game::loopType = LEVEL_SELECTOR;  levelSelector(); })
 	};
-	Button pauseButtons[6] = {
+	Button pauseButtons[5] = {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "resume", []() { Game::loopType = LEVEL; }),
 		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "menu", []() { Game::loopType = MENU; }),
-		Button(Vector2D(SCREEN_SIZE.x - 700.0, 50.0), "fortnite", []() { system("\"D:/Program Files/Games/Epic Games/Fortnite/FortniteGame/Binaries/Win64/FortniteClient-Win64-Shipping\""); }),
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x * 3 / 4, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "bordered", []() { RenderWindow::windowType = BORDERED; }),
 		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "borderless", []() { RenderWindow::windowType = BORDERLESS; }),
 		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 4, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "fullscreen", []() { RenderWindow::windowType = FULLSCREEN; })
 	};
 
-	inline void menu() {
+	inline void menu(Button arr[]) {
 		SDL_Event event;
 		while (loopType == MENU) {
 			int frameStart = SDL_GetTicks();
@@ -63,22 +65,21 @@ private:
 			// User input
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) loopType = ESCAPE;
-				else if (event.key.keysym.sym == SDLK_SPACE && event.type == SDL_KEYDOWN) loopType = LEVEL;
-				for (auto&& b : menuButtons) b.checkClick(&event);
+				for (auto b : arr) b.checkClick(&event);
 			}
 
-			//Updates
+			// Updates
 			window->handleWindow();
-			for (auto&& b : menuButtons) b.onClick();
+			for (auto&& b : arr) b.onClick();
 
 			// Rendering
 			window->clear();
 			window->renderBackground();
-			for (auto&& b : menuButtons) window->freeRender(&b);
+			for (auto&& b : arr) window->freeRender(&b);
 			window->display();
 
-			int frameTime = SDL_GetTicks() - frameStart;
-			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
+			{ int frameTime = SDL_GetTicks() - frameStart;
+			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime); }
 		}
 	}
 	inline void level() {
@@ -103,14 +104,14 @@ private:
 			window->handleWindow();
 			Entity::updateAll();
 
-			//Rendering
+			// Rendering
 			window->clear();
-			for (Entity* e : Entity::entities) window->render(e);
-			window->displayStats(Player::players);
+				for (Entity* e : Entity::entities) window->render(e);
+				window->displayStats(Player::players);
 			window->display();
 
-			int frameTime = SDL_GetTicks() - frameStart;
-			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
+			{ int frameTime = SDL_GetTicks() - frameStart;
+			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime); }
 		}
 	}
 	inline void pause() {
@@ -126,19 +127,19 @@ private:
 				for (auto&& b : pauseButtons) b.checkClick(&event);
 			}
 
-			//Updates
+			// Updates
 			window->handleWindow();
 			for (auto&& b : pauseButtons) b.onClick();
 
 			// Rendering
 			window->clear();
-			for (Entity* e : Entity::entities) window->render(e);
-			window->renderBackground();
-			for (auto&& b : pauseButtons) window->freeRender(&b);
+				for (Entity* e : Entity::entities) window->render(e);
+				window->renderBackground();
+				for (auto&& b : pauseButtons) window->freeRender(&b);
 			window->display();
 
-			int frameTime = SDL_GetTicks() - frameStart;
-			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
+			{ int frameTime = SDL_GetTicks() - frameStart;
+			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime); }
 		}
 		window->paused = 0;
 	}

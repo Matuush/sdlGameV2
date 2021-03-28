@@ -11,15 +11,14 @@ public:
 
 	Player() = default;
 	Player(Vector2D p_position) : Entity() {
-		position = p_position;
-		lastPos = position;
+		position = p_position, lastPos = position;
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
 
-		currentFrame = { 0, 0, PLAYER_TEXTURE.width, PLAYER_TEXTURE.height };
-		textureID = PLAYER_TEXTURE.id;
+		currentFrame = { 0, 0, PLAYER_TEXTURE.width, PLAYER_TEXTURE.height }, textureID = PLAYER_TEXTURE.id;
 
 		solid = true;
-		colliders.push_back(RectangleCollider(position + PLAYER_HITBOX_DISTANCE, PLAYER_HITBOX_SIZE));
+		for (auto& col : kapustaColliders)
+			colliders.push_back(RectangleCollider(position.x + col.x, position.y + col.y, col.w, col.h));
 
 		Player::players.push_back(this);
 		Entity::entities.push_back(this);
@@ -53,60 +52,35 @@ public:
 	}
 	void input(SDL_Event* event) override{
 		switch (event->type) {
-		case SDL_KEYDOWN:
-			switch (event->key.keysym.sym) {
-			case SDLK_w:
-				keyState.w = 1;
+			case SDL_KEYDOWN:
+				switch (event->key.keysym.sym) {
+					case SDLK_w: keyState.w = 1; break;
+					case SDLK_a: keyState.a = 1; break;
+					case SDLK_s: keyState.s = 1; break;
+					case SDLK_d: keyState.d = 1; break;
+				}
 				break;
-			case SDLK_a:
-				keyState.a = 1;
-				lastRight = 0;
-				break;
-			case SDLK_s:
-				keyState.s = 1;
-				break;
-			case SDLK_d:
-				keyState.d = 1;
-				lastRight = 1;
-				break;
-			}
-			break;
-		case SDL_KEYUP:
-			switch (event->key.keysym.sym) {
-			case SDLK_w:
-				keyState.w = 0;
-				break;
-			case SDLK_a:
-				keyState.a = 0;
-				if (keyState.d && !lastRight) lastRight = 1;
-				break;
-			case SDLK_s:
-				keyState.s = 0;
-				break;
-			case SDLK_d:
-				keyState.d = 0;
-				if (keyState.a && lastRight) lastRight = 0;
+			case SDL_KEYUP:
+				switch (event->key.keysym.sym) {
+					case SDLK_w: keyState.w = 0; break;
+					case SDLK_a: keyState.a = 0; break;
+					case SDLK_s: keyState.s = 0; break;
+					case SDLK_d: keyState.d = 0; break;
+				}
 				break;
 			}
-			break;
-		}
 	}
 
 	inline void changeSprite() {
-		if (((keyState.a == 0 && keyState.d == 0) || (keyState.a == 1 && keyState.d == 1)) && ((keyState.w == 0 && keyState.s == 0) || (keyState.w == 1 && keyState.s == 1))) {
-			currentFrame.y = RAW_PLAYER;
-			currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
-		}
+		if (velocity.x < 0) lastRight = true;
+		else if (velocity.x > 0) lastRight = false;
+
+		if (((keyState.a == 0 && keyState.d == 0) || (keyState.a == 1 && keyState.d == 1)) && ((keyState.w == 0 && keyState.s == 0) || (keyState.w == 1 && keyState.s == 1))) 
+			currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
 		else {
 			int tick = (int)(SDL_GetTicks() / (500 / PLAYER_VELOCITY)) % 6;
-			if (tick != 5) {
-				currentFrame.y = 0;
-				currentFrame.x = tick * RAW_PLAYER;
-			}
-			else {
-				currentFrame.y = RAW_PLAYER;
-				currentFrame.x = 0;
-			}
+			if (tick != 5) currentFrame.y = 0, currentFrame.x = tick * RAW_PLAYER;
+			else currentFrame.y = RAW_PLAYER, currentFrame.x = 0;
 		}
 	}
 
