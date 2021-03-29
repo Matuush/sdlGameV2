@@ -49,8 +49,11 @@ public:
 		if (renderColliders) renderCollider(p_entity);
 	}
 	void freeRender(Button* p_entity) {
+		SDL_Texture* tempSex = textures[p_entity->textureID];
+		if (!p_entity->unlocked) SDL_SetTextureColorMod(tempSex, 100, 0, 0);
+		else SDL_SetTextureColorMod(tempSex, 255, 255, 255);
 		SDL_Rect dst{ (int)(p_entity->position.x), (int)(p_entity->position.y), (int)p_entity->w, (int)p_entity->h };
-		SDL_RenderCopy(renderer, textures[p_entity->textureID], &p_entity->currentFrame, &dst);
+		SDL_RenderCopy(renderer, tempSex, &p_entity->currentFrame, &dst);
 
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, p_entity->text, p_entity->color);
 		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);

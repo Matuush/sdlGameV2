@@ -5,6 +5,7 @@
 
 class Button : public Entity {
 public:
+	bool unlocked = 1;
 	double w = BUTTON_SIZE.x, h = BUTTON_SIZE.y;
 	SDL_Color color = PASSIVE_BUTTON_TEXT_COLOR;
 	const char* text;
@@ -21,7 +22,7 @@ public:
 			(event->button.y > position.y) && (event->button.y < position.y + h)) {
 			color = ACTIVE_BUTTON_TEXT_COLOR;
 			currentFrame.y = RAW_TILE;
-			if (event->button.button == SDL_BUTTON_LEFT && event->type == SDL_MOUSEBUTTONDOWN) clicked = true;
+			if (event->button.button == SDL_BUTTON_LEFT && event->type == SDL_MOUSEBUTTONDOWN && unlocked) clicked = true;
 		}
 		else {
 			color = PASSIVE_BUTTON_TEXT_COLOR;

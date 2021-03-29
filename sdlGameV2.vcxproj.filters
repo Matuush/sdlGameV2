@@ -68,5 +68,8 @@
     <ClInclude Include="RectangleCollider.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
+    <ClInclude Include="MenuPage.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

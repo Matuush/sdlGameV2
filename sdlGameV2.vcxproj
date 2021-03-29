@@ -30,6 +30,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="KeyState.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="MenuPage.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="RectangleCollider.h" />
