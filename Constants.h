@@ -8,7 +8,7 @@
 const bool JIRI_SMRDI = 1;
 const bool JIRI_SE_UMYL = 0;
 
-enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR };
+enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
 enum WINDOW_TYPE : unsigned char { BORDERLESS, BORDERED, FULLSCREEN };
 
 // GUI

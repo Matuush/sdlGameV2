@@ -83,7 +83,7 @@ protected:
 					if (yCollides) break;
 				}
 				c.y -= velocity.y;
-				if (xCollides) break;
+				if (yCollides) break;
 			}
 			if (!yCollides) position.y += velocity.y;
 		}

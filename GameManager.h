@@ -3,6 +3,7 @@
 #include "RenderWindow.h"
 #include "Level.h"
 #include "MenuPage.h"
+
 bool com = 0;
 #if com 
 #include "UdpCom.h" 
@@ -43,22 +44,27 @@ private:
 	RenderWindow* window = new RenderWindow();
 
 	Page levelSelector = Page(LEVEL_SELECTOR, { 
-		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "level 1", []() { Game::loopType = LEVEL; })
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "level 1", []() { loopType = LEVEL; })
 	});
 	Page startMenu = Page(MENU, {
-		Button(Vector2D(SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "levels", [&]() { Game::loopType = LEVEL_SELECTOR; menu(levelSelector); }),
-		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "exit", []() { Game::loopType = ESCAPE; }),
-		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE + 300), "play", []() { Game::loopType = LEVEL; })
+		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "levels", [&]() { menu(levelSelector); }),
+		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "exit", []() { loopType = ESCAPE; }),
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = loopType; menu(settings); if (loopType != LEVEL) loopType = tempLoopT; if (loopType == PAUSE) RenderWindow::paused = true; })
 	});
 	Page pause = Page(PAUSE, {
-		Button(Vector2D(SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "resume", []() { Game::loopType = LEVEL; }),
-		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - TILE_SIZE * 2, SCREEN_SIZE.y / 2 - TILE_SIZE), "menu", []() { Game::loopType = MENU; }),
+		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "resume", []() { Game::loopType = LEVEL; }),
+		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "menu", []() { Game::loopType = MENU; }),
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = Game::loopType; menu(settings); if (Game::loopType != LEVEL) Game::loopType = tempLoopT; if (loopType == PAUSE) RenderWindow::paused = true; })
+	});
+	Page settings = Page(SETTINGS, {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x * 3 / 4, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "bordered", []() { RenderWindow::windowType = BORDERED; }),
 		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "borderless", []() { RenderWindow::windowType = BORDERLESS; }),
-		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 4, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "fullscreen", []() { RenderWindow::windowType = FULLSCREEN; })
+		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 4, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "fullscreen", []() { RenderWindow::windowType = FULLSCREEN; }),
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, 100.0), "back", []() { loopType = ESCAPE; })
 	});
 
 	inline void menu(Page page) {
+		loopType = page.loopType;
 		if (loopType == PAUSE) window->paused = true;
 		SDL_Event event;
 		while (loopType == page.loopType) {
@@ -67,6 +73,7 @@ private:
 			// User input
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) loopType = ESCAPE;
+				else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && window->paused) loopType = LEVEL;
 				for (auto& b : page.buttons) b.checkClick(&event);
 			}
 
@@ -96,7 +103,7 @@ private:
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) loopType = ESCAPE;
 				else if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
-					for (auto&& p : Player::players) p->keyState.zeroify();
+					for (auto& p : Player::players) p->keyState.zeroify();
 					loopType = PAUSE;
 					menu(pause);
 					if (loopType != LEVEL) return;
