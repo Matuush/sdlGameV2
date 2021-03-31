@@ -1,5 +1,4 @@
 #include "GameManager.h"
-Entity Entity::borderWall;
 bool RenderWindow::paused = 0, RenderWindow::renderColliders = 0;
 WINDOW_TYPE RenderWindow::windowType = BORDERED;
 LOOP_TYPE Game::loopType = MENU;

@@ -6,7 +6,6 @@
 class Entity {
 public:
 	static std::vector<Entity*> entities;
-	static Entity borderWall;
 
 	SDL_Rect currentFrame = {0, 0, RAW_TILE, RAW_TILE};
 	unsigned char textureID = NOTHING_TEXTURE.id;

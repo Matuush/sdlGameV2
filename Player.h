@@ -5,7 +5,6 @@
 class Player : public Entity {
 public:
 	static std::vector<Player*> players;
-	std::vector<Projectile*> bullets;
 
 	KeyState keyState = KeyState(), prevKeyState = keyState;
 	double health = DEFAULT_PLAYER_HEALTH, damage = DEFAULT_PLAYER_DAMAGE;
@@ -33,7 +32,7 @@ public:
 		//changeSprite();
 
 		if (keyState.lcPos != DEFAULT_BULLET_POSITION) {
-			bullets.push_back(new Projectile(position, keyState.lcPos));
+			new Projectile(position + RAW_PLAYER * SCALE / 2, keyState.lcPos);
 			keyState.lcPos = DEFAULT_BULLET_POSITION;
 		}
 	}

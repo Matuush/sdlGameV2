@@ -12,6 +12,12 @@ public:
 				tileMap[i][j] = new Entity(Vector2D(i * TILE_SIZE, j * TILE_SIZE), NOTHING_TEXTURE);
 		generateMap();
 		manuallyChangeTiles();
+
+		borderWall.solid = true;
+		borderWall.colliders.push_back(RectangleCollider(0, MAP_SIZE.y, MAP_SIZE.x, 100));
+		borderWall.colliders.push_back(RectangleCollider(MAP_SIZE.x, 0, 100, MAP_SIZE.y));
+		borderWall.colliders.push_back(RectangleCollider(0, -100, MAP_SIZE.x, 100));
+		borderWall.colliders.push_back(RectangleCollider(-100, 0, 100, MAP_SIZE.y));
 	}
 	~Map() {
 		for (auto&& i : tileMap)

@@ -3,6 +3,7 @@
 #include "RenderWindow.h"
 #include "Level.h"
 #include "MenuPage.h"
+#include <iostream>
 
 bool com = 0;
 #if com
@@ -14,11 +15,6 @@ public:
 	static LOOP_TYPE loopType;
 
 	Game() {
-		Entity::borderWall.solid = true;
-		Entity::borderWall.colliders.push_back(RectangleCollider(0, MAP_SIZE.y, MAP_SIZE.x, 100));
-		Entity::borderWall.colliders.push_back(RectangleCollider(MAP_SIZE.x, 0, 100, MAP_SIZE.y));
-		Entity::borderWall.colliders.push_back(RectangleCollider(0, -100, MAP_SIZE.x, 100));
-		Entity::borderWall.colliders.push_back(RectangleCollider(-100, 0, 100, MAP_SIZE.y));
 #if com
 		UdpCom::start();
 		UdpCom com(ip, 80);
@@ -115,6 +111,7 @@ private:
 				}
 				Entity::inputAll(&event);
 			}
+			std::cout << Entity::entities.size() << std::endl;
 
 			// Updates
 			window->handleWindow();
