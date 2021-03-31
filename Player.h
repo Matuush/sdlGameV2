@@ -8,10 +8,9 @@ public:
 
 	KeyState keyState = KeyState(), prevKeyState = keyState;
 	double health = DEFAULT_PLAYER_HEALTH, damage = DEFAULT_PLAYER_DAMAGE;
-	Vector2D* cameraPos;
 
 	Player() = default;
-	Player(Vector2D p_position, Vector2D* p_cameraPos) : Entity(p_position, PLAYER_TEXTURE), cameraPos(p_cameraPos){
+	Player(Vector2D p_position) : Entity(p_position, PLAYER_TEXTURE) {
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
 		solid = true;
 		for (auto& col : kapustaColliders) colliders.push_back(RectangleCollider(position.x + col.x, position.y + col.y, col.w, col.h));
@@ -31,11 +30,6 @@ public:
 		prevKeyState = keyState;
 
 		//changeSprite();
-
-		if (keyState.lcPos != DEFAULT_BULLET_POSITION) {
-			new Projectile(position + RAW_PLAYER * SCALE / 2, keyState.lcPos);
-			keyState.lcPos = DEFAULT_BULLET_POSITION;
-		}
 	}
 	void input(SDL_Event* event) override{
 		switch (event->type) {
@@ -46,9 +40,6 @@ public:
 					case SDLK_s: keyState.s = 1; break;
 					case SDLK_d: keyState.d = 1; break;
 				}
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				keyState.lcPos = Vector2D(event->button.x, event->button.y) + *cameraPos;
 				break;
 			case SDL_KEYUP:
 				switch (event->key.keysym.sym) {

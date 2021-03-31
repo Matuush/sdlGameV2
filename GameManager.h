@@ -3,6 +3,7 @@
 #include "RenderWindow.h"
 #include "Level.h"
 #include "MenuPage.h"
+#include <iostream>
 
 bool com = 0;
 #if com
@@ -95,7 +96,7 @@ private:
 	}
 	inline void level() {
 		window->cam->refresh();
-		Level level(&window->cam->position); SDL_Event event;
+		Level level; SDL_Event event;
 		while (loopType == LEVEL) {
 			int frameStart = SDL_GetTicks();
 
@@ -108,9 +109,10 @@ private:
 					menu(pause);
 					if (loopType != LEVEL) return;
 				}
+				if (event.type == SDL_MOUSEBUTTONDOWN) new Projectile(level.player1.position + RAW_PLAYER * SCALE / 2, Vector2D(event.button.x, event.button.y) + window->cam->position - SCREEN_SIZE);
 				Entity::inputAll(&event);
 			}
-
+			std::cout << Entity::entities.size() << std::endl;
 			// Updates
 			window->handleWindow();
 			Entity::updateAll();

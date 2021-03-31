@@ -30,12 +30,10 @@ public:
 	}
 
 	static void updateAll() {
-		for (auto&& e : Entity::entities)
-			e->update();
+		for (auto&& e : Entity::entities) e->update();
 	}
 	static void inputAll(SDL_Event* event) {
-		for (auto&& e : Entity::entities)
-			e->input(event);
+		for (auto&& e : Entity::entities) e->input(event);
 	}
 	bool collides(Entity* second) {
 		for (RectangleCollider c : colliders)
