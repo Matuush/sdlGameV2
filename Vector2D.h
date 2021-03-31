@@ -11,8 +11,9 @@ struct Vector2D {
 
 	void limit(double limit) { if (getMagnitude() > limit) setMagnitude(limit); }
 	void setMagnitude(double limit) {
-		x = x / getMagnitude() * limit;
-		y = y / getMagnitude() * limit;
+		double aah = getMagnitude();
+		x = x / aah * limit;
+		y = y / aah * limit;
 	}
 	Vector2D normalize() const { return Vector2D(x / getMagnitude(), y / getMagnitude()); }
 

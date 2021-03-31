@@ -4,16 +4,21 @@
 class Projectile : public Entity {
 public:
 	Projectile() = default;
-	Projectile(Vector2D p_position, Vector2D destination) : Entity(p_position, BULLET_TEXTURE){
-		colliders.push_back(RectangleCollider(1, 0, 2, 4));
-		colliders.push_back(RectangleCollider(0, 1, 4, 2));
+	Projectile(Vector2D p_position, Vector2D destination) : Entity(){
+		init();
+		position = p_position;
+		currentFrame = { 0, 0, BULLET_TEXTURE.width, BULLET_TEXTURE.height };
+		textureID = BULLET_TEXTURE.id;
+		colliders.push_back(RectangleCollider(position.x + SCALE, position.y, 2 * SCALE, 4 * SCALE));
+		colliders.push_back(RectangleCollider(position.x, position.y + SCALE, 4 * SCALE, 2 * SCALE));
+		Entity::entities.push_back(this);
 		velocity = destination - position;
 		velocity.limit(terminalVelocity);
 	}
 
 private:
 	void update() override {
-		position += velocity;
+		updatePosition();
 		if (position.x < 0 || position.y < 0 || position.x > MAP_SIZE.x || position.y > MAP_SIZE.y) {
 			Entity::entities.erase(std::remove(Entity::entities.begin(), Entity::entities.end(), this), Entity::entities.end());
 			delete this;

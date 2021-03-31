@@ -8,9 +8,10 @@ public:
 
 	KeyState keyState = KeyState(), prevKeyState = keyState;
 	double health = DEFAULT_PLAYER_HEALTH, damage = DEFAULT_PLAYER_DAMAGE;
+	Vector2D* cameraPos;
 
 	Player() = default;
-	Player(Vector2D p_position) : Entity(p_position, PLAYER_TEXTURE) {
+	Player(Vector2D p_position, Vector2D* p_cameraPos) : Entity(p_position, PLAYER_TEXTURE), cameraPos(p_cameraPos){
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
 		solid = true;
 		for (auto& col : kapustaColliders) colliders.push_back(RectangleCollider(position.x + col.x, position.y + col.y, col.w, col.h));
@@ -47,7 +48,7 @@ public:
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				keyState.lcPos = Vector2D(event->button.x, event->button.y);
+				keyState.lcPos = Vector2D(event->button.x, event->button.y) + *cameraPos;
 				break;
 			case SDL_KEYUP:
 				switch (event->key.keysym.sym) {

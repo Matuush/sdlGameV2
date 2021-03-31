@@ -3,7 +3,6 @@
 #include "RenderWindow.h"
 #include "Level.h"
 #include "MenuPage.h"
-#include <iostream>
 
 bool com = 0;
 #if com
@@ -96,7 +95,7 @@ private:
 	}
 	inline void level() {
 		window->cam->refresh();
-		Level level; SDL_Event event;
+		Level level(&window->cam->position); SDL_Event event;
 		while (loopType == LEVEL) {
 			int frameStart = SDL_GetTicks();
 
@@ -111,7 +110,6 @@ private:
 				}
 				Entity::inputAll(&event);
 			}
-			std::cout << Entity::entities.size() << std::endl;
 
 			// Updates
 			window->handleWindow();
