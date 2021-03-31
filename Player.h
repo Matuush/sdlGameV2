@@ -1,47 +1,29 @@
 #pragma once
-#include "Entity.h"
+#include "Projectile.h"
 #include "KeyState.h"
 
 class Player : public Entity {
 public:
 	static std::vector<Player*> players;
+	std::vector<Projectile*> bullets;
 
-	KeyState keyState = KeyState(), prevKeyState;
+	KeyState keyState = KeyState(), prevKeyState = keyState;
 	double health = DEFAULT_PLAYER_HEALTH, damage = DEFAULT_PLAYER_DAMAGE;
 
 	Player() = default;
-	Player(Vector2D p_position) : Entity() {
-		position = p_position, lastPos = position;
+	Player(Vector2D p_position) : Entity(p_position, PLAYER_TEXTURE) {
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
-
-		currentFrame = { 0, 0, PLAYER_TEXTURE.width, PLAYER_TEXTURE.height }, textureID = PLAYER_TEXTURE.id;
-
 		solid = true;
-		for (auto& col : kapustaColliders)
-			colliders.push_back(RectangleCollider(position.x + col.x, position.y + col.y, col.w, col.h));
-
+		for (auto& col : kapustaColliders) colliders.push_back(RectangleCollider(position.x + col.x, position.y + col.y, col.w, col.h));
 		Player::players.push_back(this);
-		Entity::entities.push_back(this);
 	}
 
 	void update() override {
 		velocity = (velocity + acceleration);
-		if (keyState.w != prevKeyState.w) {
-			if (keyState.w) velocity.y -= PLAYER_VELOCITY;
-			else velocity.y += PLAYER_VELOCITY;
-		}
-		if (keyState.a != prevKeyState.a) {
-			if (keyState.a) velocity.x -= PLAYER_VELOCITY;
-			else velocity.x += PLAYER_VELOCITY;
-		}
-		if (keyState.s != prevKeyState.s) {
-			if (keyState.s) velocity.y += PLAYER_VELOCITY;
-			else velocity.y -= PLAYER_VELOCITY;
-		}
-		if (keyState.d != prevKeyState.d) {
-			if (keyState.d) velocity.x += PLAYER_VELOCITY;
-			else velocity.x -= PLAYER_VELOCITY;
-		}
+		if (keyState.w != prevKeyState.w) velocity.y += keyState.w ? -PLAYER_VELOCITY : PLAYER_VELOCITY;
+		if (keyState.a != prevKeyState.a) velocity.x += keyState.a ? -PLAYER_VELOCITY : PLAYER_VELOCITY;
+		if (keyState.s != prevKeyState.s) velocity.y += keyState.s ? PLAYER_VELOCITY : -PLAYER_VELOCITY;
+		if (keyState.d != prevKeyState.d) velocity.x += keyState.d ? PLAYER_VELOCITY : -PLAYER_VELOCITY;
 
 		velocity.limit(terminalVelocity);
 
@@ -49,6 +31,11 @@ public:
 		prevKeyState = keyState;
 
 		//changeSprite();
+
+		if (keyState.lcPos != DEFAULT_BULLET_POSITION) {
+			bullets.push_back(new Projectile(position, keyState.lcPos));
+			keyState.lcPos = DEFAULT_BULLET_POSITION;
+		}
 	}
 	void input(SDL_Event* event) override{
 		switch (event->type) {
@@ -59,6 +46,9 @@ public:
 					case SDLK_s: keyState.s = 1; break;
 					case SDLK_d: keyState.d = 1; break;
 				}
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				keyState.lcPos = Vector2D(event->button.x, event->button.y);
 				break;
 			case SDL_KEYUP:
 				switch (event->key.keysym.sym) {
@@ -72,15 +62,13 @@ public:
 	}
 
 	inline void changeSprite() {
-		if (velocity.x < 0) lastRight = true;
-		else if (velocity.x > 0) lastRight = false;
+		lastRight = velocity.x < 0 ? false : (velocity.x > 0 ? true : lastRight);
 
 		if (((keyState.a == 0 && keyState.d == 0) || (keyState.a == 1 && keyState.d == 1)) && ((keyState.w == 0 && keyState.s == 0) || (keyState.w == 1 && keyState.s == 1))) 
 			currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
 		else {
 			int tick = (int)(SDL_GetTicks() / (500 / PLAYER_VELOCITY)) % 6;
-			if (tick != 5) currentFrame.y = 0, currentFrame.x = tick * RAW_PLAYER;
-			else currentFrame.y = RAW_PLAYER, currentFrame.x = 0;
+			currentFrame = tick == 5 ? SDL_Rect{ 0, RAW_ENEMY, currentFrame.w, currentFrame.h } : SDL_Rect{ tick * RAW_ENEMY, 0, currentFrame.w, currentFrame.h };
 		}
 	}
 

@@ -14,16 +14,19 @@ public:
 		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)SCREEN_SIZE.x, (int)SCREEN_SIZE.y, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-		textures[0] = IMG_LoadTexture(renderer, NOTHING_TEXTURE.path);
-		textures[1] = IMG_LoadTexture(renderer, WATER_TEXTURE.path);
-		textures[2] = IMG_LoadTexture(renderer, DIRT_TEXTURE.path);
-		textures[3] = IMG_LoadTexture(renderer, GRASS_TEXTURE.path);
-		textures[4] = IMG_LoadTexture(renderer, PLAYER_TEXTURE.path);
-		textures[5] = IMG_LoadTexture(renderer, BUTTON_TEXTURE.path);
-		textures[6] = IMG_LoadTexture(renderer, BACKGROUND_TEXTURE.path);
+		textures[NOTHING_TEXTURE.id] = IMG_LoadTexture(renderer, NOTHING_TEXTURE.path);
+		createTexture(NOTHING_TEXTURE);
+		createTexture(WATER_TEXTURE);
+		createTexture(DIRT_TEXTURE);
+		createTexture(GRASS_TEXTURE);
+		createTexture(PLAYER_TEXTURE);
+		createTexture(ENEMY_TEXTURE);
+		createTexture(BUTTON_TEXTURE);
+		createTexture(BACKGROUND_TEXTURE);
+		createTexture(BULLET_TEXTURE);
 
 		TTF_Init(); // Text
-		defaultFont = TTF_OpenFont("textures/Sans.ttf", 24);
+		defaultFont = TTF_OpenFont("textures/ComicSans.ttf", 128);
 	}
 
 	void handleWindow() {
@@ -91,14 +94,17 @@ private:
 	SDL_Renderer* renderer;
 
 	TTF_Font* defaultFont;
-	SDL_Texture* textures[7];
+	SDL_Texture* textures[8];
 
 	inline void renderCollider(Entity* p_entity) {
-	if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-	for (const auto& c : p_entity->colliders) {
-		SDL_Rect colsrc = { (int)(c.x - cam->x), (int)(c.y - cam->y), (int)c.w, (int)c.h };
-		SDL_RenderDrawRect(renderer, &colsrc);
+		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+		for (const auto& c : p_entity->colliders) {
+			SDL_Rect colsrc = { (int)(c.x - cam->x), (int)(c.y - cam->y), (int)c.w, (int)c.h };
+			SDL_RenderDrawRect(renderer, &colsrc);
+		}
+		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	}
-	if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-}
+	inline void createTexture(Texture p_texture) {
+		textures[p_texture.id] = IMG_LoadTexture(renderer, p_texture.path);
+	}
 };

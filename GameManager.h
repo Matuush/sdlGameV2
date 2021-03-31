@@ -5,7 +5,7 @@
 #include "MenuPage.h"
 
 bool com = 0;
-#if com 
+#if com
 #include "UdpCom.h" 
 #endif
 
@@ -14,6 +14,11 @@ public:
 	static LOOP_TYPE loopType;
 
 	Game() {
+		Entity::borderWall.solid = true;
+		Entity::borderWall.colliders.push_back(RectangleCollider(0, MAP_SIZE.y, MAP_SIZE.x, 100));
+		Entity::borderWall.colliders.push_back(RectangleCollider(MAP_SIZE.x, 0, 100, MAP_SIZE.y));
+		Entity::borderWall.colliders.push_back(RectangleCollider(0, -100, MAP_SIZE.x, 100));
+		Entity::borderWall.colliders.push_back(RectangleCollider(-100, 0, 100, MAP_SIZE.y));
 #if com
 		UdpCom::start();
 		UdpCom com(ip, 80);
@@ -49,12 +54,12 @@ private:
 	Page startMenu = Page(MENU, {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "levels", [&]() { menu(levelSelector); }),
 		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "exit", []() { loopType = ESCAPE; }),
-		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = loopType; menu(settings); if (loopType != LEVEL) loopType = tempLoopT; if (loopType == PAUSE) RenderWindow::paused = true; })
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = loopType; menu(settings); if (loopType != LEVEL) loopType = tempLoopT;})
 	});
 	Page pause = Page(PAUSE, {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "resume", []() { Game::loopType = LEVEL; }),
 		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "menu", []() { Game::loopType = MENU; }),
-		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = Game::loopType; menu(settings); if (Game::loopType != LEVEL) Game::loopType = tempLoopT; if (loopType == PAUSE) RenderWindow::paused = true; })
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = Game::loopType; menu(settings); if (Game::loopType != LEVEL) Game::loopType = tempLoopT;})
 	});
 	Page settings = Page(SETTINGS, {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x * 3 / 4, SCREEN_SIZE.y - BUTTON_SIZE.y - 50), "bordered", []() { RenderWindow::windowType = BORDERED; }),
@@ -65,10 +70,10 @@ private:
 
 	inline void menu(Page page) {
 		loopType = page.loopType;
-		if (loopType == PAUSE) window->paused = true;
 		SDL_Event event;
 		while (loopType == page.loopType) {
 			int frameStart = SDL_GetTicks();
+			if (loopType == PAUSE) RenderWindow::paused = true;
 
 			// User input
 			while (SDL_PollEvent(&event)) {

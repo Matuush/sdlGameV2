@@ -8,14 +8,14 @@
 const bool JIRI_SMRDI = 1;
 const bool JIRI_SE_UMYL = 0;
 
-enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
-enum WINDOW_TYPE : unsigned char { BORDERLESS, BORDERED, FULLSCREEN };
+enum LOOP_TYPE : unsigned char { ESCAPE = 0, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
+enum WINDOW_TYPE : unsigned char { BORDERLESS = 0, BORDERED, FULLSCREEN };
 
 // GUI
 const char TITLE[] = "SDL Moment";
 const std::string SEED = "B";
-const int FPS = 60;
-const int FRAME_DELAY = 1000 / FPS;
+const unsigned char FPS = 60;
+const unsigned char FRAME_DELAY = 1000 / FPS;
 const SDL_Color DEFAULT_TEXT_COLOR = { 255, 255, 255 };
 const SDL_Color BACKGROUND_COLOR = { 0, 255, 0 };
 
@@ -26,20 +26,21 @@ const int RAW_PLAYER = 64;
 const int RAW_ENEMY = 64;
 
 // Textures
-const Texture NOTHING_TEXTURE(0, "textures/nothing.png", RAW_TILE);
-const Texture WATER_TEXTURE(1, "textures/water.png", RAW_TILE);
-const Texture DIRT_TEXTURE(2, "textures/dirt.png", RAW_TILE);
-const Texture GRASS_TEXTURE(3, "textures/grass.png", RAW_TILE);
-const Texture PLAYER_TEXTURE(4, "textures/kapusta.png", RAW_PLAYER);
-const Texture BUTTON_TEXTURE(5, "textures/button.png", RAW_TILE * 2, RAW_TILE);
-const Texture BACKGROUND_TEXTURE(6, "textures/background.png");
+const Texture NOTHING_TEXTURE("textures/nothing.png", RAW_TILE);
+const Texture WATER_TEXTURE("textures/water.png", RAW_TILE);
+const Texture DIRT_TEXTURE("textures/dirt.png", RAW_TILE);
+const Texture GRASS_TEXTURE("textures/grass.png", RAW_TILE);
+const Texture PLAYER_TEXTURE("textures/kapusta.png", RAW_PLAYER);
 const Texture ENEMY_TEXTURE = PLAYER_TEXTURE;
+const Texture BUTTON_TEXTURE("textures/button.png", RAW_TILE * 2, RAW_TILE);
+const Texture BACKGROUND_TEXTURE("textures/background.png");
+const Texture BULLET_TEXTURE("textures/bullet.png", 4, 4);
 
 // Map constants
 const int TILE_SIZE = RAW_TILE * SCALE;
-const int SCREEN_RATIO = 2;
-const int SCREEN_MAP_RATIO = 3;
-const int SCREEN_TILE_COUNT_Y = 7;
+const unsigned int SCREEN_RATIO = 2;
+const unsigned int SCREEN_MAP_RATIO = 3;
+const unsigned int SCREEN_TILE_COUNT_Y = 7;
 const Vector2D SCREEN_TILE_COUNT = Vector2D(SCREEN_TILE_COUNT_Y * SCREEN_RATIO, SCREEN_TILE_COUNT_Y);
 const Vector2D SCREEN_SIZE = SCREEN_TILE_COUNT * TILE_SIZE;
 const Vector2D MAP_TILE_COUNT = SCREEN_TILE_COUNT * SCREEN_MAP_RATIO;
@@ -59,6 +60,7 @@ const double PLAYER_VELOCITY = DEFAULT_TERMINAL_VELOCITY;
 const double PLAYER_TERMINAL_VELOCITY = 500 * SCALE;
 const double DEFAULT_PLAYER_HEALTH = 50;
 const double DEFAULT_PLAYER_DAMAGE = 5;
+const Vector2D DEFAULT_BULLET_POSITION(-10, -10);
 RectangleCollider kapustaColliders[17] = {
 	RectangleCollider(12, 13, 32, 32) * SCALE,
 	RectangleCollider(11, 13, 1, 24) * SCALE,

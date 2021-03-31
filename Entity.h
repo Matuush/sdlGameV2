@@ -6,9 +6,10 @@
 class Entity {
 public:
 	static std::vector<Entity*> entities;
+	static Entity borderWall;
 
 	SDL_Rect currentFrame = {0, 0, RAW_TILE, RAW_TILE};
-	int textureID = NOTHING_TEXTURE.id;
+	unsigned char textureID = NOTHING_TEXTURE.id;
 	bool lastRight = true;
 
 	Vector2D position;
@@ -19,7 +20,7 @@ public:
 	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		colliders.push_back(RectangleCollider(position.x, position.y, TILE_SIZE, TILE_SIZE));
+		if(textureID != ENEMY_TEXTURE.id || textureID != PLAYER_TEXTURE.id) colliders.push_back(RectangleCollider(position.x, position.y, TILE_SIZE, TILE_SIZE));
 		Entity::entities.push_back(this);
 	}
 	Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
@@ -37,7 +38,6 @@ public:
 		for (auto&& e : Entity::entities)
 			e->input(event);
 	}
-
 	bool collides(Entity* second) {
 		for (RectangleCollider c : colliders)
 			for (RectangleCollider cc : second->colliders)
