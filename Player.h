@@ -50,7 +50,16 @@ public:
 				}
 				break;
 			}
+	} 
+	void recoil(Vector2D shotPos) {
+		Vector2D tempVel = position - shotPos;
+		tempVel.limit(terminalVelocity);
+		velocity += tempVel;
+		velocity.limit(terminalVelocity);
 	}
+private:
+	double movementAcceleration = PLAYER_VELOCITY;
+	Vector2D lastPos;
 
 	inline void changeSprite() {
 		lastRight = velocity.x < 0 ? false : (velocity.x > 0 ? true : lastRight);
@@ -62,8 +71,4 @@ public:
 			currentFrame = tick == 5 ? SDL_Rect{ 0, RAW_ENEMY, currentFrame.w, currentFrame.h } : SDL_Rect{ tick * RAW_ENEMY, 0, currentFrame.w, currentFrame.h };
 		}
 	}
-
-private:
-	double movementAcceleration = PLAYER_VELOCITY;
-	Vector2D lastPos;
 };

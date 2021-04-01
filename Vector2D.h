@@ -2,7 +2,7 @@
 #include <math.h>
 
 struct Vector2D {
-	const int floatPrecision = 8;
+	const int floatPrecision = 15;
 	double x, y;
 	Vector2D() = default;
 	Vector2D(double p_x, double p_y) : x(p_x), y(p_y) {}
@@ -19,6 +19,7 @@ struct Vector2D {
 
 	void operator=(Vector2D second) { x = second.x; y = second.y; }
 	void operator+=(Vector2D second) { x += second.x; y += second.y; }
+	void operator-=(Vector2D second) { x -= second.x; y -= second.y; }
 	Vector2D operator+(Vector2D second) const { return Vector2D(x + second.x, y + second.y); }
 	Vector2D operator+(int second) const { return Vector2D(x + second, y + second); }
 	Vector2D operator-(Vector2D second) const { return Vector2D(x - second.x, y - second.y); }

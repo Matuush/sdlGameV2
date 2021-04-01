@@ -109,7 +109,11 @@ private:
 					menu(pause);
 					if (loopType != LEVEL) return;
 				}
-				if (event.type == SDL_MOUSEBUTTONDOWN) new Projectile(level.player1.position + RAW_PLAYER * SCALE / 2, Vector2D(event.button.x, event.button.y) + window->cam->position - SCREEN_SIZE);
+				if (event.type == SDL_MOUSEBUTTONDOWN) { 
+					Vector2D shotPos = Vector2D(event.button.x, event.button.y) + window->cam->position - SCREEN_SIZE;
+					new Projectile(level.player1.position + RAW_PLAYER * SCALE / 2, shotPos); 
+					//level.player1.recoil(shotPos);
+				}
 				Entity::inputAll(&event);
 			}
 			std::cout << Entity::entities.size() << std::endl;
