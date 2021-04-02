@@ -30,12 +30,7 @@ public:
 		Entity::entities.push_back(this);
 	}
 	static void updateAll() {
-		try {
 			for (auto&& e : Entity::entities) e->update();
-		}
-		catch(...) {
-			std::cout << "behi8";
-		}
 	}
 	static void inputAll(SDL_Event* event) {
 		for (auto&& e : Entity::entities) e->input(event);

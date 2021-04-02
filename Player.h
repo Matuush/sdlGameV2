@@ -29,7 +29,7 @@ public:
 		updatePosition();
 		prevKeyState = keyState;
 
-		//changeSprite();
+		changeSprite();
 	}
 	void input(SDL_Event* event) override{
 		switch (event->type) {
@@ -52,10 +52,8 @@ public:
 			}
 	} 
 	void recoil(Vector2D shotPos) {
-		Vector2D tempVel = position - shotPos;
-		tempVel.limit(terminalVelocity);
-		velocity += tempVel;
-		velocity.limit(terminalVelocity);
+		velocity += position - shotPos;
+		velocity.limit(PLAYER_VELOCITY);
 	}
 private:
 	double movementAcceleration = PLAYER_VELOCITY;
@@ -64,11 +62,11 @@ private:
 	inline void changeSprite() {
 		lastRight = velocity.x < 0 ? false : (velocity.x > 0 ? true : lastRight);
 
-		if (((keyState.a == 0 && keyState.d == 0) || (keyState.a == 1 && keyState.d == 1)) && ((keyState.w == 0 && keyState.s == 0) || (keyState.w == 1 && keyState.s == 1))) 
-			currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
+		if (velocity == Vector2D(0, 0))
+			//currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
+			currentFrame.y = 0, currentFrame.x = 0;
 		else {
-			int tick = (int)(SDL_GetTicks() / (500 / PLAYER_VELOCITY)) % 6;
-			currentFrame = tick == 5 ? SDL_Rect{ 0, RAW_ENEMY, currentFrame.w, currentFrame.h } : SDL_Rect{ tick * RAW_ENEMY, 0, currentFrame.w, currentFrame.h };
+			int tick = (int)(SDL_GetTicks() / (500 / PLAYER_VELOCITY)) % 2;
 		}
 	}
 };
