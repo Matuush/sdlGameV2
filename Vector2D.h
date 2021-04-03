@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <iostream>
 
 struct Vector2D {
 	double x, y;
@@ -12,17 +13,23 @@ struct Vector2D {
 	void limit(double limit) { if (getMagnitude() > limit) setMagnitude(limit); }
 	void setMagnitude(double limit) {
 		double aah = getMagnitude();
-		x = x / aah * limit;
-		y = y / aah * limit;
+		if (aah != 0) {
+			x = x / aah * limit;
+			y = y / aah * limit;
+		}
+		else {
+			x = sqrt(limit * limit / 2);
+			y = x;
+		}
 	}
 	Vector2D normalize() const { return Vector2D(x / getMagnitude(), y / getMagnitude()); }
 
 	void operator=(Vector2D second) { x = second.x; y = second.y; }
+	void operator=(double second) { x = second; y -= second; }
 	void operator*=(Vector2D second) { x *= second.x; y *= second.y; }
 	void operator*=(double second) { x *= second; y *= second; }
 	void operator+=(Vector2D second) { x += second.x; y += second.y; }
 	void operator-=(Vector2D second) { x -= second.x; y -= second.y; }
-	void operator=(double second) { x = second; y -= second; }
 	Vector2D operator+(Vector2D second) const { return Vector2D(x + second.x, y + second.y); }
 	Vector2D operator+(int second) const { return Vector2D(x + second, y + second); }
 	Vector2D operator-(Vector2D second) const { return Vector2D(x - second.x, y - second.y); }

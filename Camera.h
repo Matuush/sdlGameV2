@@ -2,14 +2,10 @@
 #include "Player.h"
 
 struct Camera : public Entity {
-	double x = 0, y = 0, w = SCREEN_SIZE.x, h = SCREEN_SIZE.y;
+	double w = SCREEN_SIZE.x, h = SCREEN_SIZE.y;
 
-	Camera() : Entity() {
-		init();
-		currentFrame = { 0, 0, NOTHING_TEXTURE.width, NOTHING_TEXTURE.height };
-		textureID = NOTHING_TEXTURE.id;
-
-		position = SCREEN_SIZE;
+	Camera() : Entity(Vector2D(0, 0), NOTHING_TEXTURE) {
+		display = false;
 		colliders.push_back(RectangleCollider(0, SCREEN_SIZE.y, SCREEN_SIZE.x, BORDER_THICKNESS));
 		colliders.push_back(RectangleCollider(SCREEN_SIZE.x, 0, BORDER_THICKNESS, SCREEN_SIZE.y));
 		colliders.push_back(RectangleCollider(0, -BORDER_THICKNESS, SCREEN_SIZE.x, BORDER_THICKNESS));
@@ -17,7 +13,7 @@ struct Camera : public Entity {
 	}
 
 	void refresh() {
-		x = 0, y = 0;
+		position = 0;
 		Entity::entities.push_back(this);
 	}
 
@@ -31,39 +27,32 @@ struct Camera : public Entity {
 			const double walkBorderMinus = 0.25;
 
 			//Left
-			if (x + SCREEN_SIZE.x * walkBorderMinus > p->position.x + 2 * double(PLAYER_TEXTURE.width)) {
-				double destX = p->position.x + 2 * double(PLAYER_TEXTURE.width) - SCREEN_SIZE.x * walkBorderMinus;
-				if (destX >= 0)
-					x = destX;
+			if (position.x + SCREEN_SIZE.x * walkBorderMinus > p->position.x + SCALE / 2 * double(PLAYER_TEXTURE.width)) {
+				double destX = p->position.x + SCALE / 2 * double(PLAYER_TEXTURE.width) - SCREEN_SIZE.x * walkBorderMinus;
+				if (destX >= 0) position.x = destX;
 
 			}
 
 			// Right
-			if (x + SCREEN_SIZE.x * walkBorderPlus < p->position.x + 2 * double(PLAYER_TEXTURE.width)) {
-				double destX = p->position.x + 2 * double(PLAYER_TEXTURE.width) - SCREEN_SIZE.x * walkBorderPlus;
-				if (destX <= double(SCREEN_SIZE.x) * (double(SCREEN_MAP_RATIO) - 1))
-					x = destX;
+			if (position.x + SCREEN_SIZE.x * walkBorderPlus < p->position.x + SCALE / 2 * double(PLAYER_TEXTURE.width)) {
+				double destX = p->position.x + SCALE / 2 * double(PLAYER_TEXTURE.width) - SCREEN_SIZE.x * walkBorderPlus;
+				if (destX <= double(SCREEN_SIZE.x) * (double(SCREEN_MAP_RATIO) - 1)) position.x = destX;
 			}
 
 			// Up
-			if (y + SCREEN_SIZE.y * walkBorderMinus > p->position.y + 2 * double(PLAYER_TEXTURE.height)) {
-				double destY = p->position.y + 2 * double(PLAYER_TEXTURE.height) - SCREEN_SIZE.y * walkBorderMinus;
-				if (destY >= 0)
-					y = destY;
+			if (position.y + SCREEN_SIZE.y * walkBorderMinus > p->position.y + SCALE / 2 * double(PLAYER_TEXTURE.height)) {
+				double destY = p->position.y + SCALE / 2 * double(PLAYER_TEXTURE.height) - SCREEN_SIZE.y * walkBorderMinus;
+				if (destY >= 0) position.y = destY;
 			}
 
 			// Down
-			if (y + SCREEN_SIZE.y * walkBorderPlus < p->position.y + 2 * double(PLAYER_TEXTURE.height)) {
-				double destY = p->position.y + 2 * double(PLAYER_TEXTURE.height) - SCREEN_SIZE.y * walkBorderPlus;
-				if (destY <= double(SCREEN_SIZE.y) * (double(SCREEN_MAP_RATIO) - 1))
-					y = destY;
+			if (position.y + SCREEN_SIZE.y * walkBorderPlus < p->position.y + SCALE / 2 * double(PLAYER_TEXTURE.height)) {
+				double destY = p->position.y + SCALE / 2 * double(PLAYER_TEXTURE.height) - SCREEN_SIZE.y * walkBorderPlus;
+				if (destY <= double(SCREEN_SIZE.y) * (double(SCREEN_MAP_RATIO) - 1)) position.y = destY;
 			}
 		}
 
-		position.x = x + w;
-		position.y = y + h;
-
-		Vector2D dif = position - pp;
+		const Vector2D dif = position - pp;
 		for (RectangleCollider& c : colliders) {
 			c.x += dif.x;
 			c.y += dif.y;

@@ -110,7 +110,7 @@ private:
 					if (loopType != LEVEL) return;
 				}
 				if (event.type == SDL_MOUSEBUTTONDOWN) { 
-					Vector2D shotPos = Vector2D(event.button.x + window->cam->x, event.button.y + window->cam->y);
+					Vector2D shotPos = Vector2D(event.button.x + window->cam->position.x, event.button.y + window->cam->position.y);
 					new Projectile(level.player1.position + RAW_PLAYER * SCALE / 2, shotPos); 
 					level.player1.recoil(shotPos);
 				}
@@ -125,6 +125,7 @@ private:
 			window->clear();
 				for (Entity* e : Entity::entities) window->render(e);
 				window->displayStats(Player::players);
+				window->DrawCircle(level.player1.position + RAW_PLAYER * SCALE / 2 - window->cam->position, 80);
 			window->display();
 
 			{ int frameTime = SDL_GetTicks() - frameStart;

@@ -10,7 +10,7 @@ public:
 
 	SDL_Rect currentFrame = {0, 0, RAW_TILE, RAW_TILE};
 	unsigned char textureID = NOTHING_TEXTURE.id;
-	bool lastRight = true;
+	bool lastRight = true, display = true;
 
 	Vector2D position;
 	std::vector<RectangleCollider> colliders;
@@ -20,7 +20,7 @@ public:
 	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		if(textureID != ENEMY_TEXTURE.id || textureID != PLAYER_TEXTURE.id) colliders.push_back(RectangleCollider(position.x, position.y, TILE_SIZE, TILE_SIZE));
+		if(textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.push_back(RectangleCollider(position.x, position.y, TILE_SIZE, TILE_SIZE));
 		Entity::entities.push_back(this);
 	}
 	Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
@@ -33,10 +33,18 @@ public:
 		Entity::entities.erase(std::remove(Entity::entities.begin(), Entity::entities.end(), this), Entity::entities.end());
 	}
 	static void updateAll() {
-			for (auto&& e : Entity::entities) if(e) e->update();
+		for (auto&& e : Entity::entities) {
+			try {
+				e->update();
+			}
+			catch (...) {
+				std::cout << "Exception on update" << std::endl;
+			}
+		}
 	}
 	static void inputAll(SDL_Event* event) {
-		for (auto&& e : Entity::entities) e->input(event);
+		for (auto&& e : Entity::entities)
+			if(e) e->input(event);
 	}
 	bool collides(Entity* second) {
 		for (RectangleCollider c : colliders)
@@ -58,7 +66,7 @@ protected:
 	inline void updatePosition() {
 		velocity.limit(terminalVelocity);
 
-		Vector2D pp(position.x, position.y);
+		const Vector2D pp = position;
 
 		if (solid) {
 			bool xCollides = false;
@@ -89,11 +97,11 @@ protected:
 			}
 			if (!yCollides) position.y += velocity.y;
 		}
-		else position = position + velocity;
+		else position += velocity;
 
-		Vector2D dif = position - pp;
-		for (RectangleCollider& c : colliders)
-			c.x += dif.x, c.y += dif.y;
+		const Vector2D dif = position - pp;
+		for (RectangleCollider& c : colliders) c.x += dif.x, c.y += dif.y;
+
 		velocity *= 1 - FRICTION;
 		if (velocity.getMagnitude() < 0.5) velocity = 0;
 	}
@@ -102,5 +110,7 @@ protected:
 		updatePosition();
 	}
 
-	virtual void input(SDL_Event* event) { }
+	virtual void input(SDL_Event* event) {
+	
+	}
 };

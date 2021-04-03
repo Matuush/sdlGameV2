@@ -40,16 +40,18 @@ public:
 	void destroy() { SDL_DestroyWindow(window); }
 
 	void render(Entity* p_entity) {
-		SDL_Rect dst{ (int)(p_entity->position.x - cam->x), (int)(p_entity->position.y - cam->y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE };
+		if (p_entity->display) {
+			SDL_Rect dst{ (int)(p_entity->position.x - cam->position.x), (int)(p_entity->position.y - cam->position.y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE };
 
-		SDL_Texture* tempTex = textures[p_entity->textureID];
-		if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
-		else SDL_SetTextureColorMod(tempTex, 255, 255, 255);
+			SDL_Texture* tempTex = textures[p_entity->textureID];
+			if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
+			else SDL_SetTextureColorMod(tempTex, 255, 255, 255);
 
-		if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst);
-		else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+			if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst);
+			else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
 
-		if (renderColliders) renderCollider(p_entity);
+			if (renderColliders) renderCollider(p_entity);
+		}
 	}
 	void freeRender(Button* p_entity) {
 		SDL_Texture* tempSex = textures[p_entity->textureID];
@@ -88,6 +90,38 @@ public:
 			SDL_DestroyTexture(message);
 		}
 	}
+	void DrawCircle(Vector2D centre, int32_t radius)
+	{
+		const int32_t diameter = (radius * 2);
+
+		int32_t x = (radius - 1), y = 0;
+		int32_t tx = 1, ty = 1;
+		int32_t error = (tx - diameter);
+
+		while (x >= y) {
+			//  Each of the following renders an octant of the circle
+			SDL_RenderDrawPoint(renderer, centre.x + x, centre.y - y);
+			SDL_RenderDrawPoint(renderer, centre.x + x, centre.y + y);
+			SDL_RenderDrawPoint(renderer, centre.x - x, centre.y - y);
+			SDL_RenderDrawPoint(renderer, centre.x - x, centre.y + y);
+			SDL_RenderDrawPoint(renderer, centre.x + y, centre.y - x);
+			SDL_RenderDrawPoint(renderer, centre.x + y, centre.y + x);
+			SDL_RenderDrawPoint(renderer, centre.x - y, centre.y - x);
+			SDL_RenderDrawPoint(renderer, centre.x - y, centre.y + x);
+
+			if (error <= 0) {
+				++y;
+				error += ty;
+				ty += 2;
+			}
+
+			else {
+				--x;
+				tx += 2;
+				error += (tx - diameter);
+			}
+		}
+	}
 
 private:
 	SDL_Window* window;
@@ -99,7 +133,7 @@ private:
 	inline void renderCollider(Entity* p_entity) {
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 		for (const auto& c : p_entity->colliders) {
-			SDL_Rect colsrc = { (int)(c.x - cam->x), (int)(c.y - cam->y), (int)c.w, (int)c.h };
+			SDL_Rect colsrc = { (int)(c.x - cam->position.x), (int)(c.y - cam->position.y), (int)c.w, (int)c.h };
 			SDL_RenderDrawRect(renderer, &colsrc);
 		}
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

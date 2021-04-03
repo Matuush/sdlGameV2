@@ -35,4 +35,3 @@ protected:
 	}
 	void input(SDL_Event* event) override { }
 };
-
