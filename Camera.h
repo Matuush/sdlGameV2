@@ -18,8 +18,6 @@ struct Camera : public Entity {
 	}
 
 	void update() override {
-		bool left = false, right = false, up = false, down = false;
-
 		Vector2D pp = position;
 
 		for (auto&& p : Player::players) {

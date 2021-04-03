@@ -133,7 +133,7 @@ private:
 	inline void renderCollider(Entity* p_entity) {
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 		for (const auto& c : p_entity->colliders) {
-			SDL_Rect colsrc = { (int)(c.x - cam->position.x), (int)(c.y - cam->position.y), (int)c.w, (int)c.h };
+			SDL_Rect colsrc = { (int)(c.position.x - cam->position.x), (int)(c.position.y - cam->position.y), (int)c.size.x, (int)c.size.y };
 			SDL_RenderDrawRect(renderer, &colsrc);
 		}
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

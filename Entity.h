@@ -38,7 +38,6 @@ public:
 				e->update();
 			}
 			catch (...) {
-				std::cout << "Exception on update" << std::endl;
 			}
 		}
 	}
