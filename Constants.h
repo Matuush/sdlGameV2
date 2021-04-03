@@ -54,14 +54,16 @@ const SDL_Color ACTIVE_BUTTON_TEXT_COLOR = { 50, 50, 50 };
 
 // Entity constants
 const double DEFAULT_TERMINAL_VELOCITY = 2 * (double)SCALE;
+const double FRICTION = 0.05;
 
 // Player attributes
-const double PLAYER_VELOCITY = DEFAULT_TERMINAL_VELOCITY;
+const double PLAYER_VELOCITY = DEFAULT_TERMINAL_VELOCITY / 7;
 const double PLAYER_TERMINAL_VELOCITY = 500 * SCALE;
 const double DEFAULT_PLAYER_HEALTH = 50;
 const double DEFAULT_PLAYER_DAMAGE = 5;
 const Vector2D DEFAULT_BULLET_POSITION(-10, -10);
-RectangleCollider kapustaColliders[17] = {
+const double DEFAULT_BULLET_TERMINAL_VELOCITY = DEFAULT_TERMINAL_VELOCITY * 7;
+const RectangleCollider kapustaColliders[17] = {
 	RectangleCollider(12, 13, 32, 32) * SCALE,
 	RectangleCollider(11, 13, 1, 24) * SCALE,
 	RectangleCollider(19, 45, 24, 5) * SCALE,
@@ -84,4 +86,4 @@ RectangleCollider kapustaColliders[17] = {
 // Enemy attributes
 const double DEFAULT_ENEMY_HEALTH = 50;
 const double DEFAULT_ENEMY_DAMAGE = 5;
-const double DEFAULT_ENEMY_TERMINAL_VELOCITY = DEFAULT_TERMINAL_VELOCITY / 2;
+const double DEFAULT_ENEMY_TERMINAL_VELOCITY = DEFAULT_TERMINAL_VELOCITY;

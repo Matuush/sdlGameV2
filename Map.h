@@ -10,6 +10,7 @@ public:
 		for (int i = 0; i < MAP_TILE_COUNT.x; i++)
 			for (int j = 0; j < MAP_TILE_COUNT.y; j++)
 				tileMap[i][j] = new Entity(Vector2D(i * TILE_SIZE, j * TILE_SIZE), NOTHING_TEXTURE);
+
 		generateMap();
 		manuallyChangeTiles();
 
@@ -29,7 +30,7 @@ private:
 	inline void generateMap() {
 		for (int width = 0; width < MAP_TILE_COUNT.x; width++)
 			for (int height = 0; height < MAP_TILE_COUNT.y; height++)
-				tileMap[width][height]->textureID = DIRT_TEXTURE.id;
+				changeTile(width, height, DIRT_TEXTURE);
 	}
 	inline void manuallyChangeTiles() {
 		changeTile(4, 4, WATER_TEXTURE, true);

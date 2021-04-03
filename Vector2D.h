@@ -2,9 +2,9 @@
 #include <math.h>
 
 struct Vector2D {
-	const int floatPrecision = 15;
 	double x, y;
-	Vector2D() = default;
+	const int floatPrecision = 15;
+	Vector2D() : x(0), y(0) {};
 	Vector2D(double p_x, double p_y) : x(p_x), y(p_y) {}
 	Vector2D(int p_x, int p_y) : x((double)p_x), y((double)p_y) {}
 	Vector2D(unsigned int p_x, unsigned int p_y) : x((double)p_x), y((double)p_y) {}
@@ -18,8 +18,11 @@ struct Vector2D {
 	Vector2D normalize() const { return Vector2D(x / getMagnitude(), y / getMagnitude()); }
 
 	void operator=(Vector2D second) { x = second.x; y = second.y; }
+	void operator*=(Vector2D second) { x *= second.x; y *= second.y; }
+	void operator*=(double second) { x *= second; y *= second; }
 	void operator+=(Vector2D second) { x += second.x; y += second.y; }
 	void operator-=(Vector2D second) { x -= second.x; y -= second.y; }
+	void operator=(double second) { x = second; y -= second; }
 	Vector2D operator+(Vector2D second) const { return Vector2D(x + second.x, y + second.y); }
 	Vector2D operator+(int second) const { return Vector2D(x + second, y + second); }
 	Vector2D operator-(Vector2D second) const { return Vector2D(x - second.x, y - second.y); }
@@ -41,6 +44,7 @@ struct Vector2D {
 	bool operator>(double second) const { return getMagnitude() > second; }
 	bool operator<=(double second) const { return getMagnitude() <= second; }
 	bool operator<(double second) const { return getMagnitude() < second; }
+	bool operator==(double second) const { return getMagnitude() * pow(10, floatPrecision) == second; }
 	bool operator==(Vector2D second) const {
 		return round(x * pow(10, floatPrecision)) == round(second.x * pow(10, floatPrecision)) &&
 			round(y * pow(10, floatPrecision)) == round(second.y * pow(10, floatPrecision));

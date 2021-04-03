@@ -30,7 +30,6 @@ protected:
 	}
 	void update() override{
 		findPlayer();
-		velocity.limit(terminalVelocity);
 		updatePosition();
 		//changeSprite();
 	}

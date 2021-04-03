@@ -6,7 +6,7 @@ class Player : public Entity {
 public:
 	static std::vector<Player*> players;
 
-	KeyState keyState = KeyState(), prevKeyState = keyState;
+	KeyState keyState = KeyState();
 	double health = DEFAULT_PLAYER_HEALTH, damage = DEFAULT_PLAYER_DAMAGE;
 
 	Player() = default;
@@ -18,16 +18,12 @@ public:
 	}
 
 	void update() override {
-		velocity = (velocity + acceleration);
-		if (keyState.w != prevKeyState.w) velocity.y += keyState.w ? -PLAYER_VELOCITY : PLAYER_VELOCITY;
-		if (keyState.a != prevKeyState.a) velocity.x += keyState.a ? -PLAYER_VELOCITY : PLAYER_VELOCITY;
-		if (keyState.s != prevKeyState.s) velocity.y += keyState.s ? PLAYER_VELOCITY : -PLAYER_VELOCITY;
-		if (keyState.d != prevKeyState.d) velocity.x += keyState.d ? PLAYER_VELOCITY : -PLAYER_VELOCITY;
-
-		velocity.limit(terminalVelocity);
+		velocity.y += keyState.w ? -movementAcceleration / 10 : movementAcceleration / 10;
+		velocity.x += keyState.a ? -movementAcceleration / 10 : movementAcceleration / 10;
+		velocity.y += keyState.s ? movementAcceleration / 10 : -movementAcceleration / 10;
+		velocity.x += keyState.d ? movementAcceleration / 10 : -movementAcceleration / 10;
 
 		updatePosition();
-		prevKeyState = keyState;
 
 		changeSprite();
 	}
@@ -50,10 +46,11 @@ public:
 				}
 				break;
 			}
-	} 
+	}
 	void recoil(Vector2D shotPos) {
-		velocity += position - shotPos;
-		velocity.limit(PLAYER_VELOCITY);
+		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
+		tAcceleration.limit(movementAcceleration * 3);
+		velocity += tAcceleration;
 	}
 private:
 	double movementAcceleration = PLAYER_VELOCITY;
@@ -62,11 +59,11 @@ private:
 	inline void changeSprite() {
 		lastRight = velocity.x < 0 ? false : (velocity.x > 0 ? true : lastRight);
 
-		if (velocity == Vector2D(0, 0))
+		if (velocity < 1) currentFrame.y = 0, currentFrame.x = 0;
 			//currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
-			currentFrame.y = 0, currentFrame.x = 0;
 		else {
-			int tick = (int)(SDL_GetTicks() / (500 / PLAYER_VELOCITY)) % 2;
+			int tick = (int)(SDL_GetTicks() / (100 / PLAYER_VELOCITY)) % 2;
+			currentFrame.x = PLAYER_TEXTURE.width * tick;
 		}
 	}
 };

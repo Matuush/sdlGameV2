@@ -29,8 +29,11 @@ public:
 		colliders.push_back(p_collider);
 		Entity::entities.push_back(this);
 	}
+	~Entity() {
+		Entity::entities.erase(std::remove(Entity::entities.begin(), Entity::entities.end(), this), Entity::entities.end());
+	}
 	static void updateAll() {
-			for (auto&& e : Entity::entities) e->update();
+			for (auto&& e : Entity::entities) if(e) e->update();
 	}
 	static void inputAll(SDL_Event* event) {
 		for (auto&& e : Entity::entities) e->input(event);
@@ -53,6 +56,8 @@ protected:
 	}
 
 	inline void updatePosition() {
+		velocity.limit(terminalVelocity);
+
 		Vector2D pp(position.x, position.y);
 
 		if (solid) {
@@ -89,12 +94,11 @@ protected:
 		Vector2D dif = position - pp;
 		for (RectangleCollider& c : colliders)
 			c.x += dif.x, c.y += dif.y;
+		velocity *= 1 - FRICTION;
+		if (velocity.getMagnitude() < 0.5) velocity = 0;
 	}
 	
 	virtual void update() {
-		velocity = (velocity + acceleration);
-		velocity.limit(terminalVelocity);
-
 		updatePosition();
 	}
 
