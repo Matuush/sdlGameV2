@@ -70,28 +70,28 @@ protected:
 		if (solid) {
 			bool xCollides = false;
 			for (RectangleCollider& c : colliders) {
-				c.x += velocity.x;
+				c.position.x += velocity.x;
 				for (Entity* e : Entity::entities) {
 					if (!e->solid || e == this) continue;
 					for (RectangleCollider cc : e->colliders)
 						if (c.collides(&cc)) xCollides = true;
 					if (xCollides) break;
 				}
-				c.x -= velocity.x;
+				c.position.x -= velocity.x;
 				if (xCollides) break;
 			}
 			if (!xCollides) position.x += velocity.x;
 
 			bool yCollides = false;
 			for (RectangleCollider& c : colliders) {
-				c.y += velocity.y;
+				c.position.y += velocity.y;
 				for (Entity* e : Entity::entities) {
 					if (!e->solid || e == this) continue;
 					for (RectangleCollider cc : e->colliders)
 						if (c.collides(&cc)) yCollides = true;
 					if (yCollides) break;
 				}
-				c.y -= velocity.y;
+				c.position.y -= velocity.y;
 				if (yCollides) break;
 			}
 			if (!yCollides) position.y += velocity.y;
@@ -99,7 +99,7 @@ protected:
 		else position += velocity;
 
 		const Vector2D dif = position - pp;
-		for (RectangleCollider& c : colliders) c.x += dif.x, c.y += dif.y;
+		for (RectangleCollider& c : colliders) c.position += dif;
 
 		velocity *= 1 - FRICTION;
 		if (velocity.getMagnitude() < 0.5) velocity = 0;

@@ -90,8 +90,7 @@ public:
 			SDL_DestroyTexture(message);
 		}
 	}
-	void DrawCircle(Vector2D centre, int32_t radius)
-	{
+	void DrawCircle(Vector2D centre, int32_t radius) {
 		const int32_t diameter = (radius * 2);
 
 		int32_t x = (radius - 1), y = 0;

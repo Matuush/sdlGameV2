@@ -65,9 +65,6 @@
     <ClInclude Include="Constants.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="RectangleCollider.h">
-      <Filter>Header Files\data</Filter>
-    </ClInclude>
     <ClInclude Include="MenuPage.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
@@ -75,9 +72,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collider.h">
-      <Filter>Header Files\data</Filter>
-    </ClInclude>
-    <ClInclude Include="CircleCollider.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
   </ItemGroup>

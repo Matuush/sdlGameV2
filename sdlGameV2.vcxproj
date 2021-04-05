@@ -24,7 +24,6 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CircleCollider.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameManager.h" />
@@ -36,7 +35,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Projectile.h" />
-    <ClInclude Include="RectangleCollider.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UdpCom.h" />

@@ -10,7 +10,7 @@ public:
 	Enemy(Vector2D p_position) : Entity(p_position, ENEMY_TEXTURE) {
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
 		solid = true;
-		for (auto& col : kapustaColliders) colliders.push_back(RectangleCollider(position.x + col.x, position.y + col.y, col.w, col.h));
+		for (auto& col : kapustaColliders) colliders.push_back(RectangleCollider(position.x + col.position.x, position.y + col.position.y, col.size.x, col.size.y));
 	}
 
 protected:

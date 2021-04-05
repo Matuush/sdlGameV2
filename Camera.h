@@ -51,9 +51,6 @@ struct Camera : public Entity {
 		}
 
 		const Vector2D dif = position - pp;
-		for (RectangleCollider& c : colliders) {
-			c.x += dif.x;
-			c.y += dif.y;
-		}
+		for (RectangleCollider& c : colliders) c.position += dif;
 	}
 };
