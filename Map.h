@@ -15,10 +15,10 @@ public:
 		manuallyChangeTiles();
 
 		borderWall.solid = true, borderWall.display = false;
-		borderWall.colliders.push_back(RectangleCollider(-BORDER_THICKNESS, MAP_SIZE.y, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS));
-		borderWall.colliders.push_back(RectangleCollider(MAP_SIZE.x, 0, BORDER_THICKNESS, MAP_SIZE.y));
-		borderWall.colliders.push_back(RectangleCollider(-BORDER_THICKNESS, -BORDER_THICKNESS, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS));
-		borderWall.colliders.push_back(RectangleCollider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, MAP_SIZE.y));
+		borderWall.colliders.colliders.push_back(RectangleCollider(-BORDER_THICKNESS, MAP_SIZE.y, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS));
+		borderWall.colliders.colliders.push_back(RectangleCollider(MAP_SIZE.x, 0, BORDER_THICKNESS, MAP_SIZE.y));
+		borderWall.colliders.colliders.push_back(RectangleCollider(-BORDER_THICKNESS, -BORDER_THICKNESS, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS));
+		borderWall.colliders.colliders.push_back(RectangleCollider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, MAP_SIZE.y));
 	}
 	~Map() {
 		for (auto&& i : tileMap)

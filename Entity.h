@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "SDL/SDL.h"
 #include "Constants.h"
 #include <iostream>
@@ -13,20 +12,20 @@ public:
 	bool lastRight = true, display = true;
 
 	Vector2D position;
-	std::vector<RectangleCollider> colliders;
+	MultiCollider colliders;
 	bool solid = 0;
 
 	Entity() { init(); }
 	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		if(textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.push_back(RectangleCollider(position.x, position.y, TILE_SIZE, TILE_SIZE));
+		if(textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.colliders.push_back(RectangleCollider(position.x, position.y, TILE_SIZE, TILE_SIZE));
 		Entity::entities.push_back(this);
 	}
 	Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		colliders.push_back(p_collider);
+		colliders.colliders.push_back(p_collider);
 		Entity::entities.push_back(this);
 	}
 	~Entity() {
@@ -46,10 +45,7 @@ public:
 			if(e) e->input(event);
 	}
 	bool collides(Entity* second) {
-		for (RectangleCollider c : colliders)
-			for (RectangleCollider cc : second->colliders)
-				if (c.collides(&cc)) return true;
-		return false;
+		return colliders.collides(&second->colliders);
 	}
 
 protected:
@@ -69,11 +65,11 @@ protected:
 
 		if (solid) {
 			bool xCollides = false;
-			for (RectangleCollider& c : colliders) {
+			for (auto c : colliders.colliders) {
 				c.position.x += velocity.x;
 				for (Entity* e : Entity::entities) {
 					if (!e->solid || e == this) continue;
-					for (RectangleCollider cc : e->colliders)
+					for (auto cc : e->colliders.colliders)
 						if (c.collides(&cc)) xCollides = true;
 					if (xCollides) break;
 				}
@@ -83,11 +79,11 @@ protected:
 			if (!xCollides) position.x += velocity.x;
 
 			bool yCollides = false;
-			for (RectangleCollider& c : colliders) {
+			for (auto c : colliders.colliders) {
 				c.position.y += velocity.y;
 				for (Entity* e : Entity::entities) {
 					if (!e->solid || e == this) continue;
-					for (RectangleCollider cc : e->colliders)
+					for (auto cc : e->colliders.colliders)
 						if (c.collides(&cc)) yCollides = true;
 					if (yCollides) break;
 				}
@@ -99,7 +95,7 @@ protected:
 		else position += velocity;
 
 		const Vector2D dif = position - pp;
-		for (RectangleCollider& c : colliders) c.position += dif;
+		for (auto c : colliders.colliders) c.position += dif;
 
 		velocity *= 1 - FRICTION;
 		if (velocity.getMagnitude() < 0.5) velocity = 0;

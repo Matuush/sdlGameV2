@@ -50,7 +50,7 @@ public:
 			if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst);
 			else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
 
-			if (renderColliders) renderCollider(p_entity);
+			//if (renderColliders) renderCollider(p_entity);
 		}
 	}
 	void freeRender(Button* p_entity) {
@@ -99,14 +99,14 @@ public:
 
 		while (x >= y) {
 			//  Each of the following renders an octant of the circle
-			SDL_RenderDrawPoint(renderer, centre.x + x, centre.y - y);
-			SDL_RenderDrawPoint(renderer, centre.x + x, centre.y + y);
-			SDL_RenderDrawPoint(renderer, centre.x - x, centre.y - y);
-			SDL_RenderDrawPoint(renderer, centre.x - x, centre.y + y);
-			SDL_RenderDrawPoint(renderer, centre.x + y, centre.y - x);
-			SDL_RenderDrawPoint(renderer, centre.x + y, centre.y + x);
-			SDL_RenderDrawPoint(renderer, centre.x - y, centre.y - x);
-			SDL_RenderDrawPoint(renderer, centre.x - y, centre.y + x);
+			SDL_RenderDrawPoint(renderer, (int)centre.x + x, (int)centre.y - y);
+			SDL_RenderDrawPoint(renderer, (int)centre.x + x, (int)centre.y + y);
+			SDL_RenderDrawPoint(renderer, (int)centre.x - x, (int)centre.y - y);
+			SDL_RenderDrawPoint(renderer, (int)centre.x - x, (int)centre.y + y);
+			SDL_RenderDrawPoint(renderer, (int)centre.x + y, (int)centre.y - x);
+			SDL_RenderDrawPoint(renderer, (int)centre.x + y, (int)centre.y + x);
+			SDL_RenderDrawPoint(renderer, (int)centre.x - y, (int)centre.y - x);
+			SDL_RenderDrawPoint(renderer, (int)centre.x - y, (int)centre.y + x);
 
 			if (error <= 0) {
 				++y;
@@ -129,14 +129,14 @@ private:
 	TTF_Font* defaultFont;
 	SDL_Texture* textures[8];
 
-	inline void renderCollider(Entity* p_entity) {
+	/*inline void renderCollider(Entity* p_entity) {
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-		for (const auto& c : p_entity->colliders) {
+		for (const auto c : p_entity->colliders.colliders) {
 			SDL_Rect colsrc = { (int)(c.position.x - cam->position.x), (int)(c.position.y - cam->position.y), (int)c.size.x, (int)c.size.y };
 			SDL_RenderDrawRect(renderer, &colsrc);
 		}
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	}
+	}*/
 	inline void createTexture(Texture p_texture) {
 		textures[p_texture.id] = IMG_LoadTexture(renderer, p_texture.path);
 	}

@@ -6,10 +6,11 @@ struct Camera : public Entity {
 
 	Camera() : Entity(Vector2D(0, 0), NOTHING_TEXTURE) {
 		display = false;
-		colliders.push_back(RectangleCollider(0, SCREEN_SIZE.y, SCREEN_SIZE.x, BORDER_THICKNESS));
-		colliders.push_back(RectangleCollider(SCREEN_SIZE.x, 0, BORDER_THICKNESS, SCREEN_SIZE.y));
-		colliders.push_back(RectangleCollider(0, -BORDER_THICKNESS, SCREEN_SIZE.x, BORDER_THICKNESS));
-		colliders.push_back(RectangleCollider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, SCREEN_SIZE.y));
+		colliders = MultiCollider({ 
+			RectangleCollider(0, SCREEN_SIZE.y, SCREEN_SIZE.x, BORDER_THICKNESS),
+			RectangleCollider(SCREEN_SIZE.x, 0, BORDER_THICKNESS, SCREEN_SIZE.y),
+			RectangleCollider(0, -BORDER_THICKNESS, SCREEN_SIZE.x, BORDER_THICKNESS),
+			RectangleCollider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, SCREEN_SIZE.y) });
 	}
 
 	void refresh() {
@@ -51,6 +52,6 @@ struct Camera : public Entity {
 		}
 
 		const Vector2D dif = position - pp;
-		for (RectangleCollider& c : colliders) c.position += dif;
+		for (auto c : colliders.colliders) c.position += dif;
 	}
 };

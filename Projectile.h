@@ -10,8 +10,8 @@ public:
 		position = p_position;
 		currentFrame = { 0, 0, BULLET_TEXTURE.width, BULLET_TEXTURE.height };
 		textureID = BULLET_TEXTURE.id;
-		colliders.push_back(RectangleCollider(position.x + SCALE, position.y, 2 * SCALE, 4 * SCALE));
-		colliders.push_back(RectangleCollider(position.x, position.y + SCALE, 4 * SCALE, 2 * SCALE));
+		colliders.colliders.push_back(RectangleCollider(position.x + SCALE, position.y, 2 * SCALE, 4 * SCALE));
+		colliders.colliders.push_back(RectangleCollider(position.x, position.y + SCALE, 4 * SCALE, 2 * SCALE));
 		Entity::entities.push_back(this);
 		velocity = destination - position;
 		velocity.setMagnitude(terminalVelocity);
