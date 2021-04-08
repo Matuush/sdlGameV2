@@ -22,12 +22,12 @@ std::vector<Vector2D> sort(std::vector<Vector2D> prdle) {
 }
 
 struct Collider {
-	Vector2D position, size = {0, 0};
-	unsigned int radius = 0;
+	Vector2D position, size;
+	unsigned int radius;
 	COLLIDER_TYPE type;
 	Collider() = default;
 	Collider(Vector2D pos, Vector2D size) : type(RECTANGLE), position(pos), size(size), radius(0){	}
-	Collider(const unsigned int x, const unsigned int y, const unsigned int w, const unsigned int h) : type(RECTANGLE), position({x, y}), size(w, h), radius(0) {	}
+	Collider(const unsigned int x, const unsigned int y, const unsigned int w, const unsigned int h) : type(RECTANGLE), position({x, y}), size({w, h}), radius(0) {	}
 	Collider(Vector2D pos, unsigned int size) : type(CIRCLE), position(pos), size({0, 0}), radius(radius) {	}
 	Collider operator*(const int value) { 
 		switch (type){
@@ -83,22 +83,29 @@ struct Collider {
 	}
 };
 
-struct MultiCollider{
-	std::vector<Collider> colliders;
+struct MultiCollider {
+	std::vector<Collider*> colliders;
 	MultiCollider() = default;
-	MultiCollider(std::vector<Collider> p_colliders) : colliders(p_colliders) {}
+	MultiCollider(std::vector<Collider*> p_colliders) : colliders(p_colliders) {}
+	~MultiCollider() {
+		//for (Collider* c : colliders) delete c;
+		colliders.clear();
+	}
+	void move(Vector2D vel) {
+		for (Collider* c : colliders) c->position += vel;
+	}
 	bool collides(double x, double y) {
-		for (Collider c : colliders) if (c.collides(x, y)) return true;
+		for (Collider* c : colliders) if (c->collides(x, y)) return true;
 		return false;
 	}
 	bool collides(Collider* second) {
-		for (Collider c : colliders) if (c.collides(second)) return true;
+		for (Collider* c : colliders) if (c->collides(second)) return true;
 		return false;
 	}
 	bool collides(MultiCollider* second) {
-		for (Collider c : colliders)
-			for (Collider d : second->colliders)
-				if (c.collides(&d)) return true;
+		for (Collider* c : colliders)
+			for (Collider* d : second->colliders)
+				if (c->collides(d)) return true;
 		return false;
 	}
 };

@@ -19,26 +19,20 @@ public:
 	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.colliders.push_back(Collider(position, { TILE_SIZE, TILE_SIZE }));
+		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.colliders.push_back(new Collider(position, { TILE_SIZE, TILE_SIZE }));
 		Entity::entities.push_back(this);
 	}
 	Entity(Vector2D p_position, Collider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		colliders.colliders.push_back(p_collider);
+		colliders.colliders.push_back(&p_collider);
 		Entity::entities.push_back(this);
 	}
 	~Entity() {
 		Entity::entities.erase(std::remove(Entity::entities.begin(), Entity::entities.end(), this), Entity::entities.end());
 	}
 	static void updateAll() {
-		for (auto&& e : Entity::entities) {
-			try {
-				e->update();
-			}
-			catch (...) {
-			}
-		}
+		for (auto&& e : Entity::entities) e->update();
 	}
 	static void inputAll(SDL_Event* event) {
 		for (auto&& e : Entity::entities)
@@ -60,17 +54,15 @@ protected:
 
 	inline bool collisionOnMovement(Vector2D vel) {
 		bool axisCollides = false;
-		for (auto c : colliders.colliders) {
-			c.position += vel;
-			for (Entity* e : Entity::entities) {
-				if (!e->solid || e == this) continue;
-				for (auto cc : e->colliders.colliders)
-					if (c.collides(&cc)) axisCollides = true;
-				if (axisCollides) break;
+		colliders.move(vel);
+		for (Entity* e : Entity::entities) {
+			if (!e->solid || e == this) continue;
+			else if (colliders.collides(&e->colliders)) {
+				axisCollides = true;
+				break;
 			}
-			c.position -= vel;
-			if (axisCollides) break;
 		}
+		colliders.move(Vector2D(0, 0) - vel);
 		return axisCollides;
 	}
 
@@ -85,8 +77,7 @@ protected:
 		}
 		else position += velocity;
 
-		const Vector2D dif = position - pp;
-		for (auto c : colliders.colliders) c.position += dif;
+		colliders.move(position - pp);
 
 		velocity *= 1 - FRICTION;
 		if (velocity.getMagnitude() < 0.5) velocity = 0;

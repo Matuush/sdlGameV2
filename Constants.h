@@ -63,25 +63,25 @@ const double DEFAULT_PLAYER_HEALTH = 50;
 const double DEFAULT_PLAYER_DAMAGE = 5;
 const Vector2D DEFAULT_BULLET_POSITION(-10, -10);
 const double DEFAULT_BULLET_TERMINAL_VELOCITY = DEFAULT_TERMINAL_VELOCITY * 7;
-const Collider kapustaColliders[17] = {
-	Collider(12, 13, 32, 32) * SCALE,
-	Collider(11, 13, 1, 24) * SCALE,
-	Collider(19, 45, 24, 5) * SCALE,
-	Collider(44, 19, 8, 25) * SCALE,
-	Collider(31, 10, 11, 3) * SCALE,
-	Collider(32, 7, 5, 3) * SCALE,
-	Collider(52, 24, 2, 17) * SCALE,
-	Collider(54, 28, 2, 8) * SCALE,
-	Collider(44, 44, 6, 2) * SCALE,
-	Collider(43, 46, 4, 2) * SCALE,
-	Collider(44, 17, 6, 2) * SCALE,
-	Collider(44, 15, 3, 2) * SCALE,
-	Collider(16, 45, 3, 3) * SCALE,
-	Collider(14, 11, 7, 2) * SCALE,
-	Collider(17, 9, 4, 2) * SCALE,
-	Collider(10, 19, 1, 13) * SCALE,
-	Collider(36, 50, 6, 1) * SCALE
-};
+const MultiCollider kapustaColliders = MultiCollider({
+	new Collider(Collider(12, 13, 32, 32) * SCALE),
+	new Collider(Collider(11, 13, 1, 24) * SCALE),
+	new Collider(Collider(19, 45, 24, 5) * SCALE),
+	new Collider(Collider(44, 19, 8, 25) * SCALE),
+	new Collider(Collider(31, 10, 11, 3) * SCALE),
+	new Collider(Collider(32, 7, 5, 3) * SCALE),
+	new Collider(Collider(52, 24, 2, 17) * SCALE),
+	new Collider(Collider(54, 28, 2, 8) * SCALE),
+	new Collider(Collider(44, 44, 6, 2) * SCALE),
+	new Collider(Collider(43, 46, 4, 2) * SCALE),
+	new Collider(Collider(44, 17, 6, 2) * SCALE),
+	new Collider(Collider(44, 15, 3, 2) * SCALE),
+	new Collider(Collider(16, 45, 3, 3) * SCALE),
+	new Collider(Collider(14, 11, 7, 2) * SCALE),
+	new Collider(Collider(17, 9, 4, 2) * SCALE),
+	new Collider(Collider(10, 19, 1, 13) * SCALE),
+	new Collider(Collider(36, 50, 6, 1) * SCALE)
+});
 
 // Enemy attributes
 const double DEFAULT_ENEMY_HEALTH = 50;
