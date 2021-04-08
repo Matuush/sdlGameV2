@@ -58,39 +58,29 @@ protected:
 		colliders;
 	}
 
+	inline bool collisionOnMovement(Vector2D vel) {
+		bool axisCollides = false;
+		for (auto c : colliders.colliders) {
+			c.position += vel;
+			for (Entity* e : Entity::entities) {
+				if (!e->solid || e == this) continue;
+				for (auto cc : e->colliders.colliders)
+					if (c.collides(&cc)) axisCollides = true;
+				if (axisCollides) break;
+			}
+			c.position -= vel;
+			if (axisCollides) break;
+		}
+	}
+
 	inline void updatePosition() {
 		velocity.limit(terminalVelocity);
 
 		const Vector2D pp = position;
 
 		if (solid) {
-			bool xCollides = false;
-			for (auto c : colliders.colliders) {
-				c.position.x += velocity.x;
-				for (Entity* e : Entity::entities) {
-					if (!e->solid || e == this) continue;
-					for (auto cc : e->colliders.colliders)
-						if (c.collides(&cc)) xCollides = true;
-					if (xCollides) break;
-				}
-				c.position.x -= velocity.x;
-				if (xCollides) break;
-			}
-			if (!xCollides) position.x += velocity.x;
-
-			bool yCollides = false;
-			for (auto c : colliders.colliders) {
-				c.position.y += velocity.y;
-				for (Entity* e : Entity::entities) {
-					if (!e->solid || e == this) continue;
-					for (auto cc : e->colliders.colliders)
-						if (c.collides(&cc)) yCollides = true;
-					if (yCollides) break;
-				}
-				c.position.y -= velocity.y;
-				if (yCollides) break;
-			}
-			if (!yCollides) position.y += velocity.y;
+			if (!collisionOnMovement({ velocity.x, 0.0 })) position.x += velocity.x;
+			if (!collisionOnMovement({ 0.0, velocity.y })) position.y += velocity.y;
 		}
 		else position += velocity;
 
