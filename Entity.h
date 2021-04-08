@@ -19,10 +19,10 @@ public:
 	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		if(textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.colliders.push_back(RectangleCollider(position.x, position.y, TILE_SIZE, TILE_SIZE));
+		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.colliders.push_back(Collider(position, { TILE_SIZE, TILE_SIZE }));
 		Entity::entities.push_back(this);
 	}
-	Entity(Vector2D p_position, RectangleCollider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
+	Entity(Vector2D p_position, Collider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
 		colliders.colliders.push_back(p_collider);
@@ -71,6 +71,7 @@ protected:
 			c.position -= vel;
 			if (axisCollides) break;
 		}
+		return axisCollides;
 	}
 
 	inline void updatePosition() {

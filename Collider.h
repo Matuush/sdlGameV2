@@ -2,52 +2,7 @@
 #include "Vector2D.h"
 #include <vector>
 
-struct RectangleCollider;
-struct CircleCollider;
-struct MultiCollider;
-
-struct Collider {
-	Vector2D position;
-	virtual bool collides(double x, double y) = 0;
-	virtual bool collides(Vector2D p) = 0;
-	virtual bool collides(RectangleCollider* second) = 0;
-	virtual bool collides(CircleCollider* second) = 0;
-	virtual bool collides(MultiCollider* second) = 0;
-	bool collides(Collider* second) { return false; }
-};
-
-struct CircleColider : public Collider {
-	unsigned int size;
-	CircleCollider() = default;
-	CircleCollider(Vector2D p_position, unsigned int p_size);
-	bool collides(double x, double y) override;
-	bool collides(Vector2D p) override;
-	bool collides(RectangleColider* second) override;
-	bool collides(CircleColider* second) override;
-	bool collides(MultiCollider* second) override;
-};
-struct RectangleColider : public Collider {
-	Vector2D size;
-	RectangleCollider() = default;
-	RectangleCollider(double p_x, double p_y, double p_w, double p_h) : size({ p_w, p_h }) { position = { p_x, p_y }; }
-	RectangleCollider(Vector2D p_position, Vector2D p_size) : size(p_size) { position = p_position; }
-	RectangleCollider operator*(const int value) { return RectangleCollider(position.x * value, position.y * value, size.x * value, size.y * value); }
-	bool collides(double x, double y) override;
-	bool collides(Vector2D p) override;
-	bool collides(RectangleColider* second) override;
-	bool collides(CircleColider* second) override;
-	bool collides(MultiCollider* second) override;
-};
-struct MultiCollider : public Collider {
-	std::vector<Collider> colliders;
-	MultiCollider() = default;
-	MultiCollider(std::vector<Collider> p_colliders) : colliders(p_colliders) {}
-	bool collides(double x, double y) override;
-	bool collides(Vector2D p) override;
-	bool collides(RectangleColider* second) override;
-	bool collides(CircleColider* second) override;
-	bool collides(MultiCollider* second) override;
-};
+enum COLLIDER_TYPE : unsigned char { CIRCLE, RECTANGLE };
 
 std::vector<Vector2D> sort(std::vector<Vector2D> prdle) {
 	std::vector<Vector2D> result;
@@ -66,63 +21,84 @@ std::vector<Vector2D> sort(std::vector<Vector2D> prdle) {
 	return result;
 }
 
-// CircleCollider
-CircleCollider::CircleCollider(Vector2D p_position, unsigned int p_size) { position = p_position; size = p_size; }
-bool CircleCollider::collides(Vector2D p) { return collides(p.x, p.y); }
-bool CircleCollider::collides(double x, double y) { return Vector2D{ abs(x - position.x), abs(y - position.y) }.getMagnitude() <= size ? true : false; }
-bool CircleCollider::collides(RectangleCollider* second) { return second->collides(this); }
-bool CircleCollider::collides(CircleCollider* second) { return (position - second->position).getMagnitude() <= size + second->size ? true : false; }
-bool CircleCollider::collides(MultiCollider* second) {
-	for (Collider c : second->colliders) if (c.collides(this)) return true;
-	return false;
-}
+struct Collider {
+	Vector2D position, size = {0, 0};
+	unsigned int radius = 0;
+	COLLIDER_TYPE type;
+	Collider() = default;
+	Collider(Vector2D pos, Vector2D size) : type(RECTANGLE), position(pos), size(size), radius(0){	}
+	Collider(const unsigned int x, const unsigned int y, const unsigned int w, const unsigned int h) : type(RECTANGLE), position({x, y}), size(w, h), radius(0) {	}
+	Collider(Vector2D pos, unsigned int size) : type(CIRCLE), position(pos), size({0, 0}), radius(radius) {	}
+	Collider operator*(const int value) { 
+		switch (type){
+		case RECTANGLE:
+			return Collider(position * value, size * value);
+		case CIRCLE:
+			return Collider(position * value, radius * value);
+		}
+	}
+	virtual bool collides(double x, double y) {
+		switch (type) {
+		case RECTANGLE:
+			return(x >= position.x && y >= position.y && x <= position.x + size.x && y <= position.y + size.y);
+		case CIRCLE:
+			return Vector2D{ abs(x - position.x), abs(y - position.y) }.getMagnitude() <= radius ? true : false;
+		}
+	}
+	bool collides(Vector2D p) { return collides(p.x, p.y); }
+	virtual bool collides(Collider* second) { 
+		switch (type) {
+		case RECTANGLE:
+			switch (second->type) {
+			case RECTANGLE:
+				return(collides(second->position.x, second->position.y) ||
+					collides(second->position.x + second->size.x, second->position.y) ||
+					collides(second->position.x, second->position.y + second->size.y) ||
+					collides(second->position.x + second->size.x, second->position.y + second->size.y)) ||
+					(second->collides(position.x, position.y) ||
+						second->collides(position.x + size.x, position.y) ||
+						second->collides(position.x, position.y + size.y) ||
+						second->collides(position.x + size.x, position.y + size.y));
+			case CIRCLE:
+				if (collides(second->position)) return true;
+				std::vector<Vector2D> a = {
+					position - second->position,
+					position + size - second->position,
+					Vector2D(position.x, position.y + size.y) - second->position,
+					Vector2D(position.x + size.x, position.y) - second->position
+				};
+				a = sort(a);
+				return false;
+			}
+			break;
+		case CIRCLE:
+			switch (second->type) {
+			case RECTANGLE:
+				return second->collides(this);
+			case CIRCLE:
+				return abs((position - second->position).getMagnitude()) <= radius + second->radius ? true : false;
+			}
+			break;
+		}
+	}
+};
 
-// RectangleCollider
-bool RectangleCollider::collides(double p_x, double p_y) { return(p_x >= position.x && p_y >= position.y && p_x <= position.x + size.x && p_y <= position.y + size.y); }
-bool RectangleCollider::collides(Vector2D p) { return(p.x >= position.x && p.y >= position.y && p.x <= position.x + size.x && p.y <= position.y + size.y); }
-bool RectangleCollider::collides(RectangleCollider* second) {
-	return(collides(second->position.x, second->position.y) ||
-		collides(second->position.x + second->size.x, second->position.y) ||
-		collides(second->position.x, second->position.y + second->size.y) ||
-		collides(second->position.x + second->size.x, second->position.y + second->size.y)) ||
-		(second->collides(position.x, position.y) ||
-			second->collides(position.x + size.x, position.y) ||
-			second->collides(position.x, position.y + size.y) ||
-			second->collides(position.x + size.x, position.y + size.y));
-}
-bool RectangleCollider::collides(CircleCollider* second) {
-	if (collides(second->position)) return true;
-	std::vector<Vector2D> a = {
-		position - second->position,
-		position + size - second->position,
-		Vector2D(position.x, position.y + size.y) - second->position,
-		Vector2D(position.x + size.x, position.y) - second->position
-	};
-	a = sort(a);
-}
-bool RectangleCollider::collides(MultiCollider* second) {
-	for (Collider c : second->colliders) if (c.collides(this)) return true;
-	return false;
-}
-
-// MultiCollider
-bool MultiCollider::collides(double x, double y) {
-	for (Collider c : colliders) if (c.collides(x, y)) return true;
-	return false;
-}
-bool MultiCollider::collides(Vector2D p) {
-	for (Collider c : colliders) if (c.collides(p)) return true;
-	return false;
-}
-bool MultiCollider::collides(RectangleCollider* second) {
-	for (Collider c : colliders) if (c.collides(second)) return true;
-	return false;
-}
-bool MultiCollider::collides(CircleCollider* second) {
-	for (Collider c : colliders) if (c.collides(second)) return true;
-	return false;
-}
-bool MultiCollider::collides(MultiCollider* second) {
-	for (Collider c : second->colliders) if (c.collides(this)) return true;
-	return false;
-}
+struct MultiCollider{
+	std::vector<Collider> colliders;
+	MultiCollider() = default;
+	MultiCollider(std::vector<Collider> p_colliders) : colliders(p_colliders) {}
+	bool collides(double x, double y) {
+		for (Collider c : colliders) if (c.collides(x, y)) return true;
+		return false;
+	}
+	bool collides(Collider* second) {
+		for (Collider c : colliders) if (c.collides(second)) return true;
+		return false;
+	}
+	bool collides(MultiCollider* second) {
+		for (Collider c : colliders)
+			for (Collider d : second->colliders)
+				if (c.collides(&d)) return true;
+		return false;
+	}
+};

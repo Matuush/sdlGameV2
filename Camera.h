@@ -7,10 +7,10 @@ struct Camera : public Entity {
 	Camera() : Entity(Vector2D(0, 0), NOTHING_TEXTURE) {
 		display = false;
 		colliders = MultiCollider({ 
-			RectangleCollider(0, SCREEN_SIZE.y, SCREEN_SIZE.x, BORDER_THICKNESS),
-			RectangleCollider(SCREEN_SIZE.x, 0, BORDER_THICKNESS, SCREEN_SIZE.y),
-			RectangleCollider(0, -BORDER_THICKNESS, SCREEN_SIZE.x, BORDER_THICKNESS),
-			RectangleCollider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, SCREEN_SIZE.y) });
+			Collider(0, SCREEN_SIZE.y, SCREEN_SIZE.x, BORDER_THICKNESS),
+			Collider(SCREEN_SIZE.x, 0, BORDER_THICKNESS, SCREEN_SIZE.y),
+			Collider(0, -BORDER_THICKNESS, SCREEN_SIZE.x, BORDER_THICKNESS),
+			Collider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, SCREEN_SIZE.y) });
 	}
 
 	void refresh() {

@@ -8,8 +8,8 @@
 const bool JIRI_SMRDI = 1;
 const bool JIRI_SE_UMYL = 0;
 
-enum LOOP_TYPE : unsigned char { ESCAPE = 0, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
-enum WINDOW_TYPE : unsigned char { BORDERLESS = 0, BORDERED, FULLSCREEN };
+enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
+enum WINDOW_TYPE : unsigned char { BORDERLESS, BORDERED, FULLSCREEN };
 
 // GUI
 const char TITLE[] = "SDL Moment";
@@ -63,24 +63,24 @@ const double DEFAULT_PLAYER_HEALTH = 50;
 const double DEFAULT_PLAYER_DAMAGE = 5;
 const Vector2D DEFAULT_BULLET_POSITION(-10, -10);
 const double DEFAULT_BULLET_TERMINAL_VELOCITY = DEFAULT_TERMINAL_VELOCITY * 7;
-const RectangleCollider kapustaColliders[17] = {
-	RectangleCollider(12, 13, 32, 32) * SCALE,
-	RectangleCollider(11, 13, 1, 24) * SCALE,
-	RectangleCollider(19, 45, 24, 5) * SCALE,
-	RectangleCollider(44, 19, 8, 25) * SCALE,
-	RectangleCollider(31, 10, 11, 3) * SCALE,
-	RectangleCollider(32, 7, 5, 3) * SCALE,
-	RectangleCollider(52, 24, 2, 17) * SCALE,
-	RectangleCollider(54, 28, 2, 8) * SCALE,
-	RectangleCollider(44, 44, 6, 2) * SCALE,
-	RectangleCollider(43, 46, 4, 2) * SCALE,
-	RectangleCollider(44, 17, 6, 2) * SCALE,
-	RectangleCollider(44, 15, 3, 2) * SCALE,
-	RectangleCollider(16, 45, 3, 3) * SCALE,
-	RectangleCollider(14, 11, 7, 2) * SCALE,
-	RectangleCollider(17, 9, 4, 2) * SCALE,
-	RectangleCollider(10, 19, 1, 13) * SCALE,
-	RectangleCollider(36, 50, 6, 1) * SCALE
+const Collider kapustaColliders[17] = {
+	Collider(12, 13, 32, 32) * SCALE,
+	Collider(11, 13, 1, 24) * SCALE,
+	Collider(19, 45, 24, 5) * SCALE,
+	Collider(44, 19, 8, 25) * SCALE,
+	Collider(31, 10, 11, 3) * SCALE,
+	Collider(32, 7, 5, 3) * SCALE,
+	Collider(52, 24, 2, 17) * SCALE,
+	Collider(54, 28, 2, 8) * SCALE,
+	Collider(44, 44, 6, 2) * SCALE,
+	Collider(43, 46, 4, 2) * SCALE,
+	Collider(44, 17, 6, 2) * SCALE,
+	Collider(44, 15, 3, 2) * SCALE,
+	Collider(16, 45, 3, 3) * SCALE,
+	Collider(14, 11, 7, 2) * SCALE,
+	Collider(17, 9, 4, 2) * SCALE,
+	Collider(10, 19, 1, 13) * SCALE,
+	Collider(36, 50, 6, 1) * SCALE
 };
 
 // Enemy attributes
