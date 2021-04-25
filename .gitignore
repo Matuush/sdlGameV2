@@ -341,3 +341,11 @@ healthchecksdb
 
 #simple direct media layer
 SDL
+SDL2.dll
+SDL2.lib
+SDL2_image.dll
+SDL2_image.lib
+SDL2_ttf.dll
+SDL2_ttf.lib
+SDL2main.lib
+SDL2test.lib
