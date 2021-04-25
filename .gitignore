@@ -349,3 +349,8 @@ SDL2_ttf.dll
 SDL2_ttf.lib
 SDL2main.lib
 SDL2test.lib
+libfreetype-6.dll
+libjpeg-9.dll
+libpng16-16.dll
+libtiff-5.dll
+libwebp-7.dll
