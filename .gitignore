@@ -339,7 +339,7 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-#simple direct media layer
+#Simple DirectMedia Layer
 SDL
 SDL2.dll
 SDL2.lib
@@ -355,3 +355,8 @@ libpng16-16.dll
 libtiff-5.dll
 libwebp-7.dll
 zlib1.dll
+
+#Visual Studio files
+sdlGameV2.sln
+sdlGameV2.vcxproj
+sdlGameV2.vcxproj.filters
