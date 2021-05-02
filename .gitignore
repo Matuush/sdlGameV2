@@ -340,27 +340,4 @@ ASALocalRun/
 healthchecksdb
 
 #Simple DirectMedia Layer
-<<<<<<< HEAD
 SDL2
-=======
-SDL
-SDL2.dll
-SDL2.lib
-SDL2_image.dll
-SDL2_image.lib
-SDL2_ttf.dll
-SDL2_ttf.lib
-SDL2main.lib
-SDL2test.lib
-libfreetype-6.dll
-libjpeg-9.dll
-libpng16-16.dll
-libtiff-5.dll
-libwebp-7.dll
-zlib1.dll
-
-#Visual Studio files
-sdlGameV2.sln
-sdlGameV2.vcxproj
-sdlGameV2.vcxproj.filters
->>>>>>> 30e69098a730966403f38dc7cb44e346dd65dbfc
