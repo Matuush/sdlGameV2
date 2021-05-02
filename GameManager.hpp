@@ -1,8 +1,8 @@
 #pragma once
 #include "SDL2/SDL_main.h"
-#include "RenderWindow.h"
-#include "Level.h"
-#include "MenuPage.h"
+#include "RenderWindow.hpp"
+#include "Level.hpp"
+#include "MenuPage.hpp"
 #include <iostream>
 
 bool com = 0;

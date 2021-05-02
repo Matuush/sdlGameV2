@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include "SDL2/SDL_ttf.h"
-#include "Entity.h"
+#include "Entity.hpp"
 
 class Button : public Entity {
 public:

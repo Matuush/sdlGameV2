@@ -1,6 +1,6 @@
 #pragma once
 #include "SDL2/SDL.h"
-#include "Constants.h"
+#include "Constants.hpp"
 #include <iostream>
 
 class Entity {

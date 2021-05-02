@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2D.h"
+#include "Vector2D.hpp"
 #include <vector>
 
 enum COLLIDER_TYPE : unsigned char { CIRCLE, RECTANGLE };

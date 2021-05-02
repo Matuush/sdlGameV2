@@ -1,5 +1,5 @@
 #pragma once
-#include "Button.h"
+#include "Button.hpp"
 struct Page {
 	std::vector<Button> buttons;
 	LOOP_TYPE loopType;

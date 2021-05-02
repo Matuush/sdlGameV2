@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include "Vector2D.h"
-#include "Texture.h"
-#include "Collider.h"
+#include "Vector2D.hpp"
+#include "Texture.hpp"
+#include "Collider.hpp"
 
 // Very usefull
 const bool JIRI_SMRDI = 1;

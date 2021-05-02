@@ -1,7 +1,7 @@
 #pragma once
 #include "SDL2/SDL_image.h"
-#include "Camera.h"
-#include "Button.h"
+#include "Camera.hpp"
+#include "Button.hpp"
 
 class RenderWindow {
 public:

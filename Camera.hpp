@@ -1,5 +1,5 @@
 #pragma once
-#include "Player.h"
+#include "Player.hpp"
 
 struct Camera : public Entity {
 	double w = SCREEN_SIZE.x, h = SCREEN_SIZE.y;

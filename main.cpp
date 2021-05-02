@@ -1,4 +1,4 @@
-#include "GameManager.h"
+#include "GameManager.hpp"
 bool RenderWindow::paused = 0, RenderWindow::renderColliders = 1;
 WINDOW_TYPE RenderWindow::windowType = BORDERED;
 LOOP_TYPE Game::loopType = MENU;

@@ -1,6 +1,6 @@
 #pragma once
-#include "Map.h"
-#include "Enemy.h"
+#include "Map.hpp"
+#include "Enemy.hpp"
 
 struct Level {
 	Map map = Map();
