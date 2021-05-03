@@ -341,3 +341,10 @@ healthchecksdb
 
 #Simple DirectMedia Layer
 SDL2
+
+main.exe
+
+.vscode
+.vs
+
+.git
