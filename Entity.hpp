@@ -29,7 +29,7 @@ public:
 		Entity::entities.push_back(this);
 	}
 	~Entity() {
-		Entity::entities.erase(std::remove(Entity::entities.begin(), Entity::entities.end(), this), Entity::entities.end());
+		Entity::entities.erase(findIter(Entity::entities.begin(), Entity::entities.end(), this));
 	}
 	static void updateAll() {
 		for (auto&& e : Entity::entities) e->update();
@@ -51,7 +51,12 @@ protected:
 		velocity = Vector2D(0, 0);
 		colliders;
 	}
-
+	inline std::vector<Entity*>::iterator findIter(std::vector<Entity*>::iterator first, std::vector<Entity*>::iterator last, const Entity* value){
+    	for (; first != last; ++first) {
+        	if (*first == value) return first;
+    	}
+    	return last;
+	}
 	inline bool collisionOnMovement(Vector2D vel) {
 		bool axisCollides = false;
 		colliders.move(vel);

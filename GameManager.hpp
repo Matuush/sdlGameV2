@@ -116,7 +116,7 @@ private:
 				}
 				Entity::inputAll(&event);
 			}
-			std::cout << Entity::entities.size() << std::endl;
+			
 			// Updates
 			window->handleWindow();
 			Entity::updateAll();

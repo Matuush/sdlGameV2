@@ -36,6 +36,8 @@ struct Collider {
 		case CIRCLE:
 			return Collider(position * value, radius * value);
 		}
+		std::cout << "Unknown collider type\n";
+		return Collider();
 	}
 	virtual bool collides(double x, double y) {
 		switch (type) {
@@ -44,6 +46,8 @@ struct Collider {
 		case CIRCLE:
 			return Vector2D{ abs(x - position.x), abs(y - position.y) }.getMagnitude() <= radius ? true : false;
 		}
+		std::cout << "Unknown collider type\n";
+		return false;
 	}
 	bool collides(Vector2D p) { return collides(p.x, p.y); }
 	virtual bool collides(Collider* second) { 
@@ -70,6 +74,8 @@ struct Collider {
 				a = sort(a);
 				return false;
 			}
+			std::cout << "Unknown collider type\n";
+			return false;
 			break;
 		case CIRCLE:
 			switch (second->type) {
@@ -78,8 +84,13 @@ struct Collider {
 			case CIRCLE:
 				return abs((position - second->position).getMagnitude()) <= radius + second->radius ? true : false;
 			}
+			std::cout << "Unknown collider type\n";
+			return false;
 			break;
 		}
+		std::cout << "Unknown collider type\n";
+		return false;
+		
 	}
 };
 
