@@ -1,5 +1,5 @@
 #pragma once
-#include "Map.hpp"
+#include "data/Map.hpp"
 #include "Enemy.hpp"
 
 struct Level {
@@ -9,7 +9,7 @@ struct Level {
 
 	Level() {}
 	~Level() {
-		Entity::entities.clear();
-		Player::players.clear();
+		for(Entity* e : Entity::entities) delete e;
+		for(Player* p : Player::players) delete p;
 	}
 };

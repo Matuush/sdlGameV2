@@ -1,6 +1,6 @@
 #pragma once
 #include "Projectile.hpp"
-#include "KeyState.hpp"
+#include "data/KeyState.hpp"
 
 class Player : public Entity {
 public:

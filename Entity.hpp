@@ -1,6 +1,6 @@
 #pragma once
 #include "SDL2/SDL.h"
-#include "Constants.hpp"
+#include "data/Constants.hpp"
 #include <iostream>
 
 class Entity {
@@ -52,9 +52,8 @@ protected:
 		colliders;
 	}
 	inline std::vector<Entity*>::iterator findIter(std::vector<Entity*>::iterator first, std::vector<Entity*>::iterator last, const Entity* value){
-    	for (; first != last; ++first) {
+    	for (; first != last; ++first)
         	if (*first == value) return first;
-    	}
     	return last;
 	}
 	inline bool collisionOnMovement(Vector2D vel) {

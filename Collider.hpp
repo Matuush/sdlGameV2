@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2D.hpp"
+#include "data/Vector2D.hpp"
 #include <vector>
 
 enum COLLIDER_TYPE : unsigned char { CIRCLE, RECTANGLE };
@@ -51,26 +51,27 @@ struct Collider {
 	}
 	bool collides(Vector2D p) { return collides(p.x, p.y); }
 	virtual bool collides(Collider* second) { 
+		return false;
 		switch (type) {
 		case RECTANGLE:
 			switch (second->type) {
 			case RECTANGLE:
-				return(collides(second->position.x, second->position.y) ||
-					collides(second->position.x + second->size.x, second->position.y) ||
-					collides(second->position.x, second->position.y + second->size.y) ||
-					collides(second->position.x + second->size.x, second->position.y + second->size.y)) ||
-					(second->collides(position.x, position.y) ||
+				return( collides(second->position.x, second->position.y) ||
+						collides(second->position.x + second->size.x, second->position.y) ||
+						collides(second->position.x, second->position.y + second->size.y) ||
+						collides(second->position.x + second->size.x, second->position.y + second->size.y)) ||
+						second->collides(position.x, position.y) ||
 						second->collides(position.x + size.x, position.y) ||
 						second->collides(position.x, position.y + size.y) ||
-						second->collides(position.x + size.x, position.y + size.y));
+						second->collides(position.x + size.x, position.y + size.y);
 			case CIRCLE:
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				if (collides(second->position)) return true;
 				std::vector<Vector2D> a = {
 					position - second->position,
 					position + size - second->position,
 					Vector2D(position.x, position.y + size.y) - second->position,
-					Vector2D(position.x + size.x, position.y) - second->position
-				};
+					Vector2D(position.x + size.x, position.y) - second->position};
 				a = sort(a);
 				return false;
 			}
@@ -82,7 +83,7 @@ struct Collider {
 			case RECTANGLE:
 				return second->collides(this);
 			case CIRCLE:
-				return abs((position - second->position).getMagnitude()) <= radius + second->radius ? true : false;
+				return abs((position - second->position).getMagnitude()) <= radius + second->radius;
 			}
 			std::cout << "Unknown collider type\n";
 			return false;

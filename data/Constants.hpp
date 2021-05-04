@@ -2,7 +2,7 @@
 #include <string>
 #include "Vector2D.hpp"
 #include "Texture.hpp"
-#include "Collider.hpp"
+#include "../Collider.hpp"
 
 // Very usefull
 const bool JIRI_SMRDI = 1;

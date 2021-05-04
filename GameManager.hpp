@@ -2,7 +2,7 @@
 #include "SDL2/SDL_main.h"
 #include "RenderWindow.hpp"
 #include "Level.hpp"
-#include "MenuPage.hpp"
+#include "data/MenuPage.hpp"
 #include <iostream>
 
 bool com = 0;
