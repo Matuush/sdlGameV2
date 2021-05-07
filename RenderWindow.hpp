@@ -14,7 +14,6 @@ public:
 		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, (int)SCREEN_SIZE.x, (int)SCREEN_SIZE.y, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-		textures[NOTHING_TEXTURE.id] = IMG_LoadTexture(renderer, NOTHING_TEXTURE.path);
 		createTexture(NOTHING_TEXTURE);
 		createTexture(WATER_TEXTURE);
 		createTexture(DIRT_TEXTURE);
@@ -53,11 +52,13 @@ public:
 			if (renderColliders) renderCollider(p_entity);
 		}
 	}
-	void freeRender(Button* p_entity) {
+	void renderButton(Button* p_entity) {
 		SDL_Texture* tempSex = textures[p_entity->textureID];
 		if (!p_entity->unlocked) SDL_SetTextureColorMod(tempSex, 100, 0, 0);
 		else SDL_SetTextureColorMod(tempSex, 255, 255, 255);
+
 		SDL_Rect dst{ (int)(p_entity->position.x), (int)(p_entity->position.y), (int)p_entity->w, (int)p_entity->h };
+		
 		SDL_RenderCopy(renderer, tempSex, &p_entity->currentFrame, &dst);
 
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, p_entity->text, p_entity->color);

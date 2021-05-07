@@ -44,13 +44,13 @@ public:
 					case SDLK_s: keyState.s = 0; break;
 					case SDLK_d: keyState.d = 0; break;
 				}
-				break;
-			}
+			break;
+		}
 	}
-	void recoil(Vector2D shotPos) {
-		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
-		tAcceleration.limit(movementAcceleration * 3);
-		velocity += tAcceleration;
+	void shoot(SDL_Event* event, Vector2D camPos){
+		Vector2D shotPos = Vector2D(event->button.x + camPos.x, event->button.y + camPos.y);
+		new Projectile(position + RAW_PLAYER * SCALE / 2, shotPos); 
+		recoil(shotPos);
 	}
 private:
 	double movementAcceleration = PLAYER_VELOCITY;
@@ -65,5 +65,11 @@ private:
 			int tick = (int)(SDL_GetTicks() / (7000 / velocity.getMagnitude())) % 2;
 			currentFrame.x = PLAYER_TEXTURE.width * tick;
 		}
+	}
+
+	inline void recoil(Vector2D shotPos) {
+		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
+		tAcceleration.limit(movementAcceleration * 3);
+		velocity += tAcceleration;
 	}
 };

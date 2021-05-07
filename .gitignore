@@ -342,7 +342,7 @@ healthchecksdb
 #Simple DirectMedia Layer
 SDL2
 
-main.exe
+sdlGameV2.exe
 
 .vscode
 .vs

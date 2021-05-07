@@ -1,1 +1,1 @@
-g++ main.cpp -o main -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+g++ main.cpp -o sdlGameV2 -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf

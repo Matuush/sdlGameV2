@@ -10,15 +10,12 @@ public:
 	SDL_Color color = PASSIVE_BUTTON_TEXT_COLOR;
 	const char* text;
 	Vector2D position;
-	SDL_Rect currentFrame;
-	unsigned char textureID;
+	SDL_Rect currentFrame = { 0, 0, BUTTON_TEXTURE.width, BUTTON_TEXTURE.height };
+	unsigned char textureID = BUTTON_TEXTURE.id;
 
 	Button() = default;
-	Button(Vector2D p_position, const char* p_text, std::function<void()> p_efect) : text(p_text), efect(p_efect) {
-		position = p_position;
-		currentFrame = { 0, 0, RAW_TILE * 2, RAW_TILE };
-		textureID = BUTTON_TEXTURE.id;
-	}
+	Button(Vector2D p_position, const char* p_text, std::function<void()> p_efect) : 
+		text(p_text), efect(p_efect), position(p_position) {}
 
 	void checkClick(SDL_Event* event) {
 		if ((event->button.x > position.x) && (event->button.x < position.x + w) &&

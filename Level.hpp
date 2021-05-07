@@ -9,7 +9,7 @@ struct Level {
 
 	Level() {}
 	~Level() {
-		for(Entity* e : Entity::entities) delete e;
-		for(Player* p : Player::players) delete p;
+		Entity::entities.clear();
+		//for(Entity* e : Entity::entities) delete e;
 	}
 };
