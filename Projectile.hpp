@@ -16,7 +16,6 @@ public:
 		velocity = destination - position;
 		velocity.setMagnitude(terminalVelocity);
 	}
-
 private:
 	void update() override {
 		updatePosition();

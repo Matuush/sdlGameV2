@@ -82,13 +82,8 @@ public:
 	void displayStats(std::vector<Player*> players) {
 		for (int i = 0; i < players.size(); i++) {
 			const std::string textPos = "x: " + std::to_string((int)players[i]->position.x) + " y: " + std::to_string((int)players[i]->position.y);
-			SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, textPos.c_str(), DEFAULT_TEXT_COLOR);
-			SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-			SDL_FreeSurface(surfaceMessage);
-
 			SDL_Rect dst = { (int)(SCREEN_SIZE.x - TILE_SIZE * 2), i * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE };
-			SDL_RenderCopy(renderer, message, NULL, &dst);
-			SDL_DestroyTexture(message);
+			renderText(textPos.c_str(), dst);
 		}
 	}
 	void DrawCircle(Vector2D centre, int32_t radius) {
@@ -130,15 +125,24 @@ private:
 	TTF_Font* defaultFont;
 	SDL_Texture* textures[8];
 
+	inline void renderText(const char* text, SDL_Rect dst){
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, text, DEFAULT_TEXT_COLOR);
+		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+		SDL_FreeSurface(surfaceMessage);
+
+		SDL_RenderCopy(renderer, message, NULL, &dst);
+		SDL_DestroyTexture(message);
+	}
+
 	inline void renderCollider(Entity* p_entity) {
-		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-		for (const auto c : p_entity->colliders.colliders) {
-			if (c->type == RECTANGLE) {
-				SDL_Rect colsrc = { (int)(c->position.x - cam->position.x), (int)(c->position.y - cam->position.y), (int)c->size.x, (int)c->size.y };
-				SDL_RenderDrawRect(renderer, &colsrc);
-			} else if(c->type == CIRCLE) {
-				DrawCircle(c->position, c->radius);
-			}
+		if (p_entity->solid)SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+		for(Collider* col : p_entity->colliders.colliders){
+			if (col->type == RECTANGLE){
+			SDL_Rect colsrc = {(int)(col->position.x - cam->position.x), (int)(col->position.y - cam->position.y), (int)col->size.x, (int)col->size.y};
+			SDL_RenderDrawRect(renderer, &colsrc);
+		} 
+		else if(col->type == CIRCLE) 
+			DrawCircle(col->position - cam->position, col->radius);
 		}
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	}

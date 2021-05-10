@@ -19,16 +19,17 @@ public:
 	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders.colliders.push_back(new Collider(position, { TILE_SIZE, TILE_SIZE }));
+		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders = MultiCollider({new Collider(position, {TILE_SIZE, TILE_SIZE})});
 		Entity::entities.push_back(this);
 	}
-	Entity(Vector2D p_position, Collider p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
+	Entity(Vector2D p_position, Collider* p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
+		colliders.add(p_collider);
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		colliders.colliders.push_back(&p_collider);
 		Entity::entities.push_back(this);
 	}
 	~Entity() {
+		for(Collider* col : colliders.colliders) delete col;
 		Entity::entities.erase(findIter(Entity::entities.begin(), Entity::entities.end(), this));
 	}
 	static void updateAll() {
@@ -66,7 +67,7 @@ protected:
 				break;
 			}
 		}
-		colliders.move(Vector2D(0, 0) - vel);
+		colliders.move(Vector2D{0, 0}-vel);
 		return axisCollides;
 	}
 

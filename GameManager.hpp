@@ -112,16 +112,15 @@ private:
 				if (event.type == SDL_MOUSEBUTTONDOWN) level.player1.shoot(&event, window->cam->position);
 				Entity::inputAll(&event);
 			}
-			
+			std::cout << Entity::entities.size() << std::endl;
 			// Updates
 			window->handleWindow();
 			Entity::updateAll();
-
+			
 			// Rendering
 			window->clear();
 				for (Entity* e : Entity::entities) window->render(e);
 				window->displayStats(Player::players);
-				window->DrawCircle(level.player1.position + RAW_PLAYER * SCALE / 2 - window->cam->position, 80);
 			window->display();
 
 			{ int frameTime = SDL_GetTicks() - frameStart;
