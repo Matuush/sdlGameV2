@@ -112,7 +112,7 @@ private:
 				if (event.type == SDL_MOUSEBUTTONDOWN) level.player1.shoot(&event, window->cam->position);
 				Entity::inputAll(&event);
 			}
-			std::cout << Entity::entities.size() << std::endl;
+			
 			// Updates
 			window->handleWindow();
 			Entity::updateAll();

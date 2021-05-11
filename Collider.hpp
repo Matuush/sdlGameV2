@@ -4,29 +4,16 @@
 
 enum COLLIDER_TYPE : unsigned char { CIRCLE, RECTANGLE };
 
-std::vector<Vector2D> sort(std::vector<Vector2D> prdle) {
-	std::vector<Vector2D> result;
-	result.push_back(prdle[0]);
-	prdle.erase(prdle.begin());
-	for (auto v : prdle) {
-		if (v.getMagnitude() > result[result.size()].getMagnitude()) result.push_back(v);
-		else {
-			for (unsigned int aah = result.size() - 1; aah >= 0; aah--) {
-				if (result[aah] < v) continue;
-				result.insert(result.begin() + aah, v);
-			}
-		}
-	}
-	return result;
-}
+
+const char* const tohle = R"gamerPeero(  o̵̥͎͂b̷͇͆̆ě̷̼y̷̡̿̃͜  )gamerPeero";
+
 
 struct Collider {
 	Vector2D position, size;
 	unsigned int radius;
 	COLLIDER_TYPE type;
 	Collider() = default;
-	Collider(Collider* first) : 
-		position(first->position), size(first->size), radius(first->radius), type(first->type) {}
+	Collider(Collider* first) : position(first->position), size(first->size), radius(first->radius), type(first->type) {}
 	Collider(Vector2D pos, Vector2D size) : type(RECTANGLE), position(pos), size(size), radius(0){	}
 	Collider(const unsigned int x, const unsigned int y, const unsigned int w, const unsigned int h) : type(RECTANGLE), position({x, y}), size({w, h}), radius(0) {	}
 	Collider(Vector2D pos, unsigned int size) : type(CIRCLE), position(pos), size({0, 0}), radius(radius) {	}
@@ -45,7 +32,7 @@ struct Collider {
 		case RECTANGLE:
 			return(x >= position.x && y >= position.y && x <= position.x + size.x && y <= position.y + size.y);
 		case CIRCLE:
-			return Vector2D{ abs(x - position.x), abs(y - position.y) }.getMagnitude() <= radius ? true : false;
+			return Vector2D( abs(x - position.x), abs(y - position.y) ).getMagnitude() <= radius;
 		}
 		std::cout << "Unknown collider type\n";
 		return false;
@@ -65,10 +52,8 @@ struct Collider {
 						second->collides(position.x, position.y + size.y) ||
 						second->collides(position.x + size.x, position.y + size.y);
 			case CIRCLE:
-			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				if (collides(second->position)) return true;
-
-				return false;
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				return second->collides(this);
 			}
 			std::cout << "Unknown collider type\n";
 			return false;
@@ -76,7 +61,11 @@ struct Collider {
 		case CIRCLE:
 			switch (second->type) {
 			case RECTANGLE:
-				return second->collides(this);
+				if (collides(second->position) || 
+					collides(second->position + Vector2D((int)second->size.x, 0)) ||
+					collides(second->position + Vector2D(0, (int)second->size.y)) ||
+					collides(second->position + second->size)) return true;
+				return false;
 			case CIRCLE:
 				return abs((position - second->position).getMagnitude()) <= radius + second->radius;
 			}

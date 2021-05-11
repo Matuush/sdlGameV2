@@ -81,8 +81,8 @@ public:
 
 	void displayStats(std::vector<Player*> players) {
 		for (int i = 0; i < players.size(); i++) {
-			const std::string textPos = "x: " + std::to_string((int)players[i]->position.x) + " y: " + std::to_string((int)players[i]->position.y);
-			SDL_Rect dst = { (int)(SCREEN_SIZE.x - TILE_SIZE * 2), i * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE };
+			const std::string textPos = "player" + std::to_string(i + 1) + " x: " + std::to_string((int)players[i]->position.x) + " y: " + std::to_string((int)players[i]->position.y);
+			SDL_Rect dst = { (int)(SCREEN_SIZE.x - TILE_SIZE * 3), i * TILE_SIZE, TILE_SIZE * 3, TILE_SIZE };
 			renderText(textPos.c_str(), dst);
 		}
 	}
@@ -138,11 +138,10 @@ private:
 		if (p_entity->solid)SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 		for(Collider* col : p_entity->colliders.colliders){
 			if (col->type == RECTANGLE){
-			SDL_Rect colsrc = {(int)(col->position.x - cam->position.x), (int)(col->position.y - cam->position.y), (int)col->size.x, (int)col->size.y};
-			SDL_RenderDrawRect(renderer, &colsrc);
-		} 
-		else if(col->type == CIRCLE) 
-			DrawCircle(col->position - cam->position, col->radius);
+				SDL_Rect colsrc = {(int)(col->position.x - cam->position.x), (int)(col->position.y - cam->position.y), (int)col->size.x, (int)col->size.y};
+				SDL_RenderDrawRect(renderer, &colsrc);
+			} 
+			else if(col->type == CIRCLE) DrawCircle(col->position - cam->position, col->radius);
 		}
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	}
