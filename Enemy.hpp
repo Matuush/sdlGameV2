@@ -10,7 +10,7 @@ public:
 	Enemy(Vector2D p_position) : Entity(p_position, ENEMY_TEXTURE) {
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
 		solid = true;
-		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, 124));
+		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, 248));
 	}
 protected:
 	inline void changeSprite() {

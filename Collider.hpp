@@ -5,7 +5,10 @@
 enum COLLIDER_TYPE : unsigned char { CIRCLE, RECTANGLE };
 
 
-const char* const tohle = R"gamerPeero(  o̵̥͎͂b̷͇͆̆ě̷̼y̷̡̿̃͜  )gamerPeero";
+const char* const tohle = R"gamerPeero(  
+	o̵̥͎͂b̷͇͆̆ě̷̼y̷̡̿̃͜  
+	
+	)gamerPeero";
 
 
 struct Collider {
@@ -43,10 +46,10 @@ struct Collider {
 		case RECTANGLE:
 			switch (second->type) {
 			case RECTANGLE:
-				return( collides(second->position.x, second->position.y) ||
+				return collides(second->position.x, second->position.y) ||
 						collides(second->position.x + second->size.x, second->position.y) ||
 						collides(second->position.x, second->position.y + second->size.y) ||
-						collides(second->position.x + second->size.x, second->position.y + second->size.y)) ||
+						collides(second->position.x + second->size.x, second->position.y + second->size.y) ||
 						second->collides(position.x, position.y) ||
 						second->collides(position.x + size.x, position.y) ||
 						second->collides(position.x, position.y + size.y) ||
@@ -61,11 +64,14 @@ struct Collider {
 		case CIRCLE:
 			switch (second->type) {
 			case RECTANGLE:
-				if (collides(second->position) || 
+				 return collides(second->position) || 
 					collides(second->position + Vector2D((int)second->size.x, 0)) ||
 					collides(second->position + Vector2D(0, (int)second->size.y)) ||
-					collides(second->position + second->size)) return true;
-				return false;
+					collides(second->position + second->size) || 
+					second->collides(position.x + radius, position.y) ||
+					second->collides(position.x - radius, position.y) ||
+					second->collides(position.x, position.y + radius) ||
+					second->collides(position.x, position.y - radius);
 			case CIRCLE:
 				return abs((position - second->position).getMagnitude()) <= radius + second->radius;
 			}
