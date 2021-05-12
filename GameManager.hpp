@@ -116,6 +116,7 @@ private:
 			// Updates
 			window->handleWindow();
 			Entity::updateAll();
+			window->cam->move();
 			
 			// Rendering
 			window->clear();

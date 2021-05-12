@@ -52,11 +52,6 @@ protected:
 		velocity = Vector2D(0, 0);
 		colliders;
 	}
-	inline std::vector<Entity*>::iterator findIter(std::vector<Entity*>::iterator first, std::vector<Entity*>::iterator last, const Entity* value){
-    	for (; first != last; ++first)
-        	if (*first == value) return first;
-    	return last;
-	}
 	inline bool collisionOnMovement(Vector2D vel) {
 		bool axisCollides = false;
 		colliders.move(vel);
@@ -88,11 +83,14 @@ protected:
 		if (velocity.getMagnitude() < 0.5) velocity = 0;
 	}
 	
-	virtual void update() {
-		updatePosition();
-	}
+	virtual void update() {}
 
-	virtual void input(SDL_Event* event) {
-	
+	virtual void input(SDL_Event* event) {}
+
+private:
+	inline std::vector<Entity*>::iterator findIter(std::vector<Entity*>::iterator first, std::vector<Entity*>::iterator last, const Entity* value){
+    	for (; first != last; ++first)
+        	if (*first == value) return first;
+    	return last;
 	}
 };

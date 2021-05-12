@@ -1,26 +1,16 @@
 #pragma once
 #include "Player.hpp"
 
-struct Camera : public Entity {
+struct Camera {
 	double w = SCREEN_SIZE.x, h = SCREEN_SIZE.y;
-
-	Camera() : Entity(Vector2D(0, 0), NOTHING_TEXTURE) {
-		display = false;
-		colliders = MultiCollider({ 
-			new Collider(0, SCREEN_SIZE.y, SCREEN_SIZE.x, BORDER_THICKNESS),
-			new Collider(SCREEN_SIZE.x, 0, BORDER_THICKNESS, SCREEN_SIZE.y),
-			new Collider(0, -BORDER_THICKNESS, SCREEN_SIZE.x, BORDER_THICKNESS),
-			new Collider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, SCREEN_SIZE.y) });
-	}
+	Vector2D position;
+	Camera() = default;
 
 	void refresh() {
 		position = 0;
-		Entity::entities.push_back(this);
 	}
 
-	void update() override {
-		Vector2D pp = position;
-
+	void move() {
 		for (auto&& p : Player::players) {
 			const double walkBorderPlus = 0.75;
 			const double walkBorderMinus = 0.25;
@@ -29,7 +19,6 @@ struct Camera : public Entity {
 			if (position.x + SCREEN_SIZE.x * walkBorderMinus > p->position.x + SCALE / 2 * double(PLAYER_TEXTURE.width)) {
 				double destX = p->position.x + SCALE / 2 * double(PLAYER_TEXTURE.width) - SCREEN_SIZE.x * walkBorderMinus;
 				if (destX >= 0) position.x = destX;
-
 			}
 
 			// Right
@@ -50,8 +39,5 @@ struct Camera : public Entity {
 				if (destY <= double(SCREEN_SIZE.y) * (double(SCREEN_MAP_RATIO) - 1)) position.y = destY;
 			}
 		}
-
-		const Vector2D dif = position - pp;
-		for (Collider* c : colliders.colliders) c->position += dif;
 	}
 };

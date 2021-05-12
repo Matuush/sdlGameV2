@@ -50,5 +50,20 @@
         "xutility": "cpp",
         "map": "cpp",
         "xtree": "cpp"
-    }
+    },
+    "VSCord.detailsDebugging": "Coding.",
+    "VSCord.detailsEditing": "Coding {workspace}.",
+    "VSCord.detailsIdle": "Don't even question it.",
+    "VSCord.detailsViewing": "Epic.",
+    "VSCord.idleText": "Don't even question it.",
+    "VSCord.idleTimeout": 10,
+    "VSCord.largeImage": "Coding.",
+    "VSCord.largeImageIdle": "Still coding.",
+    "VSCord.lowerDetailsDebugging": "Still coding.",
+    "VSCord.lowerDetailsEditing": "Coding.",
+    "VSCord.lowerDetailsIdle": "Still coding.",
+    "VSCord.lowerDetailsNotFound": "Coding.",
+    "VSCord.lowerDetailsViewing": "Coding.",
+    "VSCord.problemsText": "NO PROBLEMS",
+    "VSCord.smallImage": "Coding."
 }

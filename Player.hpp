@@ -28,24 +28,7 @@ public:
 		changeSprite();
 	}
 	void input(SDL_Event* event) override{
-		switch (event->type) {
-			case SDL_KEYDOWN:
-				switch (event->key.keysym.sym) {
-					case SDLK_w: keyState.w = 1; break;
-					case SDLK_a: keyState.a = 1; break;
-					case SDLK_s: keyState.s = 1; break;
-					case SDLK_d: keyState.d = 1; break;
-				}
-				break;
-			case SDL_KEYUP:
-				switch (event->key.keysym.sym) {
-					case SDLK_w: keyState.w = 0; break;
-					case SDLK_a: keyState.a = 0; break;
-					case SDLK_s: keyState.s = 0; break;
-					case SDLK_d: keyState.d = 0; break;
-				}
-			break;
-		}
+		keyState.update(event);
 	}
 	void shoot(SDL_Event* event, Vector2D camPos){
 		Vector2D shotPos = Vector2D(event->button.x + camPos.x, event->button.y + camPos.y);

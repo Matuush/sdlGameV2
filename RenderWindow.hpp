@@ -25,7 +25,7 @@ public:
 		createTexture(BULLET_TEXTURE);
 
 		TTF_Init(); // Text
-		defaultFont = TTF_OpenFont("textures/ComicSans.ttf", 128);
+		defaultFont = TTF_OpenFont("textures/ComicSans.ttf", 32);
 	}
 
 	void handleWindow() {
