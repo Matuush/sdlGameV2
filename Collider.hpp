@@ -5,7 +5,8 @@
 enum COLLIDER_TYPE : unsigned char { CIRCLE, RECTANGLE };
 
 
-const char* const tohle = R"gamerPeero(  
+const char* const tohle = R"gamerPeero(
+
 	o̵̥͎͂b̷͇͆̆ě̷̼y̷̡̿̃͜  
 	
 	)gamerPeero";
@@ -19,13 +20,13 @@ struct Collider {
 	Collider(Collider* first) : position(first->position), size(first->size), radius(first->radius), type(first->type) {}
 	Collider(Vector2D pos, Vector2D size) : type(RECTANGLE), position(pos), size(size), radius(0){	}
 	Collider(const unsigned int x, const unsigned int y, const unsigned int w, const unsigned int h) : type(RECTANGLE), position({x, y}), size({w, h}), radius(0) {	}
-	Collider(Vector2D pos, unsigned int size) : type(CIRCLE), position(pos), size({0, 0}), radius(radius) {	}
-	Collider operator*(const int value) { 
+	Collider(Vector2D pos, unsigned int size) : type(CIRCLE), position(pos), size({0, 0}), radius(size) {	}
+	Collider operator*(const int value) {
 		switch (type){
-		case RECTANGLE:
-			return Collider(position * value, size * value);
-		case CIRCLE:
-			return Collider(position * value, radius * value);
+			case RECTANGLE:
+				return Collider(position * value, size * value);
+			case CIRCLE:
+				return Collider(position * value, radius * value);
 		}
 		std::cout << "Unknown collider type\n";
 		return Collider();
@@ -41,7 +42,7 @@ struct Collider {
 		return false;
 	}
 	bool collides(Vector2D p) { return collides(p.x, p.y); }
-	virtual bool collides(Collider* second) { 
+	virtual bool collides(Collider* second) {
 		switch (type) {
 		case RECTANGLE:
 			switch (second->type) {
@@ -55,7 +56,6 @@ struct Collider {
 						second->collides(position.x, position.y + size.y) ||
 						second->collides(position.x + size.x, position.y + size.y);
 			case CIRCLE:
-			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				return second->collides(this);
 			}
 			std::cout << "Unknown collider type\n";
@@ -64,7 +64,7 @@ struct Collider {
 		case CIRCLE:
 			switch (second->type) {
 			case RECTANGLE:
-				 return collides(second->position) || 
+				 return collides(second->position) ||
 					collides(second->position + Vector2D((int)second->size.x, 0)) ||
 					collides(second->position + Vector2D(0, (int)second->size.y)) ||
 					collides(second->position + second->size) || 

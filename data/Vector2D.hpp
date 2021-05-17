@@ -25,7 +25,7 @@ struct Vector2D {
 	Vector2D normalize() const { return Vector2D(x / getMagnitude(), y / getMagnitude()); }
 
 	void operator=(Vector2D second) { x = second.x; y = second.y; }
-	void operator=(double second) { x = second; y -= second; }
+	void operator=(double second) { x = second; y = second; }
 	void operator*=(Vector2D second) { x *= second.x; y *= second.y; }
 	void operator*=(double second) { x *= second; y *= second; }
 	void operator+=(Vector2D second) { x += second.x; y += second.y; }

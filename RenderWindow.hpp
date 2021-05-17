@@ -137,11 +137,16 @@ private:
 	inline void renderCollider(Entity* p_entity) {
 		if (p_entity->solid)SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 		for(Collider* col : p_entity->colliders.colliders){
-			if (col->type == RECTANGLE){
-				SDL_Rect colsrc = {(int)(col->position.x - cam->position.x), (int)(col->position.y - cam->position.y), (int)col->size.x, (int)col->size.y};
-				SDL_RenderDrawRect(renderer, &colsrc);
-			} 
-			else if(col->type == CIRCLE) DrawCircle(col->position - cam->position, col->radius);
+			switch(col->type) {
+				case RECTANGLE:{
+					SDL_Rect colsrc = {(int)(col->position.x - cam->position.x), (int)(col->position.y - cam->position.y), (int)col->size.x, (int)col->size.y};
+					SDL_RenderDrawRect(renderer, &colsrc);
+					break;
+				}
+				case CIRCLE:
+					DrawCircle(col->position - cam->position, col->radius);
+					break;
+			}
 		}
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	}

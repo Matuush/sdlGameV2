@@ -7,7 +7,7 @@
 
 bool com = 0;
 #if com
-#include "UdpCom.h" 
+#include "data/UdpCom.h" 
 #endif
 
 class Game {

@@ -13,7 +13,7 @@ public:
 	Player(Vector2D p_position) : Entity(p_position, PLAYER_TEXTURE) {
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
 		solid = true;
-		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, 248));
+		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, KAPUSTA_WIDTH));
 		Player::players.push_back(this);
 	}
 
