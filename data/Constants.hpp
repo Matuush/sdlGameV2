@@ -8,6 +8,9 @@
 const bool JIRI_SMRDI = 1;
 const bool JIRI_SE_UMYL = 0;
 
+// Types
+enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
+
 // GUI
 const char TITLE[] = "SDL Moment";
 const std::string SEED = "B";
@@ -48,6 +51,7 @@ const int BORDER_THICKNESS = 1000;
 const Vector2D BUTTON_SIZE = Vector2D(TILE_SIZE * 4, TILE_SIZE * 2);
 const SDL_Color PASSIVE_BUTTON_TEXT_COLOR = { 0, 0, 0 };
 const SDL_Color ACTIVE_BUTTON_TEXT_COLOR = { 50, 50, 50 };
+const SDL_Color LOCKED_BUTTON_TEXT_COLOR = { 255, 0, 0 };
 
 // Entity attributes
 const double DEFAULT_TERMINAL_VELOCITY = 2 * (double)SCALE;

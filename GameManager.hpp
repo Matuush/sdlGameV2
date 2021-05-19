@@ -10,8 +10,6 @@ bool com = 0;
 #include "data/UdpCom.h" 
 #endif
 
-enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
-
 class Game {
 public:
 	static LOOP_TYPE loopType;
@@ -54,7 +52,7 @@ private:
 	Page startMenu = Page(MENU, {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "levels", [&]() { menu(&levelSelector); }),
 		Button(Vector2D(3 * SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "exit", []() { loopType = ESCAPE; }),
-		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = loopType; menu(&settings); if (loopType != LEVEL) loopType = tempLoopT;})
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2 + 300), "settings", [&]() { LOOP_TYPE tempLoopT = loopType; menu(&settings); if (loopType != LEVEL) loopType = tempLoopT;}, false)
 	});
 	Page pause = Page(PAUSE, {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "resume", []() { Game::loopType = LEVEL; }),
