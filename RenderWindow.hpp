@@ -1,6 +1,6 @@
 #pragma once
 #include "SDL2/SDL_image.h"
-#include "Camera.hpp"
+#include "data/Camera.hpp"
 #include "Button.hpp"
 
 enum WINDOW_TYPE : unsigned char { BORDERLESS, BORDERED, FULLSCREEN };
@@ -83,7 +83,7 @@ public:
 
 	void displayStats(std::vector<Player*> players) {
 		for (int i = 0; i < players.size(); i++) {
-			const std::string textPos = "player" + std::to_string(i + 1) + " x: " + std::to_string((int)players[i]->position.x) + " y: " + std::to_string((int)players[i]->position.y);
+			const std::string textPos = "player" + std::to_string(i + 1) + " hp: " + std::to_string((int)players[i]->health);
 			SDL_Rect dst = { (int)(SCREEN_SIZE.x - TILE_SIZE * 3), i * TILE_SIZE, TILE_SIZE * 3, TILE_SIZE };
 			renderText(textPos.c_str(), dst);
 		}

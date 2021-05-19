@@ -1,24 +1,29 @@
 #pragma once
 #include "Entity.hpp"
 
-class Projectile : public Entity {
+class Projectile : public Creature {
 public:
+	static std::vector<Projectile*> projectiles;
 	Projectile() = default;
-	Projectile(Vector2D p_position, Vector2D destination) : Entity(){
-		init();
+	Projectile(Vector2D p_position, Vector2D destination, double p_damage) : Creature(p_position, BULLET_TEXTURE, 9, p_damage){
 		terminalVelocity = DEFAULT_BULLET_TERMINAL_VELOCITY;
-		position = p_position;
-		currentFrame = { 0, 0, BULLET_TEXTURE.width, BULLET_TEXTURE.height };
-		textureID = BULLET_TEXTURE.id;
-		colliders.colliders.push_back(new Collider(position + BULLET_TEXTURE.width * SCALE / 2, BULLET_WIDTH));
-		Entity::entities.push_back(this);
 		velocity = destination - position;
 		velocity.setMagnitude(terminalVelocity);
+
+		colliders.colliders.push_back(new Collider(position + BULLET_TEXTURE.width * SCALE / 2, BULLET_WIDTH));
+	}
+	~Projectile(){
+		Projectile::projectiles.erase(findIterB(Projectile::projectiles.begin(), Projectile::projectiles.end(), this));
 	}
 private:
 	void update() override {
-		updatePosition();
+		updatePosCareless();
 		if (position.x < 0 || position.y < 0 || position.x > MAP_SIZE.x || position.y > MAP_SIZE.y || velocity < 5) delete this;
 	}
 	void input(SDL_Event* event) override {}
+	std::vector<Projectile*>::iterator findIterB(std::vector<Projectile*>::iterator first, std::vector<Projectile*>::iterator last, const Projectile* value){
+   		for (; first != last; ++first)
+        	if (*first == value) return first;
+    	return last;
+	}
 };

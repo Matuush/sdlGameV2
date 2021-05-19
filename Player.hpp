@@ -2,7 +2,7 @@
 #include "Projectile.hpp"
 #include "data/KeyState.hpp"
 
-class Player : public Entity {
+class Player : public Creature {
 public:
 	static std::vector<Player*> players;
 
@@ -10,11 +10,14 @@ public:
 	double health = DEFAULT_PLAYER_HEALTH, damage = DEFAULT_PLAYER_DAMAGE;
 
 	Player() = default;
-	Player(Vector2D p_position) : Entity(p_position, PLAYER_TEXTURE) {
+	Player(Vector2D p_position) : Creature(p_position, PLAYER_TEXTURE, DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_DAMAGE) {
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
 		solid = true;
 		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, KAPUSTA_WIDTH));
 		Player::players.push_back(this);
+	}
+	~Player(){
+		Player::players.erase(findIterP(Player::players.begin(), Player::players.end(), this));
 	}
 
 	void update() override {
@@ -24,16 +27,17 @@ public:
 		velocity.y += keyState.s ? movementAcceleration / ratio : -movementAcceleration / ratio;
 		velocity.x += keyState.d ? movementAcceleration / ratio : -movementAcceleration / ratio;
 
-		updatePosition();
+		updatePosCareless();
 
 		changeSprite();
 	}
+
 	void input(SDL_Event* event) override{
 		keyState.update(event);
 	}
 	void shoot(SDL_Event* event, Vector2D camPos){
 		Vector2D shotPos = Vector2D(event->button.x + camPos.x, event->button.y + camPos.y);
-		new Projectile(position + RAW_PLAYER * SCALE / 2, shotPos); 
+		Projectile::projectiles.push_back(new Projectile(position + RAW_PLAYER * SCALE / 2, shotPos, damage)); 
 		recoil(shotPos);
 	}
 private:
@@ -55,5 +59,11 @@ private:
 		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
 		tAcceleration.limit(movementAcceleration * 3);
 		velocity += tAcceleration;
+	}
+
+	inline std::vector<Player*>::iterator findIterP(std::vector<Player*>::iterator first, std::vector<Player*>::iterator last, const Player* value){
+    	for (; first != last; ++first)
+        	if (*first == value) return first;
+    	return last;
 	}
 };

@@ -17,7 +17,7 @@ public:
 	Game() {
 #if com
 		UdpCom::start();
-		UdpCom com(ip, 80);
+		UdpCom com(ip, port);
 		com.send("{ \"id\":\"da big chungus\" }");
 #endif
 	}

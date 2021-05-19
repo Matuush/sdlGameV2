@@ -10,6 +10,6 @@ struct Level {
 	Level() {}
 	~Level() {
 		for(Entity* e : Entity::entities) delete e;
-		Entity::entities.clear();
+		Player::players.clear();
 	}
 };

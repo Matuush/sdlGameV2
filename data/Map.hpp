@@ -4,7 +4,7 @@
 class Map {
 public:
 	Entity* tileMap[SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO * SCREEN_RATIO][SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO];
-	Entity borderWall = Entity(MAP_SIZE, NOTHING_TEXTURE);
+	Entity* borderWall = new Entity(MAP_SIZE);
 
 	Map() {
 		for (int i = 0; i < MAP_TILE_COUNT.x; i++)
@@ -14,11 +14,13 @@ public:
 		generateMap();
 		manuallyChangeTiles();
 
-		borderWall.solid = true, borderWall.display = false;
-		borderWall.colliders = MultiCollider({new Collider(-BORDER_THICKNESS, MAP_SIZE.y, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS),
-		new Collider(MAP_SIZE.x, 0, BORDER_THICKNESS, MAP_SIZE.y),
-		new Collider(-BORDER_THICKNESS, -BORDER_THICKNESS, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS),
-		new Collider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, MAP_SIZE.y)});
+		borderWall->solid = true, borderWall->display = false;
+		borderWall->colliders = MultiCollider({
+			new Collider(-BORDER_THICKNESS, MAP_SIZE.y, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS),
+			new Collider(MAP_SIZE.x, 0, BORDER_THICKNESS, MAP_SIZE.y),
+			new Collider(-BORDER_THICKNESS, -BORDER_THICKNESS, MAP_SIZE.x + 2 * BORDER_THICKNESS, BORDER_THICKNESS),
+			new Collider(-BORDER_THICKNESS, 0, BORDER_THICKNESS, MAP_SIZE.y)
+		});
 	}
 	~Map() {
 		for (auto&& i : tileMap)

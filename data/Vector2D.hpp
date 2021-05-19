@@ -2,9 +2,10 @@
 #include <math.h>
 #include <iostream>
 
+const int floatPrecision = 15;
+
 struct Vector2D {
 	double x, y;
-	const int floatPrecision = 15;
 	Vector2D() : x(0), y(0) {};
 	Vector2D(double p_x, double p_y) : x(p_x), y(p_y) {}
 	Vector2D(int p_x, int p_y) : x((double)p_x), y((double)p_y) {}

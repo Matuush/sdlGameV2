@@ -3,6 +3,14 @@
 #include "data/Constants.hpp"
 #include <iostream>
 
+class Entity;
+
+std::vector<Entity*>::iterator findIter(std::vector<Entity*>::iterator first, std::vector<Entity*>::iterator last, const Entity* value){
+    for (; first != last; ++first)
+        if (*first == value) return first;
+    return last;
+}
+
 class Entity {
 public:
 	static std::vector<Entity*> entities;
@@ -16,15 +24,15 @@ public:
 	bool solid = 0;
 
 	Entity() { init(); }
-	Entity(Vector2D p_position, Texture p_texture) : position(p_position), textureID(p_texture.id) {
+	Entity(Vector2D p_position, Texture p_texture = NOTHING_TEXTURE) : position(p_position), textureID(p_texture.id) {
 		init();
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id) colliders = MultiCollider({new Collider(position, {TILE_SIZE, TILE_SIZE})});
+		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id && textureID != BULLET_TEXTURE.id) colliders = MultiCollider({new Collider(position, {TILE_SIZE, TILE_SIZE})});
 		Entity::entities.push_back(this);
 	}
-	Entity(Vector2D p_position, Collider* p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
+	Entity(Vector2D p_position, std::vector<Collider*> p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
 		init();
-		colliders.add(p_collider);
+		colliders.colliders = p_collider;
 		currentFrame = { 0, 0, p_texture.width, p_texture.height };
 		Entity::entities.push_back(this);
 	}
@@ -66,31 +74,41 @@ protected:
 		return axisCollides;
 	}
 
-	inline void updatePosition() {
+	inline void updatePosCareless() {
 		velocity.limit(terminalVelocity);
 
-		const Vector2D pp = position;
-
 		if (solid) {
-			if (!collisionOnMovement({ velocity.x, 0.0 })) position.x += velocity.x;
-			if (!collisionOnMovement({ 0.0, velocity.y })) position.y += velocity.y;
+			if (!collisionOnMovement({ velocity.x, 0.0 })) move({velocity.x, 0.0});
+			if (!collisionOnMovement({ 0.0, velocity.y })) move({0.0, velocity.y});
 		}
-		else position += velocity;
-
-		colliders.move(position - pp);
+		else move(velocity);
 
 		velocity *= 1 - FRICTION;
 		if (velocity.getMagnitude() < 0.5) velocity = 0;
+	}
+
+	inline void move(Vector2D vel) {
+		position += vel;
+		colliders.move(vel);
 	}
 	
 	virtual void update() {}
 
 	virtual void input(SDL_Event* event) {}
+};
 
-private:
-	inline std::vector<Entity*>::iterator findIter(std::vector<Entity*>::iterator first, std::vector<Entity*>::iterator last, const Entity* value){
-    	for (; first != last; ++first)
-        	if (*first == value) return first;
-    	return last;
+class Creature : public Entity{
+public:
+	double health, damage;
+	Creature() = default;
+	Creature(Vector2D p_position, Texture p_texture, double p_health, double p_damage) : Entity(p_position, p_texture) {
+		health = p_health, damage = p_damage;
+	}
+	~Creature(){
+		for(Collider* col : colliders.colliders) delete col;
+		Entity::entities.erase(findIter(Entity::entities.begin(), Entity::entities.end(), this));
+	}
+	void oof(double dam){
+		health -= dam;
 	}
 };
