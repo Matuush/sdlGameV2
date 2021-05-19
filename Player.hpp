@@ -18,10 +18,11 @@ public:
 	}
 
 	void update() override {
-		velocity.y += keyState.w ? -movementAcceleration / 10 : movementAcceleration / 10;
-		velocity.x += keyState.a ? -movementAcceleration / 10 : movementAcceleration / 10;
-		velocity.y += keyState.s ? movementAcceleration / 10 : -movementAcceleration / 10;
-		velocity.x += keyState.d ? movementAcceleration / 10 : -movementAcceleration / 10;
+		const double ratio = 2;
+		velocity.y += keyState.w ? -movementAcceleration / ratio : movementAcceleration / ratio;
+		velocity.x += keyState.a ? -movementAcceleration / ratio : movementAcceleration / ratio;
+		velocity.y += keyState.s ? movementAcceleration / ratio : -movementAcceleration / ratio;
+		velocity.x += keyState.d ? movementAcceleration / ratio : -movementAcceleration / ratio;
 
 		updatePosition();
 

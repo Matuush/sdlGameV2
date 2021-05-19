@@ -4,12 +4,9 @@
 #include "Texture.hpp"
 #include "../Collider.hpp"
 
-// Very usefull
+// Very useful
 const bool JIRI_SMRDI = 1;
 const bool JIRI_SE_UMYL = 0;
-
-enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
-enum WINDOW_TYPE : unsigned char { BORDERLESS, BORDERED, FULLSCREEN };
 
 // GUI
 const char TITLE[] = "SDL Moment";
@@ -36,7 +33,7 @@ const Texture BUTTON_TEXTURE("textures/button.png", RAW_TILE * 2, RAW_TILE);
 const Texture BACKGROUND_TEXTURE("textures/background.png");
 const Texture BULLET_TEXTURE("textures/bullet.png", 4, 4);
 
-// Map constants
+// Map attributes
 const int TILE_SIZE = RAW_TILE * SCALE;
 const unsigned int SCREEN_RATIO = 2;
 const unsigned int SCREEN_MAP_RATIO = 3;
@@ -47,12 +44,12 @@ const Vector2D MAP_TILE_COUNT = SCREEN_TILE_COUNT * SCREEN_MAP_RATIO;
 const Vector2D MAP_SIZE = MAP_TILE_COUNT * TILE_SIZE;
 const int BORDER_THICKNESS = 1000;
 
-// Button constants
+// Button attributes
 const Vector2D BUTTON_SIZE = Vector2D(TILE_SIZE * 4, TILE_SIZE * 2);
 const SDL_Color PASSIVE_BUTTON_TEXT_COLOR = { 0, 0, 0 };
 const SDL_Color ACTIVE_BUTTON_TEXT_COLOR = { 50, 50, 50 };
 
-// Entity constants
+// Entity attributes
 const double DEFAULT_TERMINAL_VELOCITY = 2 * (double)SCALE;
 const double FRICTION = 0.05;
 const unsigned int KAPUSTA_WIDTH = 80;
@@ -62,6 +59,8 @@ const double PLAYER_VELOCITY = DEFAULT_TERMINAL_VELOCITY / 7;
 const double PLAYER_TERMINAL_VELOCITY = 500 * SCALE;
 const double DEFAULT_PLAYER_HEALTH = 50;
 const double DEFAULT_PLAYER_DAMAGE = 5;
+
+// Bullet attributes
 const Vector2D DEFAULT_BULLET_POSITION(-10, -10);
 const double DEFAULT_BULLET_TERMINAL_VELOCITY = DEFAULT_TERMINAL_VELOCITY * 7;
 const unsigned int BULLET_WIDTH = 8;

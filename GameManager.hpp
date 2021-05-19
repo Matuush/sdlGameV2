@@ -10,6 +10,8 @@ bool com = 0;
 #include "data/UdpCom.h" 
 #endif
 
+enum LOOP_TYPE : unsigned char { ESCAPE, MENU, LEVEL, PAUSE, LEVEL_SELECTOR, SETTINGS };
+
 class Game {
 public:
 	static LOOP_TYPE loopType;

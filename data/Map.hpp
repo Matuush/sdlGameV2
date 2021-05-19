@@ -22,7 +22,7 @@ public:
 	}
 	~Map() {
 		for (auto&& i : tileMap)
-			for (auto&& j : i)
+			for (Entity* j : i)
 				delete j;
 	}
 

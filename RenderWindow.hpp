@@ -3,6 +3,8 @@
 #include "Camera.hpp"
 #include "Button.hpp"
 
+enum WINDOW_TYPE : unsigned char { BORDERLESS, BORDERED, FULLSCREEN };
+
 class RenderWindow {
 public:
 	static bool paused, renderColliders;
