@@ -12,6 +12,6 @@ struct Level {
 		delete map;
 		delete player1;
 		delete enemy1;
-		
+		for(Projectile* e : Projectile::projectiles) delete e;
 	}
 };

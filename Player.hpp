@@ -39,6 +39,13 @@ public:
 		new Projectile(position + RAW_PLAYER * SCALE / 2, shotPos, damage); 
 		recoil(shotPos);
 	}
+
+	void recoil(Vector2D shotPos, double how = 3) {
+		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
+		tAcceleration.limit(movementAcceleration * how);
+		velocity += tAcceleration;
+	}
+
 private:
 	double movementAcceleration = PLAYER_VELOCITY;
 	Vector2D lastPos;
@@ -52,11 +59,5 @@ private:
 			int tick = (int)(SDL_GetTicks() / (7000 / velocity.getMagnitude())) % 2;
 			currentFrame.x = PLAYER_TEXTURE.width * tick;
 		}
-	}
-
-	inline void recoil(Vector2D shotPos) {
-		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
-		tAcceleration.limit(movementAcceleration * 3);
-		velocity += tAcceleration;
 	}
 };

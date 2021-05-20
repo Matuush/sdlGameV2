@@ -37,14 +37,16 @@ protected:
 		velocity.limit(terminalVelocity);
 
 		move(velocity);
-		for(Player* p: Player::players) if(collides(p)) punch(p);
+		for(Player* p: Player::players) if(collides(p)) {punch(p); p->recoil(position + ENEMY_TEXTURE.width * SCALE / 2, 12);}
 		for(Projectile* p: Projectile::projectiles) if(collides(p)) {punch(p);}
 		move(Vector2D(0, 0) - velocity);
 		updatePosCareless();
 		//changeSprite();
 
-		//if(health <= 0) delete this;
-		
+		if(health <= 0) {
+			delete this;
+			new Enemy(Vector2D(900.0, 900.0));
+		}		
 	}
 
 	inline void punch(Creature* p){
