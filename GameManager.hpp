@@ -1,7 +1,7 @@
 #pragma once
 #include "SDL2/SDL_main.h"
 #include "RenderWindow.hpp"
-#include "Level.hpp"
+#include "data/Level.hpp"
 #include "data/MenuPage.hpp"
 #include <iostream>
 
@@ -97,7 +97,7 @@ private:
 	}
 	inline void level() {
 		window->cam->refresh();
-		Level level;
+		Level* level = new Level();
 		while (loopType == LEVEL) {
 			int frameStart = SDL_GetTicks();
 
@@ -107,9 +107,12 @@ private:
 				else if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
 					for (auto& p : Player::players) p->keyState.zeroify();
 					menu(&pause);
-					if (loopType != LEVEL) return;
+					if (loopType != LEVEL) {
+						delete level;
+						return;
+					}
 				}
-				if (event.type == SDL_MOUSEBUTTONDOWN) level.player1.shoot(&event, window->cam->position);
+				if (event.type == SDL_MOUSEBUTTONDOWN) level->player1->shoot(&event, window->cam->position);
 				Entity::inputAll(&event);
 			}
 			
@@ -127,5 +130,6 @@ private:
 			{ int frameTime = SDL_GetTicks() - frameStart;
 			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime); }
 		}
+		delete level;
 	}
 };

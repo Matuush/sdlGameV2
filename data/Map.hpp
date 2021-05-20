@@ -26,6 +26,7 @@ public:
 		for (auto&& i : tileMap)
 			for (Entity* j : i)
 				delete j;
+		delete borderWall;
 	}
 
 private:
