@@ -19,7 +19,7 @@ struct Collider {
 	Collider() = default;
 	Collider(Collider* first) : position(first->position), size(first->size), radius(first->radius), type(first->type) {}
 	Collider(Vector2D pos, Vector2D size) : type(RECTANGLE), position(pos), size(size), radius(0){	}
-	Collider(const unsigned int x, const unsigned int y, const unsigned int w, const unsigned int h) : type(RECTANGLE), position({x, y}), size({w, h}), radius(0) {	}
+	Collider(int x, int y, int w, int h) : type(RECTANGLE), position({x, y}), size({w, h}), radius(0) {	}
 	Collider(Vector2D pos, unsigned int size) : type(CIRCLE), position(pos), size({0, 0}), radius(size) {	}
 	Collider operator*(const int value) {
 		switch (type){

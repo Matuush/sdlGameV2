@@ -11,19 +11,16 @@ public:
 		velocity.setMagnitude(terminalVelocity);
 
 		colliders.colliders.push_back(new Collider(position + BULLET_TEXTURE.width * SCALE / 2, BULLET_WIDTH));
+
+		projectiles.push_back(this);
 	}
 	~Projectile(){
-		Projectile::projectiles.erase(findIterB(Projectile::projectiles.begin(), Projectile::projectiles.end(), this));
+		Projectile::projectiles.erase(findIter<Projectile*>(Projectile::projectiles.begin(), Projectile::projectiles.end(), this));
 	}
 private:
 	void update() override {
 		updatePosCareless();
-		if (position.x < 0 || position.y < 0 || position.x > MAP_SIZE.x || position.y > MAP_SIZE.y || velocity < 5) delete this;
+		if (position.x < 0 || position.y < 0 || position.x > MAP_SIZE.x || position.y > MAP_SIZE.y || velocity < 5 || health < 9) delete this;
 	}
 	void input(SDL_Event* event) override {}
-	std::vector<Projectile*>::iterator findIterB(std::vector<Projectile*>::iterator first, std::vector<Projectile*>::iterator last, const Projectile* value){
-   		for (; first != last; ++first)
-        	if (*first == value) return first;
-    	return last;
-	}
 };

@@ -5,7 +5,8 @@
 
 class Entity;
 
-std::vector<Entity*>::iterator findIter(std::vector<Entity*>::iterator first, std::vector<Entity*>::iterator last, const Entity* value){
+template <class T*>
+std::vector<T*>::iterator findIter(std::vector<T*>::iterator first, std::vector<T*>::iterator last, const T* value){
     for (; first != last; ++first)
         if (*first == value) return first;
     return last;
@@ -38,7 +39,7 @@ public:
 	}
 	~Entity() {
 		for(Collider* col : colliders.colliders) delete col;
-		Entity::entities.erase(findIter(Entity::entities.begin(), Entity::entities.end(), this));
+		Entity::entities.erase(findIter<Entity>(Entity::entities.begin(), Entity::entities.end(), this));
 	}
 	static void updateAll() {
 		for (auto&& e : Entity::entities) e->update();
@@ -103,10 +104,6 @@ public:
 	Creature() = default;
 	Creature(Vector2D p_position, Texture p_texture, double p_health, double p_damage) : Entity(p_position, p_texture) {
 		health = p_health, damage = p_damage;
-	}
-	~Creature(){
-		for(Collider* col : colliders.colliders) delete col;
-		Entity::entities.erase(findIter(Entity::entities.begin(), Entity::entities.end(), this));
 	}
 	void oof(double dam){
 		health -= dam;

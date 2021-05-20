@@ -121,7 +121,7 @@ private:
 			// Rendering
 			window->clear();
 				for (Entity* e : Entity::entities) window->render(e);
-				window->displayStats(Player::players);
+				window->displayStats({Player::players[0], Enemy::enemies[0]});
 			window->display();
 
 			{ int frameTime = SDL_GetTicks() - frameStart;
