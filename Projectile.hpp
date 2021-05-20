@@ -15,7 +15,7 @@ public:
 		projectiles.push_back(this);
 	}
 	~Projectile(){
-		Projectile::projectiles.erase(findIter<Projectile*>(Projectile::projectiles.begin(), Projectile::projectiles.end(), this));
+		Projectile::projectiles.erase(findIter(Projectile::projectiles.begin(), Projectile::projectiles.end(), this));
 	}
 private:
 	void update() override {

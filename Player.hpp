@@ -16,7 +16,7 @@ public:
 		Player::players.push_back(this);
 	}
 	~Player(){
-		Player::players.erase(findIter<Player*>(Player::players.begin(), Player::players.end(), this));
+		Player::players.erase(findIter(Player::players.begin(), Player::players.end(), this));
 	}
 
 	void update() override {

@@ -5,8 +5,8 @@
 
 class Entity;
 
-template <class T*>
-std::vector<T*>::iterator findIter(std::vector<T*>::iterator first, std::vector<T*>::iterator last, const T* value){
+template <class IT, class T>
+IT findIter(IT first, IT last, T value){
     for (; first != last; ++first)
         if (*first == value) return first;
     return last;
@@ -39,7 +39,7 @@ public:
 	}
 	~Entity() {
 		for(Collider* col : colliders.colliders) delete col;
-		Entity::entities.erase(findIter<Entity>(Entity::entities.begin(), Entity::entities.end(), this));
+		Entity::entities.erase(findIter(Entity::entities.begin(), Entity::entities.end(), this));
 	}
 	static void updateAll() {
 		for (auto&& e : Entity::entities) e->update();

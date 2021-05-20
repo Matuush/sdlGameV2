@@ -11,11 +11,11 @@ public:
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
 		solid = true;
 		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, KAPUSTA_WIDTH));
-
+		
 		enemies.push_back(this);
 	}
 	~Enemy(){
-		Enemy::enemies.erase(findIter<Enemy*>(Enemy::enemies.begin(), Enemy::enemies.end(), this));
+		Enemy::enemies.erase(findIter(Enemy::enemies.begin(), Enemy::enemies.end(), this));
 	}
 protected:
 	inline void changeSprite() {
@@ -44,6 +44,7 @@ protected:
 		//changeSprite();
 
 		//if(health <= 0) delete this;
+		
 	}
 
 	inline void punch(Creature* p){
