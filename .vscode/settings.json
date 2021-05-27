@@ -49,7 +49,8 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "map": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "*.json": "cpp"
     },
     "VSCord.detailsDebugging": "Coding.",
     "VSCord.detailsEditing": "Coding {workspace}.",

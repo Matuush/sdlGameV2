@@ -44,7 +44,7 @@ public:
 		if (p_entity->display) {
 			SDL_Rect dst{ (int)(p_entity->position.x - cam->position.x), (int)(p_entity->position.y - cam->position.y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE };
 
-			SDL_Texture* tempTex = textures[p_entity->textureID];
+			SDL_Texture* tempTex = textures[p_entity->texture.id];
 			if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
 			else SDL_SetTextureColorMod(tempTex, 255, 255, 255);
 
@@ -55,7 +55,7 @@ public:
 		}
 	}
 	void renderButton(Button* p_entity) {
-		SDL_Texture* tempSex = textures[p_entity->textureID];
+		SDL_Texture* tempSex = textures[p_entity->texture.id];
 		if (!p_entity->unlocked) SDL_SetTextureColorMod(tempSex, 100, 0, 0);
 		else SDL_SetTextureColorMod(tempSex, 255, 255, 255);
 
@@ -83,7 +83,7 @@ public:
 
 	void displayStats(std::vector<Creature*> creatures) {
 		for (int i = 0; i < creatures.size(); i++) {
-			const std::string textPos = "player" + std::to_string(i + 1) + " hp: " + std::to_string((int)creatures[i]->health);
+			const std::string textPos = "creature" + std::to_string(i + 1) + " hp: " + std::to_string((int)creatures[i]->health);
 			SDL_Rect dst = { (int)(SCREEN_SIZE.x - TILE_SIZE * 3), i * TILE_SIZE, TILE_SIZE * 3, TILE_SIZE };
 			renderText(textPos.c_str(), dst);
 		}

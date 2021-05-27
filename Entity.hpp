@@ -17,7 +17,7 @@ public:
 	static std::vector<Entity*> entities;
 
 	SDL_Rect currentFrame = {0, 0, RAW_TILE, RAW_TILE};
-	unsigned char textureID = NOTHING_TEXTURE.id;
+	Texture texture = NOTHING_TEXTURE;
 	bool lastRight = true, display = true;
 
 	Vector2D position;
@@ -25,16 +25,16 @@ public:
 	bool solid = 0;
 
 	Entity() { init(); }
-	Entity(Vector2D p_position, Texture p_texture = NOTHING_TEXTURE) : position(p_position), textureID(p_texture.id) {
+	Entity(Vector2D p_position, Texture p_texture = NOTHING_TEXTURE) : position(p_position), texture(p_texture) {
 		init();
-		currentFrame = { 0, 0, p_texture.width, p_texture.height };
-		if (textureID != ENEMY_TEXTURE.id && textureID != PLAYER_TEXTURE.id && textureID != BULLET_TEXTURE.id) colliders = MultiCollider({new Collider(position, {TILE_SIZE, TILE_SIZE})});
+		currentFrame = { 0, 0, texture.width, texture.height };
+		if (texture.id != ENEMY_TEXTURE.id && texture.id != PLAYER_TEXTURE.id && texture.id != BULLET_TEXTURE.id) colliders = MultiCollider({new Collider(position, {TILE_SIZE, TILE_SIZE})});
 		Entity::entities.push_back(this);
 	}
-	Entity(Vector2D p_position, std::vector<Collider*> p_collider, Texture p_texture) : position(p_position), textureID(p_texture.id) {
+	Entity(Vector2D p_position, std::vector<Collider*> p_collider, Texture p_texture) : position(p_position), texture(p_texture) {
 		init();
 		colliders.colliders = p_collider;
-		currentFrame = { 0, 0, p_texture.width, p_texture.height };
+		currentFrame = { 0, 0, texture.width, texture.height };
 		Entity::entities.push_back(this);
 	}
 	~Entity() {
@@ -100,12 +100,19 @@ protected:
 
 class Creature : public Entity{
 public:
+	double movementAcceleration = PLAYER_VELOCITY;
 	double health, damage;
 	Creature() = default;
 	Creature(Vector2D p_position, Texture p_texture, double p_health, double p_damage) : Entity(p_position, p_texture) {
 		health = p_health, damage = p_damage;
 	}
-	void oof(double dam){
-		health -= dam;
+	void oof(Creature* creature){
+		health -= creature->damage;
+		recoil(creature->position + creature->texture.width * SCALE / 2);
+	}
+	void recoil(Vector2D shotPos, double how = 3) {
+		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
+		tAcceleration.limit(movementAcceleration * how);
+		velocity += tAcceleration;
 	}
 };

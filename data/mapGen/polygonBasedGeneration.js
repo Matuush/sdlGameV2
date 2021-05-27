@@ -3,16 +3,11 @@ const WATER = 1;
 const DIRT = 2;
 const BLANK = 0;
 const LAKE_ROUNDNES = 2;
-<<<<<<< HEAD
-const jiriSmrdi = true;
-const seedrandom = require('seedrandom')
-=======
 const LAKE_DIVIATION = 1 / 2;
 const MAX_RIVER_SEGMENT_LENGTH = 1;
 const RIVER_MAX_DEVIATION = 1.3;
 const seedrandom = require('seedrandom');
 const md5 = require('md5');
->>>>>>> ed7f35ba175b6212c71be278b22802afe3031448
 /**
  * @param {String} seedString
  * @returns {GameMap}
@@ -20,15 +15,6 @@ const md5 = require('md5');
 module.exports = function Generate(seedString) {
     var seed = new Seed(md5(seedString));
     var map = new GameMap(15, 15, DIRT);
-<<<<<<< HEAD
-    map.lakes.push(new Polygon(map, [
-        new Point(map, 3, 3),
-        new Point(map, 3, 4),
-        new Point(map, 4, 4),
-    ]))
-    map.addRandomLake(690, 1925, seed)
-    return map.toPixels();
-=======
     var type = seed.random();
     if (type < 0.5) {
         map.addRandomLake(10, 6, seed);
@@ -37,7 +23,6 @@ module.exports = function Generate(seedString) {
     }
 
     return map;
->>>>>>> ed7f35ba175b6212c71be278b22802afe3031448
 }
 // 2D
 class Region {

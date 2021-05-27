@@ -10,7 +10,7 @@ public:
 	Enemy(Vector2D p_position) : Creature(p_position, ENEMY_TEXTURE, DEFAULT_ENEMY_HEALTH, DEFAULT_ENEMY_DAMAGE) {
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
 		solid = true;
-		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, KAPUSTA_WIDTH));
+		colliders.add(new Collider(position + texture.width * SCALE / 2, KAPUSTA_WIDTH));
 		
 		enemies.push_back(this);
 	}
@@ -27,8 +27,8 @@ protected:
 		Player* closestPlayer = NULL;
 		if (Player::players.size() > 0) {
 			for (Player* p : Player::players)
-				if (!closestPlayer || abs((p->position - position + PLAYER_TEXTURE.width * 2 - ENEMY_TEXTURE.width * 2).getMagnitude()) < abs((closestPlayer->position - position + PLAYER_TEXTURE.width / 2 - ENEMY_TEXTURE.width * 2).getMagnitude())) closestPlayer = p;
-			velocity = closestPlayer->position + PLAYER_TEXTURE.width * 2 - ENEMY_TEXTURE.width * 2 - position;
+				if (!closestPlayer || abs((p->position - position + p->texture.width * 2 - texture.width * 2).getMagnitude()) < abs((closestPlayer->position - position + p->texture.width / 2 - texture.width * 2).getMagnitude())) closestPlayer = p;
+			velocity = closestPlayer->position + closestPlayer->texture.width * 2 - texture.width * 2 - position;
 		}
 		else velocity = MAP_SIZE / 2 - position;
 	}
@@ -37,7 +37,7 @@ protected:
 		velocity.limit(terminalVelocity);
 
 		move(velocity);
-		for(Player* p: Player::players) if(collides(p)) {punch(p); p->recoil(position + ENEMY_TEXTURE.width * SCALE / 2, 12);}
+		for(Player* p: Player::players) if(collides(p)) {punch(p); p->recoil(position + texture.width * SCALE / 2, 12);}
 		for(Projectile* p: Projectile::projectiles) if(collides(p)) {punch(p);}
 		move(Vector2D(0, 0) - velocity);
 		updatePosCareless();
@@ -50,8 +50,8 @@ protected:
 	}
 
 	inline void punch(Creature* p){
-		p->oof(damage);
-		oof(p->damage);
+		p->oof(this);
+		oof(p);
 	}
 
 	void input(SDL_Event* event) override { }

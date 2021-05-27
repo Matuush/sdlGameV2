@@ -12,7 +12,7 @@ public:
 	Player(Vector2D p_position) : Creature(p_position, PLAYER_TEXTURE, DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_DAMAGE) {
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
 		solid = true;
-		colliders.add(new Collider(position + PLAYER_TEXTURE.width * SCALE / 2, KAPUSTA_WIDTH));
+		colliders.add(new Collider(position + texture.width * SCALE / 2, KAPUSTA_WIDTH));
 		Player::players.push_back(this);
 	}
 	~Player(){
@@ -36,18 +36,11 @@ public:
 	}
 	void shoot(SDL_Event* event, Vector2D camPos){
 		Vector2D shotPos = Vector2D(event->button.x + camPos.x, event->button.y + camPos.y);
-		new Projectile(position + RAW_PLAYER * SCALE / 2, shotPos, damage); 
+		new Projectile(position + texture.width * SCALE / 2, shotPos, damage); 
 		recoil(shotPos);
 	}
 
-	void recoil(Vector2D shotPos, double how = 3) {
-		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
-		tAcceleration.limit(movementAcceleration * how);
-		velocity += tAcceleration;
-	}
-
 private:
-	double movementAcceleration = PLAYER_VELOCITY;
 	Vector2D lastPos;
 
 	inline void changeSprite() {
@@ -57,7 +50,7 @@ private:
 			//currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
 		else {
 			int tick = (int)(SDL_GetTicks() / (7000 / velocity.getMagnitude())) % 2;
-			currentFrame.x = PLAYER_TEXTURE.width * tick;
+			currentFrame.x = texture.width * tick;
 		}
 	}
 };
