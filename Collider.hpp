@@ -4,14 +4,6 @@
 
 enum COLLIDER_TYPE : unsigned char { CIRCLE, RECTANGLE };
 
-
-const char* const tohle = R"gamerPeero(
-
-	o̵̥͎͂b̷͇͆̆ě̷̼y̷̡̿̃͜  
-	
-	)gamerPeero";
-
-
 struct Collider {
 	Vector2D position, size;
 	unsigned int radius;

@@ -12,7 +12,7 @@ public:
 	Player(Vector2D p_position) : Creature(p_position, PLAYER_TEXTURE, DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_DAMAGE) {
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
 		solid = true;
-		colliders.add(new Collider(Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2), KAPUSTA_WIDTH));
+		colliders.add(new Collider(getCenter(), KAPUSTA_WIDTH));
 		Player::players.push_back(this);
 	}
 	~Player(){
@@ -36,7 +36,7 @@ public:
 	}
 	void shoot(SDL_Event* event, Vector2D camPos){
 		Vector2D shotPos = Vector2D(event->button.x + camPos.x, event->button.y + camPos.y);
-		new Projectile(Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2), shotPos, damage); 
+		new Projectile(getCenter(), shotPos, damage); 
 		recoil(shotPos);
 	}
 

@@ -14,10 +14,6 @@ public:
 	Entity* borderWall = new Entity(MAP_SIZE);
 
 	Map() {
-		std::ifstream ifs("./mapGen/output.json");
-		if(!ifs) std::cout << "cannot open file" << std::endl;
-		json jf = json::parse(ifs);
-		std::cout << jf[0];
 		for (int i = 0; i < MAP_TILE_COUNT.x; i++)
 			for (int j = 0; j < MAP_TILE_COUNT.y; j++)
 				tileMap[i][j] = new Entity(Vector2D(i * TILE_SIZE, j * TILE_SIZE), DIRT_TEXTURE);

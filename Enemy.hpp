@@ -10,7 +10,7 @@ public:
 	Enemy(Vector2D p_position) : Creature(p_position, ENEMY_TEXTURE, DEFAULT_ENEMY_HEALTH, DEFAULT_ENEMY_DAMAGE) {
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
 		solid = true;
-		colliders.add(new Collider(Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2), KAPUSTA_WIDTH));
+		colliders.add(new Collider(getCenter(), KAPUSTA_WIDTH));
 		
 		enemies.push_back(this);
 	}
@@ -27,8 +27,8 @@ protected:
 		Player* closestPlayer = NULL;
 		if (Player::players.size() > 0) {
 			for (Player* p : Player::players)
-				if (!closestPlayer || abs((p->position - position + p->texture.width * 2 - texture.width * 2).getMagnitude()) < abs((closestPlayer->position - position + p->texture.width / 2 - texture.width * 2).getMagnitude())) closestPlayer = p;
-			velocity = closestPlayer->position + closestPlayer->texture.width * 2 - texture.width * 2 - position;
+				if (!closestPlayer || abs((p->getCenter() - getCenter()).getMagnitude()) < abs((closestPlayer->getCenter() - getCenter()).getMagnitude())) closestPlayer = p;
+			velocity = closestPlayer->getCenter() - getCenter();
 		}
 		else velocity = MAP_SIZE / 2 - position;
 	}
@@ -36,17 +36,32 @@ protected:
 		findPlayer();
 		velocity.limit(terminalVelocity);
 
+		//! COMBAT HERE
 		move(velocity);
-		for(Player* p: Player::players) if(collides(p)) {punch(p); p->recoil(Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2), 12);}
-		for(Projectile* p: Projectile::projectiles) if(collides(p)) {punch(p);}
+		{
+			for(Player* p: Player::players) 
+				if(collides(p)) {
+					punch(p); 
+					p->recoil(getCenter(), 12);
+				}
+			for(Projectile* p: Projectile::projectiles) 
+				if(collides(p)) {
+					punch(p); 
+					recoil(p->getCenter(), 12);
+				}
+
+
+		}
 		move(Vector2D(0, 0) - velocity);
+
 		updatePosCareless();
+		
 		//changeSprite();
 
 		if(health <= 0) {
 			delete this;
 			new Enemy(Vector2D(900.0, 900.0));
-		}		
+		}	
 	}
 
 	inline void punch(Creature* p){

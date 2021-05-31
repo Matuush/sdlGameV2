@@ -51,6 +51,12 @@ public:
 	bool collides(Entity* second) {
 		return colliders.collides(&second->colliders);
 	}
+	Vector2D getCenter(){
+		return(Vector2D(
+			position.x + texture.width * SCALE / 2,
+			position.y + texture.height * SCALE / 2	
+		));
+	}
 
 protected:
 	Vector2D velocity, acceleration;
@@ -108,10 +114,10 @@ public:
 	}
 	void oof(Creature* creature){
 		health -= creature->damage;
-		recoil(Vector2D(creature->position.x + creature->texture.width * SCALE / 2, creature->position.y + creature->texture.height * SCALE / 2));
+		recoil(creature->getCenter());
 	}
 	void recoil(Vector2D shotPos, double how = 3) {
-		Vector2D tAcceleration = Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2) - shotPos;
+		Vector2D tAcceleration = getCenter() - shotPos;
 		tAcceleration.limit(movementAcceleration * how);
 		velocity += tAcceleration;
 	}

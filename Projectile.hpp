@@ -10,7 +10,7 @@ public:
 		velocity = destination - position;
 		velocity.setMagnitude(terminalVelocity);
 
-		colliders.colliders.push_back(new Collider(Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2), BULLET_WIDTH));
+		colliders.colliders.push_back(new Collider(getCenter(), BULLET_WIDTH));
 
 		projectiles.push_back(this);
 	}
