@@ -11,8 +11,11 @@ struct Vector2D {
 	Vector2D(int p_x, int p_y) : x((double)p_x), y((double)p_y) {}
 	Vector2D(unsigned int p_x, unsigned int p_y) : x((double)p_x), y((double)p_y) {}
 
-	void limit(double limit) { if (getMagnitude() > limit) setMagnitude(limit); }
-	void setMagnitude(double limit) {
+	Vector2D limit(double limit) {
+		if (getMagnitude() > limit) setMagnitude(limit);
+		return Vector2D(x, y);
+	}
+	Vector2D setMagnitude(double limit) {
 		double aah = getMagnitude();
 		if (aah != 0) {
 			x = x / aah * limit;
@@ -22,6 +25,7 @@ struct Vector2D {
 			x = sqrt(limit * limit / 2);
 			y = x;
 		}
+		return Vector2D(x, y);
 	}
 	Vector2D normalize() const { return Vector2D(x / getMagnitude(), y / getMagnitude()); }
 

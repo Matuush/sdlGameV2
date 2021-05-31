@@ -7,8 +7,7 @@ public:
 	Projectile() = default;
 	Projectile(Vector2D p_position, Vector2D destination, double p_damage) : Creature(p_position, BULLET_TEXTURE, 9, p_damage){
 		terminalVelocity = DEFAULT_BULLET_TERMINAL_VELOCITY;
-		velocity = destination - position;
-		velocity.setMagnitude(terminalVelocity);
+		velocity = (destination - position).setMagnitude(terminalVelocity);
 
 		colliders.colliders.push_back(new Collider(getCenter(), BULLET_WIDTH));
 

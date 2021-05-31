@@ -54,7 +54,7 @@ protected:
 
 		updatePosCareless();
 		
-		//changeSprite();
+		//TODO changeSprite();
 
 		if(health <= 0) {
 			delete this;

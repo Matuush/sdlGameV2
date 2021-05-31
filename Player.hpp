@@ -47,7 +47,7 @@ private:
 		lastRight = velocity.x < 0 ? false : (velocity.x > 0 ? true : lastRight);
 
 		if (velocity < 1) currentFrame.y = 0, currentFrame.x = 0;
-			//currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
+			//TODO currentFrame.y = RAW_PLAYER, currentFrame.x = (SDL_GetTicks() / 100 % 4 + 1) * RAW_PLAYER;
 		else {
 			int tick = (int)(SDL_GetTicks() / (7000 / velocity.getMagnitude())) % 2;
 			currentFrame.x = texture.width * tick;

@@ -114,7 +114,6 @@ public:
 	}
 	void oof(Creature* creature){
 		health -= creature->damage;
-		recoil(creature->getCenter());
 	}
 	void recoil(Vector2D shotPos, double how = 3) {
 		Vector2D tAcceleration = getCenter() - shotPos;

@@ -26,9 +26,13 @@ public:
 		createTexture(BACKGROUND_TEXTURE);
 		createTexture(BULLET_TEXTURE);
 
-		TTF_Init(); // Text
+		TTF_Init();
 		defaultFont = TTF_OpenFont("textures/ComicSans.ttf", 32);
 	}
+
+	void clear() { SDL_RenderClear(renderer); }
+	void display() { SDL_RenderPresent(renderer); }
+	void destroy() { SDL_DestroyWindow(window); }
 
 	void handleWindow() {
 		if (windowType == FULLSCREEN) SDL_SetWindowFullscreen(window, SDL_TRUE);
@@ -36,9 +40,6 @@ public:
 		if (windowType == BORDERLESS) SDL_SetWindowBordered(window, SDL_FALSE);
 		else if (windowType == BORDERED) SDL_SetWindowBordered(window, SDL_TRUE);
 	}
-	void clear() { SDL_RenderClear(renderer); }
-	void display() { SDL_RenderPresent(renderer); }
-	void destroy() { SDL_DestroyWindow(window); }
 
 	void render(Entity* p_entity) {
 		if (p_entity->display) {
@@ -96,7 +97,6 @@ public:
 		int32_t error = (tx - diameter);
 
 		while (x >= y) {
-			//  Each of the following renders an octant of the circle
 			SDL_RenderDrawPoint(renderer, (int)centre.x + x, (int)centre.y - y);
 			SDL_RenderDrawPoint(renderer, (int)centre.x + x, (int)centre.y + y);
 			SDL_RenderDrawPoint(renderer, (int)centre.x - x, (int)centre.y - y);
