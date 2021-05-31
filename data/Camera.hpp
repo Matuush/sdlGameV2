@@ -1,6 +1,5 @@
 #pragma once
 #include "../Player.hpp"
-#include <map>
 
 struct Camera {
 	double w = SCREEN_SIZE.x, h = SCREEN_SIZE.y;
@@ -18,7 +17,7 @@ struct Camera {
 		const Vector2D walkBorderSize (SCREEN_SIZE.x * walkBorderPlus, SCREEN_SIZE.y * walkBorderPlus);
 
 		for (auto&& p : Player::players) {
-			const Vector2D truePos = p->position + PLAYER_TEXTURE.width * SCALE / 2 - position;
+			const Vector2D truePos = Vector2D(p->position.x + p->texture.width * SCALE / 2, p->position.y + p->texture.height * SCALE / 2) - position;
 
 			//Left
 			if (truePos.x < walkBorderPos.x) {

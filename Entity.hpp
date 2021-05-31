@@ -108,10 +108,10 @@ public:
 	}
 	void oof(Creature* creature){
 		health -= creature->damage;
-		recoil(creature->position + creature->texture.width * SCALE / 2);
+		recoil(Vector2D(creature->position.x + creature->texture.width * SCALE / 2, creature->position.y + creature->texture.height * SCALE / 2));
 	}
 	void recoil(Vector2D shotPos, double how = 3) {
-		Vector2D tAcceleration = (position + PLAYER_TEXTURE.width / 2 * SCALE) - shotPos;
+		Vector2D tAcceleration = Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2) - shotPos;
 		tAcceleration.limit(movementAcceleration * how);
 		velocity += tAcceleration;
 	}

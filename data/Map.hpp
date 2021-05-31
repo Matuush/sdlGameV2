@@ -3,15 +3,21 @@
 #include "json.hpp"
 #include "../Entity.hpp"
 
+using json = nlohmann::json;
+//! hepl!
+//? hepl?
+//TODO hepl
+// hepl.
 class Map {
 public:
 	Entity* tileMap[SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO * SCREEN_RATIO][SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO];
 	Entity* borderWall = new Entity(MAP_SIZE);
 
 	Map() {
-		std::ifstream ifs("mapGen/output.json"); 
-		nlohmann::json jf = nlohmann::json::parse(ifs);
-		std::cout << jf;
+		std::ifstream ifs("./mapGen/output.json");
+		if(!ifs) std::cout << "cannot open file" << std::endl;
+		json jf = json::parse(ifs);
+		std::cout << jf[0];
 		for (int i = 0; i < MAP_TILE_COUNT.x; i++)
 			for (int j = 0; j < MAP_TILE_COUNT.y; j++)
 				tileMap[i][j] = new Entity(Vector2D(i * TILE_SIZE, j * TILE_SIZE), DIRT_TEXTURE);

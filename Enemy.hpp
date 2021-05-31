@@ -10,7 +10,7 @@ public:
 	Enemy(Vector2D p_position) : Creature(p_position, ENEMY_TEXTURE, DEFAULT_ENEMY_HEALTH, DEFAULT_ENEMY_DAMAGE) {
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
 		solid = true;
-		colliders.add(new Collider(position + texture.width * SCALE / 2, KAPUSTA_WIDTH));
+		colliders.add(new Collider(Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2), KAPUSTA_WIDTH));
 		
 		enemies.push_back(this);
 	}
@@ -37,7 +37,7 @@ protected:
 		velocity.limit(terminalVelocity);
 
 		move(velocity);
-		for(Player* p: Player::players) if(collides(p)) {punch(p); p->recoil(position + texture.width * SCALE / 2, 12);}
+		for(Player* p: Player::players) if(collides(p)) {punch(p); p->recoil(Vector2D(position.x + texture.width * SCALE / 2, position.y + texture.height * SCALE / 2), 12);}
 		for(Projectile* p: Projectile::projectiles) if(collides(p)) {punch(p);}
 		move(Vector2D(0, 0) - velocity);
 		updatePosCareless();
