@@ -39,18 +39,16 @@ protected:
 		//! COMBAT HERE
 		move(velocity);
 		{
-			for(Player* p: Player::players) 
+			for(Player* p: Player::players)
 				if(collides(p)) {
-					punch(p); 
+					punch(p);
 					p->recoil(getCenter(), 12);
 				}
-			for(Projectile* p: Projectile::projectiles) 
+			for(Projectile* p: Projectile::projectiles)
 				if(collides(p)) {
-					punch(p); 
+					punch(p);
 					recoil(p->getCenter(), 12);
 				}
-
-
 		}
 		move(Vector2D(0, 0) - velocity);
 
