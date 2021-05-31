@@ -9,7 +9,7 @@ public:
 	Enemy() = default;
 	Enemy(Vector2D p_position) : Creature(p_position, ENEMY_TEXTURE, DEFAULT_ENEMY_HEALTH, DEFAULT_ENEMY_DAMAGE) {
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
-		
+
 		colliders.add(new Collider(getCenter(), KAPUSTA_WIDTH));
 		
 		enemies.push_back(this);
@@ -28,15 +28,15 @@ protected:
 		if (Player::players.size() > 0) {
 			for (Player* p : Player::players)
 				if (!closestPlayer || abs((p->getCenter() - getCenter()).getMagnitude()) < abs((closestPlayer->getCenter() - getCenter()).getMagnitude())) closestPlayer = p;
-			velocity = closestPlayer->getCenter() - getCenter();
+			velocity += (closestPlayer->getCenter() - getCenter()) / 5000;
 		}
-		else velocity = MAP_SIZE / 2 - position;
+		else velocity += (MAP_SIZE / 2 - position) / 5000;
 	}
 	void update() override{
 		findPlayer();
 		velocity.limit(terminalVelocity);
 
-		//! COMBAT HERE
+		// COMBAT HERE
 		move(velocity);
 		{
 			for(Player* p: Player::players)
@@ -47,7 +47,7 @@ protected:
 			for(Projectile* p: Projectile::projectiles)
 				if(collides(p)) {
 					punch(p);
-					recoil(p->getCenter(), 12);
+					recoil(p->getCenter(), -12); //! dont ever look at this
 				}
 		}
 		move(Vector2D(0, 0) - velocity);

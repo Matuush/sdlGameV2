@@ -22,7 +22,7 @@ public:
 	bool lastRight = true, display = true;
 
 	// Material
-	Vector2D position;
+	Vector2D position, velocity;
 	MultiCollider colliders;
 	bool solid = 0;
 
@@ -60,7 +60,7 @@ public:
 	}
 
 protected:
-	Vector2D velocity, acceleration;
+	Vector2D acceleration;
 	double terminalVelocity = DEFAULT_TERMINAL_VELOCITY;
 
 	inline void init() {
