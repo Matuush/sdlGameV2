@@ -9,7 +9,8 @@ public:
 		terminalVelocity = DEFAULT_BULLET_TERMINAL_VELOCITY;
 		velocity = (destination - position).setMagnitude(terminalVelocity);
 
-		colliders.colliders.push_back(new Collider(getCenter(), BULLET_WIDTH));
+		solid = false;
+		colliders.add(new Collider(getCenter(), BULLET_WIDTH));
 
 		projectiles.push_back(this);
 	}

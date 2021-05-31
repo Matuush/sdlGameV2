@@ -11,7 +11,6 @@ public:
 	Player() = default;
 	Player(Vector2D p_position) : Creature(p_position, PLAYER_TEXTURE, DEFAULT_PLAYER_HEALTH, DEFAULT_PLAYER_DAMAGE) {
 		terminalVelocity = PLAYER_TERMINAL_VELOCITY;
-		solid = true;
 		colliders.add(new Collider(getCenter(), KAPUSTA_WIDTH));
 		Player::players.push_back(this);
 	}

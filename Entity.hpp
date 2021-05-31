@@ -16,10 +16,12 @@ class Entity {
 public:
 	static std::vector<Entity*> entities;
 
+	// Visual
 	SDL_Rect currentFrame = {0, 0, RAW_TILE, RAW_TILE};
 	Texture texture = NOTHING_TEXTURE;
 	bool lastRight = true, display = true;
 
+	// Material
 	Vector2D position;
 	MultiCollider colliders;
 	bool solid = 0;
@@ -28,12 +30,12 @@ public:
 	Entity(Vector2D p_position, Texture p_texture = NOTHING_TEXTURE) : position(p_position), texture(p_texture) {
 		init();
 		currentFrame = { 0, 0, texture.width, texture.height };
-		if (texture.id != ENEMY_TEXTURE.id && texture.id != PLAYER_TEXTURE.id && texture.id != BULLET_TEXTURE.id) colliders = MultiCollider({new Collider(position, {TILE_SIZE, TILE_SIZE})});
+		if (texture.id != ENEMY_TEXTURE.id && texture.id != PLAYER_TEXTURE.id && texture.id != BULLET_TEXTURE.id) colliders.add(new Collider(position, {TILE_SIZE, TILE_SIZE}));
 		Entity::entities.push_back(this);
 	}
-	Entity(Vector2D p_position, std::vector<Collider*> p_collider, Texture p_texture) : position(p_position), texture(p_texture) {
+	Entity(Vector2D p_position, std::vector<Collider*> p_colliders, Texture p_texture) : position(p_position), texture(p_texture) {
 		init();
-		colliders.colliders = p_collider;
+		colliders.colliders = p_colliders;
 		currentFrame = { 0, 0, texture.width, texture.height };
 		Entity::entities.push_back(this);
 	}
@@ -45,8 +47,7 @@ public:
 		for (auto&& e : Entity::entities) e->update();
 	}
 	static void inputAll(SDL_Event* event) {
-		for (auto&& e : Entity::entities)
-			if(e) e->input(event);
+		for (auto&& e : Entity::entities) e->input(event);
 	}
 	bool collides(Entity* second) {
 		return colliders.collides(&second->colliders);
@@ -108,12 +109,15 @@ class Creature : public Entity{
 public:
 	double movementAcceleration = PLAYER_VELOCITY;
 	double health, damage;
+	unsigned int hurtTimer = 0;
 	Creature() = default;
 	Creature(Vector2D p_position, Texture p_texture, double p_health, double p_damage) : Entity(p_position, p_texture) {
+		solid = true;
 		health = p_health, damage = p_damage;
 	}
 	void oof(Creature* creature){
 		health -= creature->damage;
+		hurtTimer = 1000;
 	}
 	void recoil(Vector2D shotPos, double how = 3) {
 		Vector2D tAcceleration = getCenter() - shotPos;

@@ -9,7 +9,7 @@ public:
 	Enemy() = default;
 	Enemy(Vector2D p_position) : Creature(p_position, ENEMY_TEXTURE, DEFAULT_ENEMY_HEALTH, DEFAULT_ENEMY_DAMAGE) {
 		terminalVelocity = DEFAULT_ENEMY_TERMINAL_VELOCITY;
-		solid = true;
+		
 		colliders.add(new Collider(getCenter(), KAPUSTA_WIDTH));
 		
 		enemies.push_back(this);
