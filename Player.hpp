@@ -19,11 +19,11 @@ public:
 	}
 
 	void update() override {
-		const double ratio = 2;
-		velocity.y += keyState.w ? -movementAcceleration / ratio : movementAcceleration / ratio;
-		velocity.x += keyState.a ? -movementAcceleration / ratio : movementAcceleration / ratio;
-		velocity.y += keyState.s ? movementAcceleration / ratio : -movementAcceleration / ratio;
-		velocity.x += keyState.d ? movementAcceleration / ratio : -movementAcceleration / ratio;
+		//const double ratio = 4;
+		//velocity.y += keyState.w ? -movementAcceleration / ratio : movementAcceleration / ratio;
+		//velocity.x += keyState.a ? -movementAcceleration / ratio : movementAcceleration / ratio;
+		//velocity.y += keyState.s ? movementAcceleration / ratio : -movementAcceleration / ratio;
+		//velocity.x += keyState.d ? movementAcceleration / ratio : -movementAcceleration / ratio;
 
 		updatePosCareless();
 

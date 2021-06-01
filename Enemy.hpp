@@ -28,9 +28,9 @@ protected:
 		if (Player::players.size() > 0) {
 			for (Player* p : Player::players)
 				if (!closestPlayer || abs((p->getCenter() - getCenter()).getMagnitude()) < abs((closestPlayer->getCenter() - getCenter()).getMagnitude())) closestPlayer = p;
-			velocity += (closestPlayer->getCenter() - getCenter()) / 5000;
+			velocity += (closestPlayer->getCenter() - getCenter()) / 600;
 		}
-		else velocity += (MAP_SIZE / 2 - position) / 5000;
+		else velocity += (MAP_SIZE / 2 - position) / 600;
 	}
 	void update() override{
 		findPlayer();
@@ -47,7 +47,7 @@ protected:
 			for(Projectile* p: Projectile::projectiles)
 				if(collides(p)) {
 					punch(p);
-					recoil(p->getCenter(), -12); //! dont ever look at this
+					recoil(p->getCenter(), 12);
 				}
 		}
 		move(Vector2D(0, 0) - velocity);

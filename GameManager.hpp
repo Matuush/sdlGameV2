@@ -120,10 +120,10 @@ private:
 			window->handleWindow();
 			Entity::updateAll();
 			window->cam->move();
-			
 			// Rendering
 			window->clear();
-				for (Entity* e : Entity::entities) window->render(e);
+				for (auto aaah : level->map->tileMap) for(Entity* e : aaah) window->render(e);
+				for(Creature* c : Creature::creatures) window->render(c);
 				window->displayStats({Player::players[0], Enemy::enemies[0]});
 			window->display();
 

@@ -110,14 +110,19 @@ public:
 	double movementAcceleration = PLAYER_VELOCITY;
 	double health, damage;
 	unsigned int hurtTimer = 0;
+	static std::vector<Creature*> creatures;
 	Creature() = default;
 	Creature(Vector2D p_position, Texture p_texture, double p_health, double p_damage) : Entity(p_position, p_texture) {
 		solid = true;
 		health = p_health, damage = p_damage;
+		creatures.push_back(this);
+	}
+	~Creature(){
+		Creature::creatures.erase(findIter(Creature::creatures.begin(), Creature::creatures.end(), this));
 	}
 	void oof(Creature* creature){
 		health -= creature->damage;
-		hurtTimer = 1000;
+		hurtTimer = 255;
 	}
 	void recoil(Vector2D shotPos, double how = 3) {
 		Vector2D tAcceleration = getCenter() - shotPos;

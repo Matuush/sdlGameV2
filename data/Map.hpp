@@ -10,7 +10,8 @@ using json = nlohmann::json;
 // hepl.
 class Map {
 public:
-	Entity* tileMap[SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO * SCREEN_RATIO][SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO];
+	//Entity* tileMap[SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO * SCREEN_RATIO][SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO];
+	std::array<std::array<Entity*, SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO>, SCREEN_TILE_COUNT_Y * SCREEN_MAP_RATIO * SCREEN_RATIO> tileMap;
 	Entity* borderWall = new Entity(MAP_SIZE);
 
 	Map() {

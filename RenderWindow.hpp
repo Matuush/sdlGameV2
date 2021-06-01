@@ -40,17 +40,33 @@ public:
 		if (windowType == BORDERLESS) SDL_SetWindowBordered(window, SDL_FALSE);
 		else if (windowType == BORDERED) SDL_SetWindowBordered(window, SDL_TRUE);
 	}
-
 	void render(Entity* p_entity) {
 		if (p_entity->display) {
 			SDL_Rect dst{ (int)(p_entity->position.x - cam->position.x), (int)(p_entity->position.y - cam->position.y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE };
 
 			SDL_Texture* tempTex = textures[p_entity->texture.id];
 			if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
-			else SDL_SetTextureColorMod(tempTex, 255, 255, 255);
+			else  SDL_SetTextureColorMod(tempTex, 255, 255, 255);
 
 			if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst);
 			else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+
+			if (renderColliders) renderCollider(p_entity);
+		}
+	}
+	void render(Creature* p_entity) {
+		if (p_entity->display) {
+			SDL_Rect dst{ (int)(p_entity->position.x - cam->position.x), (int)(p_entity->position.y - cam->position.y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE };
+
+			SDL_Texture* tempTex = textures[p_entity->texture.id];
+			if(p_entity->hurtTimer > 2){SDL_SetTextureColorMod(tempTex, 255, 255 - p_entity->hurtTimer, 255 - p_entity->hurtTimer); p_entity->hurtTimer -= 2;}
+			if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
+			else if(p_entity->hurtTimer <= 0) SDL_SetTextureColorMod(tempTex, 255, 255, 255);
+
+			if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst);
+			else if (!p_entity->lastRight) SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+			
+			SDL_SetTextureColorMod(tempTex, 255, 255, 255);
 
 			if (renderColliders) renderCollider(p_entity);
 		}
