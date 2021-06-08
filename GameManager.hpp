@@ -76,22 +76,24 @@ private:
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) { loopType = ESCAPE; return; }
 				else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && RenderWindow::paused) loopType = LEVEL;
-				for (auto& b : page->buttons) b.checkClick(&event);
+				for (Button& b : page->buttons) b.checkClick(&event);
 			}
 
 			// Updates
 			window->handleWindow();
-			for (auto& b : page->buttons) b.onClick();
+			for (Button& b : page->buttons) b.onClick();
 
 			// Rendering
 			window->clear();
 				if(RenderWindow::paused) for (Entity* e : Entity::entities) window->render(e);
 				window->renderBackground();
-				for (auto& b : page->buttons) window->renderButton(&b);
+				for (Button& b : page->buttons) window->renderButton(&b);
 			window->display();
 
-			{ int frameTime = SDL_GetTicks() - frameStart;
-			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime); }
+			{
+				int frameTime = SDL_GetTicks() - frameStart;
+				if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
+			}
 		}
 		RenderWindow::paused = false;
 	}
@@ -105,7 +107,7 @@ private:
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) { loopType = ESCAPE; return; }
 				else if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
-					for (auto& p : Player::players) p->keyState.zeroify();
+					for (Player* p : Player::players) p->keyState.zeroify();
 					menu(&pause);
 					if (loopType != LEVEL) {
 						delete level;
@@ -113,22 +115,25 @@ private:
 					}
 				}
 				if (event.type == SDL_MOUSEBUTTONDOWN) level->player1->shoot(&event, window->cam->position);
-				Entity::inputAll(&event);
+				Creature::inputAll(&event);
 			}
 			
 			// Updates
 			window->handleWindow();
-			Entity::updateAll();
+			Creature::updateAll();
 			window->cam->move();
+
 			// Rendering
 			window->clear();
-				for (auto aaah : level->map->tileMap) for(Entity* e : aaah) window->render(e);
+				for (auto& aaah : level->map->tileMap) for(Entity* e : aaah) window->render(e);
 				for(Creature* c : Creature::creatures) window->render(c);
 				window->displayStats({Player::players[0], Enemy::enemies[0]});
 			window->display();
 
-			{ int frameTime = SDL_GetTicks() - frameStart;
-			if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime); }
+			{
+				int frameTime = SDL_GetTicks() - frameStart;
+				if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
+			}
 		}
 		delete level;
 	}

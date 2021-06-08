@@ -43,12 +43,6 @@ public:
 		for(Collider* col : colliders.colliders) delete col;
 		Entity::entities.erase(findIter(Entity::entities.begin(), Entity::entities.end(), this));
 	}
-	static void updateAll() {
-		for (auto&& e : Entity::entities) e->update();
-	}
-	static void inputAll(SDL_Event* event) {
-		for (auto&& e : Entity::entities) e->input(event);
-	}
 	bool collides(Entity* second) {
 		return colliders.collides(&second->colliders);
 	}
@@ -99,10 +93,6 @@ protected:
 		position += vel;
 		colliders.move(vel);
 	}
-	
-	virtual void update() {}
-
-	virtual void input(SDL_Event* event) {}
 };
 
 class Creature : public Entity{
@@ -120,6 +110,12 @@ public:
 	~Creature(){
 		Creature::creatures.erase(findIter(Creature::creatures.begin(), Creature::creatures.end(), this));
 	}
+	static void inputAll(SDL_Event* event) {
+		for (Creature* e : Creature::creatures) e->input(event);
+	}
+	static void updateAll() {
+		for (Creature* e : Creature::creatures) e->update();
+	}
 	void oof(Creature* creature){
 		health -= creature->damage;
 		hurtTimer = 255;
@@ -129,4 +125,8 @@ public:
 		tAcceleration.limit(movementAcceleration * how);
 		velocity += tAcceleration;
 	}
+
+private:
+	virtual void input(SDL_Event* event) {}
+	virtual void update() {}
 };
