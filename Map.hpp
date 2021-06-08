@@ -1,9 +1,8 @@
 #pragma once
 #include <fstream>
-#include "json.hpp"
-#include "../Entity.hpp"
+#include <array>
+#include "Entity.hpp"
 
-using json = nlohmann::json;
 //! hepl!
 //? hepl?
 //TODO hepl
