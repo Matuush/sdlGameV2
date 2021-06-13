@@ -127,7 +127,7 @@ private:
 			window->clear();
 				for (auto& aaah : level->map->tileMap) for(Entity* e : aaah) window->render(e);
 				for(Creature* c : Creature::creatures) window->render(c);
-				window->displayStats({Player::players[0], Enemy::enemies[0]});
+				window->displayStats(Player::players[0]);
 			window->display();
 
 			{

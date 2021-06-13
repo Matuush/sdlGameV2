@@ -25,6 +25,7 @@ public:
 		createTexture(BUTTON_TEXTURE);
 		createTexture(BACKGROUND_TEXTURE);
 		createTexture(BULLET_TEXTURE);
+		createTexture(HEALTHBAR_TEXTURE);
 
 		TTF_Init();
 		defaultFont = TTF_OpenFont("textures/font/slkscr.ttf", 32);
@@ -84,8 +85,8 @@ public:
 		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
 		
-		dst = { (int)p_entity->position.x + SCALE + buttonMargin, (int)p_entity->position.y + SCALE + buttonMargin, 
-		p_entity->w - 2 * SCALE - 2 * buttonMargin, p_entity->h - 2 * SCALE - 2 * buttonMargin};
+		dst = { (int)p_entity->position.x + BUTTON_MARGIN, (int)p_entity->position.y + BUTTON_MARGIN, 
+		p_entity->w - 2 * BUTTON_MARGIN, p_entity->h - 2 * BUTTON_MARGIN};
 		SDL_RenderCopy(renderer, message, NULL, &dst);
 		SDL_DestroyTexture(message);
 	}
@@ -99,12 +100,14 @@ public:
 		SDL_RenderCopy(renderer, tempTex, NULL, &dst);
 	}
 
-	void displayStats(std::vector<Creature*> creatures) {
-		for (int i = 0; i < creatures.size(); i++) {
-			const std::string textPos = "creature" + std::to_string(i + 1) + " hp: " + std::to_string((int)creatures[i]->health);
-			SDL_Rect dst = { (int)(SCREEN_SIZE.x - TILE_SIZE * 3), i * TILE_SIZE, TILE_SIZE * 3, TILE_SIZE };
-			renderText(textPos.c_str(), dst);
-		}
+	void displayStats(Creature* p_entity) {
+		SDL_Rect dst = { 50, 50, (int)HEALTHBAR_SIZE.x, (int)HEALTHBAR_SIZE.y };
+		int x = (int)(HEALTHBAR_HEALTH_SIZE.x / p_entity->maxHealth * p_entity->health) > 0 ? (int)(HEALTHBAR_HEALTH_SIZE.x / p_entity->maxHealth * p_entity->health) : 0;
+		SDL_Rect helth = {dst.x + (int)HEALTHBAR_MARGIN.x, dst.y + (int)HEALTHBAR_MARGIN.y, x, (int)HEALTHBAR_HEALTH_SIZE.y};
+		SDL_SetRenderDrawColor(renderer, 200, 0, 0, 0);
+		SDL_RenderFillRect(renderer, &helth);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+		SDL_RenderCopy(renderer, textures[HEALTHBAR_TEXTURE.id], NULL, &dst);
 	}
 	void DrawCircle(Vector2D centre, int32_t radius) {
 		const int32_t diameter = (radius * 2);
@@ -143,8 +146,6 @@ private:
 
 	TTF_Font* defaultFont;
 	SDL_Texture* textures[8];
-
-	const int buttonMargin = 30;
 
 	inline void renderText(const char* text, SDL_Rect dst){
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, text, DEFAULT_TEXT_COLOR);

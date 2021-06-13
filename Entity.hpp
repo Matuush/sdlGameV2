@@ -98,13 +98,14 @@ protected:
 class Creature : public Entity{
 public:
 	double movementAcceleration = PLAYER_VELOCITY;
-	double health, damage;
+	double health, damage, maxHealth;
 	unsigned int hurtTimer = 0;
 	static std::vector<Creature*> creatures;
 	Creature() = default;
 	Creature(Vector2D p_position, Texture p_texture, double p_health, double p_damage) : Entity(p_position, p_texture) {
 		solid = true;
 		health = p_health, damage = p_damage;
+		maxHealth = health;
 		creatures.push_back(this);
 	}
 	~Creature(){

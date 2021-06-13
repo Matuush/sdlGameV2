@@ -36,6 +36,7 @@ const Texture ENEMY_TEXTURE = PLAYER_TEXTURE;
 const Texture BUTTON_TEXTURE("textures/button.png", RAW_BUTTON.x, RAW_BUTTON.y);
 const Texture BACKGROUND_TEXTURE("textures/background.png");
 const Texture BULLET_TEXTURE("textures/bullet.png", 4, 4);
+const Texture HEALTHBAR_TEXTURE("textures/healthbar.png", 99, 13);
 
 // Map attributes
 const int TILE_SIZE = RAW_TILE * SCALE;
@@ -53,6 +54,7 @@ const Vector2D BUTTON_SIZE = RAW_BUTTON * 2 * SCALE;
 const SDL_Color PASSIVE_BUTTON_TEXT_COLOR = { 0, 0, 0 };
 const SDL_Color ACTIVE_BUTTON_TEXT_COLOR = { 50, 50, 50 };
 const SDL_Color LOCKED_BUTTON_TEXT_COLOR = { 255, 0, 0 };
+const int BUTTON_MARGIN = 30;
 
 // Entity attributes
 const double DEFAULT_TERMINAL_VELOCITY = 2 * (double)SCALE;
@@ -64,6 +66,9 @@ const double PLAYER_VELOCITY = DEFAULT_TERMINAL_VELOCITY / 7;
 const double PLAYER_TERMINAL_VELOCITY = 500 * SCALE;
 const double DEFAULT_PLAYER_HEALTH = 50;
 const double DEFAULT_PLAYER_DAMAGE = 5;
+const Vector2D HEALTHBAR_MARGIN = Vector2D(2, 2) * 6;
+const Vector2D HEALTHBAR_SIZE = Vector2D(HEALTHBAR_TEXTURE.width * 6, HEALTHBAR_TEXTURE.height * 6);
+const Vector2D HEALTHBAR_HEALTH_SIZE = Vector2D(95, 9) * 6;
 
 // Bullet attributes
 const Vector2D DEFAULT_BULLET_POSITION(-10, -10);
