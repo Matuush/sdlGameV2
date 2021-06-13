@@ -24,6 +24,7 @@ const int SCALE = 4;
 const int RAW_TILE = 32;
 const int RAW_PLAYER = 64;
 const int RAW_ENEMY = 64;
+const Vector2D RAW_BUTTON = Vector2D(64, 20);
 
 // Textures
 const Texture NOTHING_TEXTURE("textures/nothing.png", RAW_TILE);
@@ -32,7 +33,7 @@ const Texture DIRT_TEXTURE("textures/dirt.png", RAW_TILE);
 const Texture GRASS_TEXTURE("textures/grass.png", RAW_TILE);
 const Texture PLAYER_TEXTURE("textures/kapusta.png", RAW_PLAYER);
 const Texture ENEMY_TEXTURE = PLAYER_TEXTURE;
-const Texture BUTTON_TEXTURE("textures/button.png", RAW_TILE * 2, RAW_TILE);
+const Texture BUTTON_TEXTURE("textures/button.png", RAW_BUTTON.x, RAW_BUTTON.y);
 const Texture BACKGROUND_TEXTURE("textures/background.png");
 const Texture BULLET_TEXTURE("textures/bullet.png", 4, 4);
 
@@ -48,7 +49,7 @@ const Vector2D MAP_SIZE = MAP_TILE_COUNT * TILE_SIZE;
 const int BORDER_THICKNESS = 1000;
 
 // Button attributes
-const Vector2D BUTTON_SIZE = Vector2D(TILE_SIZE * 4, TILE_SIZE * 2);
+const Vector2D BUTTON_SIZE = RAW_BUTTON * 2 * SCALE;
 const SDL_Color PASSIVE_BUTTON_TEXT_COLOR = { 0, 0, 0 };
 const SDL_Color ACTIVE_BUTTON_TEXT_COLOR = { 50, 50, 50 };
 const SDL_Color LOCKED_BUTTON_TEXT_COLOR = { 255, 0, 0 };

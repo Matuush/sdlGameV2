@@ -47,7 +47,7 @@ private:
 	RenderWindow* window = new RenderWindow();
 
 	Page levelSelector = Page(LEVEL_SELECTOR, { 
-		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "level 1", []() { loopType = LEVEL; })
+		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "level", []() { loopType = LEVEL; })
 	});
 	Page startMenu = Page(MENU, {
 		Button(Vector2D(SCREEN_SIZE.x / 4 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "levels", [&]() { menu(&levelSelector); }),
@@ -117,7 +117,7 @@ private:
 				if (event.type == SDL_MOUSEBUTTONDOWN) level->player1->shoot(&event, window->cam->position);
 				Creature::inputAll(&event);
 			}
-			
+
 			// Updates
 			window->handleWindow();
 			Creature::updateAll();

@@ -8,7 +8,7 @@
 class Button{
 public:
 	bool unlocked;
-	double w = BUTTON_SIZE.x, h = BUTTON_SIZE.y;
+	int w = BUTTON_SIZE.x, h = BUTTON_SIZE.y;
 	SDL_Color color = PASSIVE_BUTTON_TEXT_COLOR;
 	const char* text;
 	Vector2D position;

@@ -1,5 +1,5 @@
 #pragma once
-#include "Map.hpp"
+#include "../Map.hpp"
 #include "../Enemy.hpp"
 
 struct Level {

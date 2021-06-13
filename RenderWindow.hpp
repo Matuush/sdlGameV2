@@ -27,7 +27,7 @@ public:
 		createTexture(BULLET_TEXTURE);
 
 		TTF_Init();
-		defaultFont = TTF_OpenFont("textures/ComicSans.ttf", 32);
+		defaultFont = TTF_OpenFont("textures/font/slkscr.ttf", 32);
 	}
 
 	void clear() { SDL_RenderClear(renderer); }
@@ -73,18 +73,19 @@ public:
 	}
 	void renderButton(Button* p_entity) {
 		SDL_Texture* tempSex = textures[p_entity->texture.id];
-		if (!p_entity->unlocked) SDL_SetTextureColorMod(tempSex, 100, 0, 0);
+		if (!p_entity->unlocked) SDL_SetTextureColorMod(tempSex, 150, 0, 0);
 		else SDL_SetTextureColorMod(tempSex, 255, 255, 255);
 
 		SDL_Rect dst{ (int)(p_entity->position.x), (int)(p_entity->position.y), (int)p_entity->w, (int)p_entity->h };
 		
 		SDL_RenderCopy(renderer, tempSex, &p_entity->currentFrame, &dst);
-
+		
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, p_entity->text, p_entity->color);
 		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
-
-		dst = { (int)(p_entity->position.x + SCALE), (int)(p_entity->position.y + (double)SCALE), (int)(p_entity->w - 2 * (double)SCALE), (int)(p_entity->h - 2 * (double)SCALE) };
+		
+		dst = { (int)p_entity->position.x + SCALE + buttonMargin, (int)p_entity->position.y + SCALE + buttonMargin, 
+		p_entity->w - 2 * SCALE - 2 * buttonMargin, p_entity->h - 2 * SCALE - 2 * buttonMargin};
 		SDL_RenderCopy(renderer, message, NULL, &dst);
 		SDL_DestroyTexture(message);
 	}
@@ -142,6 +143,8 @@ private:
 
 	TTF_Font* defaultFont;
 	SDL_Texture* textures[8];
+
+	const int buttonMargin = 30;
 
 	inline void renderText(const char* text, SDL_Rect dst){
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, text, DEFAULT_TEXT_COLOR);
