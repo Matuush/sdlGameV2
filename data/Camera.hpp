@@ -26,7 +26,7 @@ struct Camera {
 			}
 			
 			//Right
-			if (truePos.x > walkBorderPos.x + walkBorderSize.x) {
+			else if (truePos.x > walkBorderPos.x + walkBorderSize.x) {
 				double destX = truePos.x + position.x - (walkBorderPos.x + walkBorderSize.x);
 				if (destX <= MAP_SIZE.x - SCREEN_SIZE.x) position.x = destX;
 			}
@@ -38,7 +38,7 @@ struct Camera {
 			}
 
 			//Down
-			if (truePos.y > walkBorderPos.y + walkBorderSize.y) {
+			else if (truePos.y > walkBorderPos.y + walkBorderSize.y) {
 				double destY = truePos.y + position.y - (walkBorderPos.y + walkBorderSize.y);
 				if (destY <= MAP_SIZE.y - SCREEN_SIZE.y) position.y = destY;
 			}

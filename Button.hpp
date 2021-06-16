@@ -7,7 +7,7 @@
 
 class Button{
 public:
-	bool unlocked;
+	bool unlocked, clicked = 0;
 	int w = BUTTON_SIZE.x, h = BUTTON_SIZE.y;
 	SDL_Color color = PASSIVE_BUTTON_TEXT_COLOR;
 	const char* text;
@@ -35,13 +35,10 @@ public:
 		}
 	}
 	void onClick() {
-		if (clicked) {
-			efect();
-			clicked = false;
-		}
+		efect();
+		clicked = false;
 	}
 
 private:
-	bool clicked = false;
 	std::function<void()> efect;
 };

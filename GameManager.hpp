@@ -45,6 +45,13 @@ private:
 	SDL_Event event;
 
 	RenderWindow* window = new RenderWindow();
+	
+	int frameStart = 0;
+	void delay(){
+		int frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
+		frameStart = SDL_GetTicks();
+	}
 
 	Page levelSelector = Page(LEVEL_SELECTOR, { 
 		Button(Vector2D(SCREEN_SIZE.x / 2 - BUTTON_SIZE.x / 2, SCREEN_SIZE.y / 2 - BUTTON_SIZE.y / 2), "level", []() { loopType = LEVEL; })
@@ -67,33 +74,30 @@ private:
 	});
 
 	inline void menu(Page* page) {
+		if(loopType == LEVEL) for (Player* p : Player::players) p->keyState.zeroify();
 		loopType = page->loopType;
 		while (loopType == page->loopType) {
-			int frameStart = SDL_GetTicks();
 			if (loopType == PAUSE) RenderWindow::paused = true;
 
 			// User input
 			while (SDL_PollEvent(&event)) {
-				if (event.type == SDL_QUIT) { loopType = ESCAPE; return; }
+				if (event.type == SDL_QUIT) loopType = ESCAPE;
 				else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && RenderWindow::paused) loopType = LEVEL;
 				for (Button& b : page->buttons) b.checkClick(&event);
 			}
 
 			// Updates
 			window->handleWindow();
-			for (Button& b : page->buttons) b.onClick();
+			for (Button& b : page->buttons) if(b.clicked) b.onClick();
 
 			// Rendering
 			window->clear();
-				if(RenderWindow::paused) for (Entity* e : Entity::entities) window->render(e);
+				if(RenderWindow::paused) for (Entity* e : Entity::entities) if(e->display) window->render(e);
 				window->renderBackground();
 				for (Button& b : page->buttons) window->renderButton(&b);
 			window->display();
 
-			{
-				int frameTime = SDL_GetTicks() - frameStart;
-				if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
-			}
+			delay();
 		}
 		RenderWindow::paused = false;
 	}
@@ -101,20 +105,14 @@ private:
 		window->cam->refresh();
 		Level* level = new Level();
 		while (loopType == LEVEL) {
-			int frameStart = SDL_GetTicks();
 
 			// User input
 			while (SDL_PollEvent(&event)) {
-				if (event.type == SDL_QUIT) { loopType = ESCAPE; return; }
-				else if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) {
-					for (Player* p : Player::players) p->keyState.zeroify();
-					menu(&pause);
-					if (loopType != LEVEL) {
-						delete level;
-						return;
-					}
+				switch(event.type){
+					case SDL_QUIT: loopType = ESCAPE; break;
+					case SDL_MOUSEBUTTONDOWN: level->player1->shoot(&event, window->cam->position); break;
+					case SDL_KEYDOWN: if(event.key.keysym.sym == SDLK_ESCAPE) menu(&pause); break;
 				}
-				if (event.type == SDL_MOUSEBUTTONDOWN) level->player1->shoot(&event, window->cam->position);
 				Creature::inputAll(&event);
 			}
 
@@ -125,15 +123,12 @@ private:
 
 			// Rendering
 			window->clear();
-				for (auto& aaah : level->map->tileMap) for(Entity* e : aaah) window->render(e);
-				for(Creature* c : Creature::creatures) window->render(c);
+				for (auto& aaah : level->map->tileMap) for(Entity* e : aaah) if(e->display) window->render(e);
+				for(Creature* c : Creature::creatures) if(c->display) window->render(c);
 				window->displayStats(Player::players[0]);
 			window->display();
 
-			{
-				int frameTime = SDL_GetTicks() - frameStart;
-				if (frameTime < FRAME_DELAY) SDL_Delay(FRAME_DELAY - frameTime);
-			}
+			delay();
 		}
 		delete level;
 	}
