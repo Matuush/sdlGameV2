@@ -7,13 +7,14 @@
 
 class Button{
 public:
-	bool unlocked, clicked = 0;
-	int w = BUTTON_SIZE.x, h = BUTTON_SIZE.y;
-	SDL_Color color = PASSIVE_BUTTON_TEXT_COLOR;
-	const char* text;
 	Vector2D position;
+	int w = BUTTON_SIZE.x, h = BUTTON_SIZE.y;
+	bool unlocked, clicked = 0;
+
 	Texture texture = BUTTON_TEXTURE;
 	SDL_Rect currentFrame = { 0, 0, texture.width, texture.height };
+	SDL_Color color = PASSIVE_BUTTON_TEXT_COLOR;
+	const char* text;
 
 	Button() = default;
 	Button(Vector2D p_position, const char* p_text, std::function<void()> p_efect, bool p_unlocked = true) : 
