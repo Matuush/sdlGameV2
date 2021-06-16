@@ -44,68 +44,78 @@ public:
 	void render(Entity* p_entity) {
 		SDL_Rect dst{ (int)(p_entity->position.x - cam->position.x), (int)(p_entity->position.y - cam->position.y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE };
 
-		SDL_Texture* tempTex = textures[p_entity->texture.id];
-		if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
-		else  SDL_SetTextureColorMod(tempTex, 255, 255, 255);
+		if (paused) SDL_SetTextureColorMod(textures[p_entity->texture.id], 100, 100, 100);
+		else  SDL_SetTextureColorMod(textures[p_entity->texture.id], 255, 255, 255);
 
-		if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst);
-		else SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+		if (p_entity->lastRight) SDL_RenderCopy(renderer, textures[p_entity->texture.id], &p_entity->currentFrame, &dst);
+		else SDL_RenderCopyEx(renderer, textures[p_entity->texture.id], &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+
+		SDL_SetTextureColorMod(textures[p_entity->texture.id], 255, 255, 255);
 
 		if (renderColliders) renderCollider(p_entity);
 	}
 	void render(Creature* p_entity) {
 		SDL_Rect dst{ (int)(p_entity->position.x - cam->position.x), (int)(p_entity->position.y - cam->position.y), p_entity->currentFrame.w * SCALE, p_entity->currentFrame.h * SCALE };
 
-		SDL_Texture* tempTex = textures[p_entity->texture.id];
-		if(p_entity->hurtTimer > 2){SDL_SetTextureColorMod(tempTex, 255, 255 - p_entity->hurtTimer, 255 - p_entity->hurtTimer); p_entity->hurtTimer -= 2;}
-		if (paused) SDL_SetTextureColorMod(tempTex, 100, 100, 100);
-		else if(p_entity->hurtTimer <= 0) SDL_SetTextureColorMod(tempTex, 255, 255, 255);
+		if(p_entity->hurtTimer > 2){SDL_SetTextureColorMod(textures[p_entity->texture.id], 255, 255 - p_entity->hurtTimer, 255 - p_entity->hurtTimer); p_entity->hurtTimer -= 2;}
+		if (paused) SDL_SetTextureColorMod(textures[p_entity->texture.id], 100, 100, 100);
 
-		if (p_entity->lastRight) SDL_RenderCopy(renderer, tempTex, &p_entity->currentFrame, &dst);
-		else SDL_RenderCopyEx(renderer, tempTex, &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
+		if (p_entity->lastRight) SDL_RenderCopy(renderer, textures[p_entity->texture.id], &p_entity->currentFrame, &dst);
+		else SDL_RenderCopyEx(renderer, textures[p_entity->texture.id], &p_entity->currentFrame, &dst, 0, NULL, SDL_FLIP_HORIZONTAL);
 		
-		SDL_SetTextureColorMod(tempTex, 255, 255, 255);
+		SDL_SetTextureColorMod(textures[p_entity->texture.id], 255, 255, 255);
 
 		if (renderColliders) renderCollider(p_entity);
 	}
-	void renderButton(Button* p_entity) {
-		SDL_Texture* tempSex = textures[p_entity->texture.id];
-		if (!p_entity->unlocked) SDL_SetTextureColorMod(tempSex, 150, 0, 0);
-		else SDL_SetTextureColorMod(tempSex, 255, 255, 255);
+	void render(Button* p_entity) {
+		if (!p_entity->unlocked) SDL_SetTextureColorMod(textures[p_entity->texture.id], 150, 0, 0);
+		else SDL_SetTextureColorMod(textures[p_entity->texture.id], 255, 255, 255);
 
 		SDL_Rect dst{ (int)(p_entity->position.x), (int)(p_entity->position.y), (int)p_entity->w, (int)p_entity->h };
 		
-		SDL_RenderCopy(renderer, tempSex, &p_entity->currentFrame, &dst);
-		
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, p_entity->text, p_entity->color);
-		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-		SDL_FreeSurface(surfaceMessage);
-		
-		dst = { (int)p_entity->position.x + BUTTON_MARGIN, (int)p_entity->position.y + BUTTON_MARGIN, 
-		p_entity->w - 2 * BUTTON_MARGIN, p_entity->h - 2 * BUTTON_MARGIN};
-		SDL_RenderCopy(renderer, message, NULL, &dst);
-		SDL_DestroyTexture(message);
+		SDL_RenderCopy(renderer, textures[p_entity->texture.id], &p_entity->currentFrame, &dst);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		renderText(p_entity->text, { (int)p_entity->position.x + BUTTON_MARGIN, (int)p_entity->position.y + BUTTON_MARGIN, p_entity->w - 2 * BUTTON_MARGIN, p_entity->h - 2 * BUTTON_MARGIN}, p_entity->color);
 	}
 	void renderBackground() {
-		SDL_Texture* tempTex = textures[BACKGROUND_TEXTURE.id];
-		SDL_SetTextureColorMod(tempTex, BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b);
-		if (paused) SDL_SetTextureAlphaMod(tempTex, 100);
-		else SDL_SetTextureAlphaMod(tempTex, 255);
+		SDL_SetTextureColorMod(textures[BACKGROUND_TEXTURE.id], BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b);
+		if (paused) SDL_SetTextureAlphaMod(textures[BACKGROUND_TEXTURE.id], 100);
+		else SDL_SetTextureAlphaMod(textures[BACKGROUND_TEXTURE.id], 255);
 
 		SDL_Rect dst{ 0, 0, (int)SCREEN_SIZE.x, (int)SCREEN_SIZE.y };
-		SDL_RenderCopy(renderer, tempTex, NULL, &dst);
+		SDL_RenderCopy(renderer, textures[BACKGROUND_TEXTURE.id], NULL, &dst);
 	}
+
 
 	void displayStats(Creature* p_entity) {
 		SDL_Rect dst = { 50, 50, (int)HEALTHBAR_SIZE.x, (int)HEALTHBAR_SIZE.y };
-		int x = (int)(HEALTHBAR_HEALTH_SIZE.x / p_entity->maxHealth * p_entity->health) > 0 ? (int)(HEALTHBAR_HEALTH_SIZE.x / p_entity->maxHealth * p_entity->health) : 0;
-		SDL_Rect helth = {dst.x + (int)HEALTHBAR_MARGIN.x, dst.y + (int)HEALTHBAR_MARGIN.y, x, (int)HEALTHBAR_HEALTH_SIZE.y};
-		SDL_SetRenderDrawColor(renderer, 200, 0, 0, 0);
-		SDL_RenderFillRect(renderer, &helth);
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+		int width = (int)(HEALTHBAR_HEALTH_SIZE.x / p_entity->maxHealth * p_entity->health) > 0 ? (int)(HEALTHBAR_HEALTH_SIZE.x / p_entity->maxHealth * p_entity->health) : 0;
+		DrawRect({dst.x + (int)HEALTHBAR_MARGIN.x, dst.y + (int)HEALTHBAR_MARGIN.y, width, (int)HEALTHBAR_HEALTH_SIZE.y}, {200, 0, 0, 255});
 		SDL_RenderCopy(renderer, textures[HEALTHBAR_TEXTURE.id], NULL, &dst);
 	}
-	void DrawCircle(Vector2D centre, int32_t radius) {
+
+private:
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+
+	TTF_Font* defaultFont;
+	SDL_Texture* textures[9];
+
+	inline void renderText(const char* text, SDL_Rect dst, SDL_Color color = DEFAULT_TEXT_COLOR){
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, text, DEFAULT_TEXT_COLOR);
+		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+		SDL_SetTextureColorMod(message, color.r, color.g, color.b);
+		SDL_FreeSurface(surfaceMessage);
+
+		SDL_RenderCopy(renderer, message, NULL, &dst);
+		SDL_DestroyTexture(message);
+	}
+	inline void DrawRect(SDL_Rect rect, SDL_Color color = {0, 0, 0, 255}){
+		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+		SDL_RenderFillRect(renderer, &rect);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	}
+	inline void DrawCircle(Vector2D centre, int32_t radius) {
 		const int32_t diameter = (radius * 2);
 
 		int32_t x = (radius - 1), y = 0;
@@ -136,22 +146,6 @@ public:
 		}
 	}
 
-private:
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-
-	TTF_Font* defaultFont;
-	SDL_Texture* textures[8];
-
-	inline void renderText(const char* text, SDL_Rect dst){
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(defaultFont, text, DEFAULT_TEXT_COLOR);
-		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-		SDL_FreeSurface(surfaceMessage);
-
-		SDL_RenderCopy(renderer, message, NULL, &dst);
-		SDL_DestroyTexture(message);
-	}
-
 	inline void renderCollider(Entity* p_entity) {
 		if (p_entity->solid)SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 		for(Collider* col : p_entity->colliders.colliders){
@@ -161,13 +155,12 @@ private:
 					SDL_RenderDrawRect(renderer, &colsrc);
 					break;
 				}
-				case CIRCLE:
-					DrawCircle(col->position - cam->position, col->radius);
-					break;
+				case CIRCLE: DrawCircle(col->position - cam->position, col->radius); break;
 			}
 		}
 		if (p_entity->solid) SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	}
+
 	inline void createTexture(Texture p_texture) {
 		textures[p_texture.id] = IMG_LoadTexture(renderer, p_texture.path);
 	}

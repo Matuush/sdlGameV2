@@ -94,7 +94,7 @@ private:
 			window->clear();
 				if(RenderWindow::paused) for (Entity* e : Entity::entities) if(e->display) window->render(e);
 				window->renderBackground();
-				for (Button& b : page->buttons) window->renderButton(&b);
+				for (Button& b : page->buttons) window->render(&b);
 			window->display();
 
 			delay();

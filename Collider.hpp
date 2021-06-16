@@ -13,22 +13,20 @@ struct Collider {
 	Collider(Vector2D pos, Vector2D size) : type(RECTANGLE), position(pos), size(size), radius(0){	}
 	Collider(int x, int y, int w, int h) : type(RECTANGLE), position({x, y}), size({w, h}), radius(0) {	}
 	Collider(Vector2D pos, unsigned int size) : type(CIRCLE), position(pos), size({0, 0}), radius(size) {	}
+
 	Collider operator*(const int value) {
 		switch (type){
-			case RECTANGLE:
-				return Collider(position * value, size * value);
-			case CIRCLE:
-				return Collider(position * value, radius * value);
+			case RECTANGLE: return Collider(position * value, size * value);
+			case CIRCLE: return Collider(position * value, radius * value);
 		}
 		std::cout << "Unknown collider type\n";
 		return Collider();
 	}
+	
 	virtual bool collides(double x, double y) {
 		switch (type) {
-		case RECTANGLE:
-			return(x >= position.x && y >= position.y && x <= position.x + size.x && y <= position.y + size.y);
-		case CIRCLE:
-			return Vector2D( abs(x - position.x), abs(y - position.y) ).getMagnitude() <= radius;
+			case RECTANGLE: return(x >= position.x && y >= position.y && x <= position.x + size.x && y <= position.y + size.y);
+			case CIRCLE: return Vector2D( abs(x - position.x), abs(y - position.y) ).getMagnitude() <= radius;
 		}
 		std::cout << "Unknown collider type\n";
 		return false;
